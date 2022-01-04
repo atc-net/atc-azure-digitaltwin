@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Atc" Version="1.1.360" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Azure.DigitalTwins.Parser" Version="3.12.7" />
+    <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
+  </ItemGroup>
+
+</Project>
