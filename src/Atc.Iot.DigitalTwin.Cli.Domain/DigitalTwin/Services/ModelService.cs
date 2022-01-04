@@ -25,11 +25,7 @@ public class ModelService : IModelService
 
     public Task<bool> LoadModelContentAsync(DirectoryInfo path)
     {
-        if (path is null)
-        {
-            throw new ArgumentNullException(nameof(path));
-        }
-
+        ArgumentNullException.ThrowIfNull(path);
         return LoadModelContentInternalAsync(path);
     }
 

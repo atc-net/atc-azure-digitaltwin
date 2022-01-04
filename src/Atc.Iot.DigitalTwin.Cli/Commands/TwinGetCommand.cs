@@ -15,11 +15,7 @@ public class TwinGetCommand : AsyncCommand<TwinCommandSettings>
 
     public override Task<int> ExecuteAsync(CommandContext context, TwinCommandSettings settings)
     {
-        if (settings is null)
-        {
-            throw new ArgumentNullException(nameof(settings));
-        }
-
+        ArgumentNullException.ThrowIfNull(settings);
         return ExecuteInternalAsync(settings);
     }
 

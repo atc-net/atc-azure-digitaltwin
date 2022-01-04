@@ -14,11 +14,7 @@ public class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 
     public override Task<int> ExecuteAsync(CommandContext context, ModelPathSettings settings)
     {
-        if (settings is null)
-        {
-            throw new ArgumentNullException(nameof(settings));
-        }
-
+        ArgumentNullException.ThrowIfNull(settings);
         return ExecuteInternalAsync(settings);
     }
 

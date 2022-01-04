@@ -19,11 +19,7 @@ public class DigitalTwinInterfaceInfoComparer : IEqualityComparer<DTInterfaceInf
 
     public int GetHashCode(DTInterfaceInfo obj)
     {
-        if (obj is null)
-        {
-            throw new ArgumentNullException(nameof(obj));
-        }
-
+        ArgumentNullException.ThrowIfNull(obj);
         return obj.Id.GetHashCode();
     }
 }

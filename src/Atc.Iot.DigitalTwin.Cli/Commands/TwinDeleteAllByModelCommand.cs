@@ -13,11 +13,7 @@ public class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSettings>
 
     public override Task<int> ExecuteAsync(CommandContext context, ModelCommandSettings settings)
     {
-        if (settings is null)
-        {
-            throw new ArgumentNullException(nameof(settings));
-        }
-
+        ArgumentNullException.ThrowIfNull(settings);
         return ExecuteInternalAsync(settings);
     }
 

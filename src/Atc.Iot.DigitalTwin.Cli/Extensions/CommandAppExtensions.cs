@@ -4,10 +4,7 @@ public static class CommandAppExtensions
 {
     public static void ConfigureCommands(this CommandApp app)
     {
-        if (app is null)
-        {
-            throw new ArgumentNullException(nameof(app));
-        }
+        ArgumentNullException.ThrowIfNull(app);
 
         app.Configure(config =>
         {
