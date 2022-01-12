@@ -1,4 +1,4 @@
-namespace Atc.Iot.DigitalTwin.Cli.Domain.DigitalTwin.Comparisons;
+namespace Atc.Iot.DigitalTwin.DigitalTwin.Comparisons;
 
 public class DigitalTwinInterfaceInfoComparer : IEqualityComparer<DTInterfaceInfo>
 {

@@ -5,8 +5,6 @@ global using Atc.Console.Spectre.Factories;
 global using Atc.Console.Spectre.Logging;
 global using Atc.Iot.DigitalTwin.Cli.Commands;
 global using Atc.Iot.DigitalTwin.Cli.Commands.Settings;
-global using Atc.Iot.DigitalTwin.Cli.Domain.DigitalTwin.Parsers;
-global using Atc.Iot.DigitalTwin.Cli.Domain.DigitalTwin.Services;
 global using Atc.Iot.DigitalTwin.Cli.Extensions;
 global using Atc.Serialization;
 global using Azure;

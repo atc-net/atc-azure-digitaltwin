@@ -1,3 +1,5 @@
+using Atc.Iot.DigitalTwin.DigitalTwin.Services;
+
 namespace Atc.Iot.DigitalTwin.Cli.Commands;
 
 public class ModelUploadAllCommand : AsyncCommand<ModelPathSettings>

@@ -1,9 +1,9 @@
-namespace Atc.Iot.DigitalTwin.Cli.Domain.DigitalTwin.Comparisons;
+namespace Atc.Iot.DigitalTwin.DigitalTwin.Comparisons;
 
-public class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?>
+public class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelationshipInfo?>
 {
     // Products are equal if their names and product numbers are equal.
-    public bool Equals(DTPropertyInfo? x, DTPropertyInfo? y)
+    public bool Equals(DTRelationshipInfo? x, DTRelationshipInfo? y)
     {
         // Check whether the compared objects reference the same data.
         if (ReferenceEquals(x, y))
@@ -18,12 +18,12 @@ public class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?
         }
 
         // Check whether the products' properties are equal.
-        return x.Name == y.Name && x.Schema == y.Schema;
+        return x.Name == y.Name && x.Target == y.Target;
     }
 
     // If Equals() returns true for a pair of objects
     // then GetHashCode() must return the same value for these objects.
-    public int GetHashCode(DTPropertyInfo? obj)
+    public int GetHashCode(DTRelationshipInfo? obj)
     {
         // Check whether the object is null
         if (ReferenceEquals(obj, null))
@@ -35,9 +35,14 @@ public class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?
         var hashPIName = obj.Name == null ? 0 : obj.Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 
         // Get hash code for the Code field.
-        var hashPISchema = obj.Schema.GetHashCode();
+        if (obj.Target == null)
+        {
+            return hashPIName;
+        }
+
+        var hashPITarget = obj.Target.GetHashCode();
 
         // Calculate the hash code for the product.
-        return hashPIName ^ hashPISchema;
+        return hashPIName ^ hashPITarget;
     }
 }

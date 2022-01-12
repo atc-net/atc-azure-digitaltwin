@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atc.Iot.DigitalTwin.Cli", "src\Atc.Iot.DigitalTwin.Cli\Atc.Iot.DigitalTwin.Cli.csproj", "{78E475E1-DB33-46D4-B44C-9B98669311F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atc.Iot.DigitalTwin.CLI", "src\Atc.Iot.DigitalTwin.CLI\Atc.Iot.DigitalTwin.CLI.csproj", "{78E475E1-DB33-46D4-B44C-9B98669311F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atc.Iot.DigitalTwin.Cli.Domain", "src\Atc.Iot.DigitalTwin.Cli.Domain\Atc.Iot.DigitalTwin.Cli.Domain.csproj", "{D872F2E9-ADF0-439C-9A03-6562FE63FFEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atc.Iot.DigitalTwin", "src\Atc.Iot.DigitalTwin\Atc.Iot.DigitalTwin.csproj", "{D872F2E9-ADF0-439C-9A03-6562FE63FFEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

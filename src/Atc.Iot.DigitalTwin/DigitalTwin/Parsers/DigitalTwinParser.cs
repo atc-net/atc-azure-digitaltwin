@@ -1,4 +1,4 @@
-namespace Atc.Iot.DigitalTwin.Cli.Domain.DigitalTwin.Parsers;
+namespace Atc.Iot.DigitalTwin.DigitalTwin.Parsers;
 
 public class DigitalTwinParser : IDigitalTwinParser
 {

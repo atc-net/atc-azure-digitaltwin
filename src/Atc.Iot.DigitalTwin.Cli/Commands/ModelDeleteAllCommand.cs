@@ -1,3 +1,5 @@
+using Atc.Iot.DigitalTwin.DigitalTwin.Parsers;
+
 namespace Atc.Iot.DigitalTwin.Cli.Commands;
 
 public class ModelDeleteAllCommand : AsyncCommand

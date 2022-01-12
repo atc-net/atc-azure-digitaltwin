@@ -1,4 +1,4 @@
-namespace Atc.Iot.DigitalTwin.Cli.Domain.DigitalTwin.Services;
+namespace Atc.Iot.DigitalTwin.DigitalTwin.Services;
 
 public interface IModelService
 {

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Atc.Iot.DigitalTwin.Cli.Domain\Atc.Iot.DigitalTwin.Cli.Domain.csproj" />
+    <ProjectReference Include="..\Atc.Iot.DigitalTwin\Atc.Iot.DigitalTwin.csproj" />
   </ItemGroup>
 
   <ItemGroup>
