@@ -1,1 +1,1 @@
-# atc-iot-digitaltwin
+# atc-azure-digitaltwin
