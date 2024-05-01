@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atc.Iot.DigitalTwin.CLI", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atc.Iot.DigitalTwin", "src\Atc.Iot.DigitalTwin\Atc.Iot.DigitalTwin.csproj", "{D872F2E9-ADF0-439C-9A03-6562FE63FFEB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A0BB13A9-8103-4C15-9A5A-6090385EA52A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5DC4FB1A-E677-4766-AF3F-602C6E328F85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{78E475E1-DB33-46D4-B44C-9B98669311F6} = {A0BB13A9-8103-4C15-9A5A-6090385EA52A}
+		{D872F2E9-ADF0-439C-9A03-6562FE63FFEB} = {A0BB13A9-8103-4C15-9A5A-6090385EA52A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04120463-05C5-417B-8D7A-2D7D35B71A07}
