@@ -1,9 +1,11 @@
 namespace Atc.Iot.DigitalTwin.DigitalTwin.Comparisons;
 
-public class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?>
+public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?>
 {
     // Products are equal if their names and product numbers are equal.
-    public bool Equals(DTPropertyInfo? x, DTPropertyInfo? y)
+    public bool Equals(
+        DTPropertyInfo? x,
+        DTPropertyInfo? y)
     {
         // Check whether the compared objects reference the same data.
         if (ReferenceEquals(x, y))
@@ -11,8 +13,8 @@ public class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?
             return true;
         }
 
-        // Check whether any of the compared objects is null.
-        if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+        if (x is null ||
+            y is null)
         {
             return false;
         }
@@ -23,10 +25,10 @@ public class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?
 
     // If Equals() returns true for a pair of objects
     // then GetHashCode() must return the same value for these objects.
-    public int GetHashCode(DTPropertyInfo? obj)
+    public int GetHashCode(
+        DTPropertyInfo? obj)
     {
-        // Check whether the object is null
-        if (ReferenceEquals(obj, null))
+        if (obj is null)
         {
             return 0;
         }

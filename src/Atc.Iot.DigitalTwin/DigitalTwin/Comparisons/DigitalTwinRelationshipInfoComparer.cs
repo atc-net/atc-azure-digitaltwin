@@ -1,9 +1,11 @@
 namespace Atc.Iot.DigitalTwin.DigitalTwin.Comparisons;
 
-public class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelationshipInfo?>
+public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelationshipInfo?>
 {
     // Products are equal if their names and product numbers are equal.
-    public bool Equals(DTRelationshipInfo? x, DTRelationshipInfo? y)
+    public bool Equals(
+        DTRelationshipInfo? x,
+        DTRelationshipInfo? y)
     {
         // Check whether the compared objects reference the same data.
         if (ReferenceEquals(x, y))
@@ -11,8 +13,8 @@ public class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelations
             return true;
         }
 
-        // Check whether any of the compared objects is null.
-        if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+        if (x is null ||
+            y is null)
         {
             return false;
         }
@@ -23,10 +25,10 @@ public class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelations
 
     // If Equals() returns true for a pair of objects
     // then GetHashCode() must return the same value for these objects.
-    public int GetHashCode(DTRelationshipInfo? obj)
+    public int GetHashCode(
+        DTRelationshipInfo? obj)
     {
-        // Check whether the object is null
-        if (ReferenceEquals(obj, null))
+        if (obj is null)
         {
             return 0;
         }

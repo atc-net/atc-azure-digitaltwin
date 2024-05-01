@@ -1,6 +1,6 @@
 namespace Atc.Iot.DigitalTwin.DigitalTwin.Comparisons;
 
-public class DigitalTwinInterfaceInfoComparer : IEqualityComparer<DTInterfaceInfo>
+public sealed class DigitalTwinInterfaceInfoComparer : IEqualityComparer<DTInterfaceInfo>
 {
     public bool Equals(DTInterfaceInfo? x, DTInterfaceInfo? y)
     {
