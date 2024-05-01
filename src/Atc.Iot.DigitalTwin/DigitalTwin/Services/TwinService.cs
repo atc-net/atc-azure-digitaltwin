@@ -1,17 +1,21 @@
 namespace Atc.Iot.DigitalTwin.DigitalTwin.Services;
 
-public class TwinService : ITwinService
+// TODO: Logger generated
+public sealed partial class TwinService : ITwinService
 {
-    private readonly DigitalTwinsClient client;
     private readonly ILogger<TwinService> logger;
+    private readonly DigitalTwinsClient client;
 
-    public TwinService(DigitalTwinsClient client, ILogger<TwinService> logger)
+    public TwinService(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<TwinService>();
+        this.client = client;
     }
 
-    public async Task<BasicDigitalTwin?> GetTwinById(string twinId)
+    public async Task<BasicDigitalTwin?> GetTwinById(
+        string twinId)
     {
         try
         {
@@ -36,7 +40,8 @@ public class TwinService : ITwinService
         }
     }
 
-    public async Task<List<string>?> GetTwinIdsFromQuery(string query)
+    public async Task<List<string>?> GetTwinIdsFromQuery(
+        string query)
     {
         var twinList = new List<string>();
 
@@ -62,7 +67,8 @@ public class TwinService : ITwinService
         return twinList;
     }
 
-    public async Task<List<BasicDigitalTwin>?> GetTwinsFromQuery(string query)
+    public async Task<List<BasicDigitalTwin>?> GetTwinsFromQuery(
+        string query)
     {
         var twinList = new List<BasicDigitalTwin>();
 
@@ -88,14 +94,16 @@ public class TwinService : ITwinService
         return twinList;
     }
 
-    public async Task DeleteTwinRelationshipsByTwinId(string twinId)
+    public async Task DeleteTwinRelationshipsByTwinId(
+        string twinId)
     {
         // Remove any relationships for the twin
         await FindAndDeleteOutgoingRelationshipsForTwinAsync(twinId);
         await FindAndDeleteIncomingRelationshipsForTwinAsync(twinId);
     }
 
-    public async Task<bool> DeleteTwinById(string twinId)
+    public async Task<bool> DeleteTwinById(
+        string twinId)
     {
         try
         {
@@ -115,7 +123,8 @@ public class TwinService : ITwinService
         }
     }
 
-    private async Task FindAndDeleteOutgoingRelationshipsForTwinAsync(string twinId)
+    private async Task FindAndDeleteOutgoingRelationshipsForTwinAsync(
+        string twinId)
     {
         try
         {
@@ -137,7 +146,8 @@ public class TwinService : ITwinService
         }
     }
 
-    private async Task FindAndDeleteIncomingRelationshipsForTwinAsync(string twinId)
+    private async Task FindAndDeleteIncomingRelationshipsForTwinAsync(
+        string twinId)
     {
         try
         {

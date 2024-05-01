@@ -1,5 +1,6 @@
 namespace Atc.Iot.DigitalTwin.Cli.Commands.Settings;
 
+// TODO: Cleanup
 public class BaseCommandSettings : CommandSettings
 {
     [CommandOption("-s|--serverUrl <SERVERURL>")]

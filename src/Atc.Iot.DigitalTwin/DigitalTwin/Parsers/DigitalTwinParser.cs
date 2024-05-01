@@ -1,13 +1,15 @@
 namespace Atc.Iot.DigitalTwin.DigitalTwin.Parsers;
 
-public class DigitalTwinParser : IDigitalTwinParser
+// TODO: Logger generated
+public sealed partial class DigitalTwinParser : IDigitalTwinParser
 {
     private readonly ILogger<DigitalTwinParser> logger;
     private readonly ModelParser parser = new ();
 
-    public DigitalTwinParser(ILogger<DigitalTwinParser> logger)
+    public DigitalTwinParser(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<DigitalTwinParser>();
     }
 
     public async Task<(bool, IReadOnlyDictionary<Dtmi, DTEntityInfo>?)> ParseAsync(IEnumerable<string> jsonModelTexts)

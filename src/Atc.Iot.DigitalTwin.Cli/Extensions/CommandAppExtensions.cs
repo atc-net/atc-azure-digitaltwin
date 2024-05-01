@@ -2,7 +2,8 @@ namespace Atc.Iot.DigitalTwin.Cli.Extensions;
 
 public static class CommandAppExtensions
 {
-    public static void ConfigureCommands(this CommandApp app)
+    public static void ConfigureCommands(
+        this CommandApp app)
     {
         ArgumentNullException.ThrowIfNull(app);
 
@@ -29,7 +30,8 @@ public static class CommandAppExtensions
             ConfigureEventRouteGetCommands(node);
         };
 
-    private static void ConfigureEventRouteGetCommands(IConfigurator<CommandSettings> node)
+    private static void ConfigureEventRouteGetCommands(
+        IConfigurator<CommandSettings> node)
         => node.AddBranch("get", get =>
         {
             get.SetDescription("Operations related to reading event routes.");
@@ -57,7 +59,8 @@ public static class CommandAppExtensions
                 .WithDescription("Validate models.");
         };
 
-    private static void ConfigureModelGetCommands(IConfigurator<CommandSettings> node)
+    private static void ConfigureModelGetCommands(
+        IConfigurator<CommandSettings> node)
         => node.AddBranch("get", get =>
         {
             get.SetDescription("Operations related to reading models.");
@@ -69,7 +72,8 @@ public static class CommandAppExtensions
                 .WithDescription("Get all models.");
         });
 
-    private static void ConfigureModelDeleteCommands(IConfigurator<CommandSettings> node)
+    private static void ConfigureModelDeleteCommands(
+        IConfigurator<CommandSettings> node)
         => node.AddBranch("delete", delete =>
         {
             delete.SetDescription("Operations related to deleting models.");
@@ -81,7 +85,8 @@ public static class CommandAppExtensions
                 .WithDescription("Delete all models.");
         });
 
-    private static void ConfigureModelUploadCommands(IConfigurator<CommandSettings> node)
+    private static void ConfigureModelUploadCommands(
+        IConfigurator<CommandSettings> node)
         => node.AddBranch("upload", upload =>
         {
             upload.SetDescription("Operations related to uploading models.");
@@ -113,7 +118,8 @@ public static class CommandAppExtensions
                 .WithDescription("Update single twin.");
         };
 
-    private static void ConfigureTwinDeleteCommands(IConfigurator<CommandSettings> node)
+    private static void ConfigureTwinDeleteCommands(
+        IConfigurator<CommandSettings> node)
         => node.AddBranch("delete", delete =>
         {
             delete.SetDescription("Operations related to deleting twins.");
@@ -142,7 +148,8 @@ public static class CommandAppExtensions
             ConfigureRelationshipGetCommands(node);
         };
 
-    private static void ConfigureRelationshipGetCommands(IConfigurator<CommandSettings> node)
+    private static void ConfigureRelationshipGetCommands(
+        IConfigurator<CommandSettings> node)
         => node.AddBranch("get", get =>
         {
             get.SetDescription("Operations related to reading relationships.");

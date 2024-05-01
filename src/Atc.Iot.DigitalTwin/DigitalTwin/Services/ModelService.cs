@@ -1,14 +1,17 @@
 namespace Atc.Iot.DigitalTwin.DigitalTwin.Services;
 
-public class ModelService : IModelService
+// TODO: Logger generated
+public sealed partial class ModelService : IModelService
 {
-    private readonly IDigitalTwinParser dtdlParser;
     private readonly ILogger<ModelService> logger;
+    private readonly IDigitalTwinParser dtdlParser;
 
-    public ModelService(IDigitalTwinParser dtdlParser, ILogger<ModelService> logger)
+    public ModelService(
+        ILoggerFactory loggerFactory,
+        IDigitalTwinParser dtdlParser)
     {
-        this.dtdlParser = dtdlParser ?? throw new ArgumentNullException(nameof(dtdlParser));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<ModelService>();
+        this.dtdlParser = dtdlParser;
     }
 
     private readonly List<string> modelsContent = new ();
@@ -52,7 +55,6 @@ public class ModelService : IModelService
 
         logger.LogInformation(string.Empty);
         logger.LogInformation("Files loaded.");
-        Console.WriteLine();
 
         return true;
     }
@@ -74,6 +76,7 @@ public class ModelService : IModelService
         {
             logger.LogError("*** Error parsing models");
             var errorCount = 1;
+
             foreach (var err in pe.Errors)
             {
                 logger.LogError($"Error {errorCount}:");
@@ -118,7 +121,5 @@ public class ModelService : IModelService
             AddModel(@interface.Id, @interface);
             logger.LogInformation($"Successfully parsed Interface '{@interface.Id.AbsoluteUri}'");
         }
-
-        Console.WriteLine();
     }
 }
