@@ -2,7 +2,9 @@ namespace Atc.Iot.DigitalTwin.DigitalTwin.Services;
 
 public interface IModelService
 {
-    void AddModel(Dtmi key, DTInterfaceInfo value);
+    void AddModel(
+        Dtmi key,
+        DTInterfaceInfo value);
 
     IEnumerable<string> GetModelsContent();
 
@@ -10,7 +12,9 @@ public interface IModelService
 
     void Clear();
 
-    Task<bool> LoadModelContentAsync(DirectoryInfo path);
+    Task<bool> LoadModelContentAsync(
+        DirectoryInfo path);
 
-    Task<bool> ValidateModels(DirectoryInfo path);
+    Task<bool> ValidateModels(
+        DirectoryInfo path);
 }
