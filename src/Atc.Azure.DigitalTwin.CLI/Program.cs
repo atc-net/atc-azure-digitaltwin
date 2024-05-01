@@ -17,9 +17,9 @@ public static class Program
 
         ProgramCsHelper.SetMinimumLogLevelIfNeeded(args, consoleLoggerConfiguration);
 
-        //// TODO: Handle ConnectionString info.
-
         var serviceCollection = ServiceCollectionFactory.Create(consoleLoggerConfiguration);
+        serviceCollection.TryAddSingleton<IDigitalTwinParser, DigitalTwinParser>();
+        serviceCollection.AddDigitalTwinsClient(configuration);
 
         var app = CommandAppFactory.Create(serviceCollection);
         app.ConfigureCommands();
