@@ -34,6 +34,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         var directoryPath = settings.DirectoryPath;
         var directoryInfo = new DirectoryInfo(directoryPath);
+
         if (!await modelService.LoadModelContentAsync(directoryInfo))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");

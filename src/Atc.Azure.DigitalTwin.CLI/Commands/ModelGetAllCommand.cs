@@ -22,18 +22,18 @@ public sealed class ModelGetAllCommand : AsyncCommand
 
         try
         {
-            var results = client.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true });
+            var digitalTwinsModelDataResponse = client.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true });
 
             var resultList = new List<DigitalTwinsModelData>();
-            await foreach (DigitalTwinsModelData md in results)
+            await foreach (var digitalTwinsModelData in digitalTwinsModelDataResponse)
             {
-                logger.LogInformation($"ModelId: '{md.Id}'");
-                if (md.DtdlModel != null)
+                logger.LogInformation($"ModelId: '{digitalTwinsModelData.Id}'");
+                if (digitalTwinsModelData.DtdlModel != null)
                 {
-                    logger.LogInformation(JsonSerializer.Serialize(md.DtdlModel, jsonSerializerOptions));
+                    logger.LogInformation(JsonSerializer.Serialize(digitalTwinsModelData.DtdlModel, jsonSerializerOptions));
                 }
 
-                resultList.Add(md);
+                resultList.Add(digitalTwinsModelData);
             }
 
             logger.LogInformation($"Found {resultList.Count} model(s)");

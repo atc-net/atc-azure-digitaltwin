@@ -26,13 +26,15 @@ public sealed partial class ModelService : IModelService
 
     public void Clear() => Models.Clear();
 
-    public Task<bool> LoadModelContentAsync(DirectoryInfo path)
+    public Task<bool> LoadModelContentAsync(
+        DirectoryInfo path)
     {
         ArgumentNullException.ThrowIfNull(path);
         return LoadModelContentInternalAsync(path);
     }
 
-    private async Task<bool> LoadModelContentInternalAsync(DirectoryInfo path)
+    private async Task<bool> LoadModelContentInternalAsync(
+        DirectoryInfo path)
     {
         if (!path.Exists)
         {
@@ -59,7 +61,8 @@ public sealed partial class ModelService : IModelService
         return true;
     }
 
-    public async Task<bool> ValidateModels(DirectoryInfo path)
+    public async Task<bool> ValidateModels(
+        DirectoryInfo path)
     {
         if (!await LoadModelContentAsync(path))
         {
@@ -104,7 +107,8 @@ public sealed partial class ModelService : IModelService
     ///  - Exclude interfaces that were loaded by the resolver.
     /// </remarks>
     /// <param name="modelTexts">The model texts.</param>
-    private async Task ParseAndStoreModels(IEnumerable<string> modelTexts)
+    private async Task ParseAndStoreModels(
+        IEnumerable<string> modelTexts)
     {
         var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(modelTexts);
         if (!succeeded)
