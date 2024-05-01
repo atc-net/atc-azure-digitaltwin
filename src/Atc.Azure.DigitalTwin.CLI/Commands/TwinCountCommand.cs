@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class TwinCountCommand : AsyncCommand
+public sealed class TwinCountCommand : AsyncCommand
 {
     private readonly ITwinService twinService;
     private readonly ILogger<TwinCountCommand> logger;

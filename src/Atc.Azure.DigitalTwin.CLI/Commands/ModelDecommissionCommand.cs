@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings>
+public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings>
 {
     private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;

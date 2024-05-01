@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class EventRouteDeleteCommand : AsyncCommand
+public sealed class EventRouteDeleteCommand : AsyncCommand
 {
     private readonly ILogger<EventRouteDeleteCommand> logger;
 

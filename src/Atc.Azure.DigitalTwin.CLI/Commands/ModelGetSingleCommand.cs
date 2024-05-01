@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
+public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
 {
     private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;

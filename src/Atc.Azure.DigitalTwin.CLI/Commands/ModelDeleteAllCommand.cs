@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelDeleteAllCommand : AsyncCommand
+public sealed class ModelDeleteAllCommand : AsyncCommand
 {
     private readonly DigitalTwinsClient client;
     private readonly IDigitalTwinParser dtdlParser;

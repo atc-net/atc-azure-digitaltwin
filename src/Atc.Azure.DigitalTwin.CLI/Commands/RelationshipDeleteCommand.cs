@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class RelationshipDeleteCommand : AsyncCommand
+public sealed class RelationshipDeleteCommand : AsyncCommand
 {
     private readonly ILogger<RelationshipDeleteCommand> logger;
 

@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelValidateCommand : AsyncCommand<ModelPathSettings>
+public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 {
     private const string ListFormat = "{0,-80}{1}";
     private readonly IModelService modelService;

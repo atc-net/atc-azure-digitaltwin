@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSettings>
+public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSettings>
 {
     private readonly ITwinService twinService;
     private readonly ILogger<TwinDeleteAllByModelCommand> logger;

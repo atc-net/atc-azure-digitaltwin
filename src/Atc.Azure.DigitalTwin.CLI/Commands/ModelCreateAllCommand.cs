@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
+public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 {
     private readonly IModelService modelService;
     private readonly DigitalTwinsClient client;

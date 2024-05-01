@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetSingleCommandSettings>
+public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetSingleCommandSettings>
 {
     private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;

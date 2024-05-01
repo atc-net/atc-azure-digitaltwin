@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class EventRouteCreateCommand : AsyncCommand
+public sealed class EventRouteCreateCommand : AsyncCommand
 {
     private readonly ILogger<EventRouteCreateCommand> logger;
 

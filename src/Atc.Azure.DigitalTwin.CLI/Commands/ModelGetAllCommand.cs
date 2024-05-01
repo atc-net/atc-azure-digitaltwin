@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelGetAllCommand : AsyncCommand
+public sealed class ModelGetAllCommand : AsyncCommand
 {
     private readonly DigitalTwinsClient client;
     private readonly ILogger<ModelGetAllCommand> logger;

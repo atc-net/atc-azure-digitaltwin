@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class RelationshipCreateCommand : AsyncCommand
+public sealed class RelationshipCreateCommand : AsyncCommand
 {
     private readonly ILogger<RelationshipCreateCommand> logger;
 

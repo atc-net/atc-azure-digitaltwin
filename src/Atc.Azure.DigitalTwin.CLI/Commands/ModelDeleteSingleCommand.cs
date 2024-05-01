@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings>
+public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings>
 {
     private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;

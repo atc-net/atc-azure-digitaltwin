@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class EventRouteGetSingleCommand : AsyncCommand
+public sealed class EventRouteGetSingleCommand : AsyncCommand
 {
     private readonly ILogger<EventRouteGetSingleCommand> logger;
 

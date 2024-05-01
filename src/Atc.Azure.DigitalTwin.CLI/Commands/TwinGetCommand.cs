@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class TwinGetCommand : AsyncCommand<TwinCommandSettings>
+public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
 {
     private readonly ITwinService twinService;
     private readonly JsonSerializerOptions jsonSerializerOptions;

@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSettings>
+public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSettings>
 {
     private readonly IModelService modelService;
     private readonly DigitalTwinsClient client;
