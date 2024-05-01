@@ -4,12 +4,14 @@ public sealed class EventRouteCreateCommand : AsyncCommand
 {
     private readonly ILogger<EventRouteCreateCommand> logger;
 
-    public EventRouteCreateCommand(ILogger<EventRouteCreateCommand> logger)
+    public EventRouteCreateCommand(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<EventRouteCreateCommand>();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 

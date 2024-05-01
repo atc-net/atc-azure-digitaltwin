@@ -4,12 +4,14 @@ public sealed class EventRouteDeleteCommand : AsyncCommand
 {
     private readonly ILogger<EventRouteDeleteCommand> logger;
 
-    public EventRouteDeleteCommand(ILogger<EventRouteDeleteCommand> logger)
+    public EventRouteDeleteCommand(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<EventRouteDeleteCommand>();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 

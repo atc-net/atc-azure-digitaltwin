@@ -8,23 +8,27 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
     private readonly ILogger<ModelCreateAllCommand> logger;
 
     public ModelCreateAllCommand(
+        ILoggerFactory loggerFactory,
         IModelService modelService,
-        DigitalTwinsClient client,
-        ILogger<ModelCreateAllCommand> logger)
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<ModelCreateAllCommand>();
         this.modelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelPathSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelPathSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelPathSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelPathSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

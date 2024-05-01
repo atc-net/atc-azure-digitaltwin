@@ -5,19 +5,25 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
     private readonly ITwinService twinService;
     private readonly ILogger<TwinDeleteAllByModelCommand> logger;
 
-    public TwinDeleteAllByModelCommand(ITwinService twinService, ILogger<TwinDeleteAllByModelCommand> logger)
+    public TwinDeleteAllByModelCommand(
+        ILoggerFactory loggerFactory,
+        ITwinService twinService)
     {
+        logger = loggerFactory.CreateLogger<TwinDeleteAllByModelCommand>();
         this.twinService = twinService ?? throw new ArgumentNullException(nameof(twinService));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

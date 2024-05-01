@@ -6,20 +6,26 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
     private readonly JsonSerializerOptions jsonSerializerOptions;
     private readonly ILogger<RelationshipGetSingleCommand> logger;
 
-    public RelationshipGetSingleCommand(DigitalTwinsClient client, ILogger<RelationshipGetSingleCommand> logger)
+    public RelationshipGetSingleCommand(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<RelationshipGetSingleCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, RelationshipGetSingleCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        RelationshipGetSingleCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(RelationshipGetSingleCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        RelationshipGetSingleCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

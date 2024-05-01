@@ -6,20 +6,26 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
     private readonly JsonSerializerOptions jsonSerializerOptions;
     private readonly ILogger<ModelDecommissionCommand> logger;
 
-    public ModelDecommissionCommand(DigitalTwinsClient client, ILogger<ModelDecommissionCommand> logger)
+    public ModelDecommissionCommand(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<ModelDecommissionCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

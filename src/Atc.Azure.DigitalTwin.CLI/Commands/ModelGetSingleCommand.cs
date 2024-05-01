@@ -6,20 +6,26 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
     private readonly JsonSerializerOptions jsonSerializerOptions;
     private readonly ILogger<ModelGetSingleCommand> logger;
 
-    public ModelGetSingleCommand(DigitalTwinsClient client, ILogger<ModelGetSingleCommand> logger)
+    public ModelGetSingleCommand(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<ModelGetSingleCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

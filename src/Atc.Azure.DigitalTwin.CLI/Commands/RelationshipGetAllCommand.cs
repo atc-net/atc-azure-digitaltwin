@@ -6,25 +6,31 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
     private readonly JsonSerializerOptions jsonSerializerOptions;
     private readonly ILogger<RelationshipGetAllCommand> logger;
 
-    public RelationshipGetAllCommand(DigitalTwinsClient client, ILogger<RelationshipGetAllCommand> logger)
+    public RelationshipGetAllCommand(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<RelationshipGetAllCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, TwinCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        TwinCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(TwinCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        TwinCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 
         var digitalTwinId = settings.TwinId;
+
         logger.LogInformation($"Getting relationships for Digital Twin with id '{digitalTwinId}'");
 
         try

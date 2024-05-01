@@ -6,14 +6,17 @@ public sealed class ModelGetAllCommand : AsyncCommand
     private readonly ILogger<ModelGetAllCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public ModelGetAllCommand(DigitalTwinsClient client, ILogger<ModelGetAllCommand> logger)
+    public ModelGetAllCommand(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<ModelGetAllCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public override async Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 

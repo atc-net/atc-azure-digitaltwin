@@ -4,12 +4,14 @@ public sealed class RelationshipCreateCommand : AsyncCommand
 {
     private readonly ILogger<RelationshipCreateCommand> logger;
 
-    public RelationshipCreateCommand(ILogger<RelationshipCreateCommand> logger)
+    public RelationshipCreateCommand(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<RelationshipCreateCommand>();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 

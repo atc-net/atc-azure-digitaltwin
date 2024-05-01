@@ -6,16 +6,19 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
     private readonly JsonSerializerOptions jsonSerializerOptions;
     private readonly ILogger<ModelDeleteSingleCommand> logger;
 
-    public ModelDeleteSingleCommand(DigitalTwinsClient client, ILogger<ModelDeleteSingleCommand> logger)
+    public ModelDeleteSingleCommand(
+        ILoggerFactory loggerFactory,
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<ModelDeleteSingleCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(CommandContext context, ModelCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 

@@ -8,23 +8,27 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
     private readonly ILogger<ModelCreateSingleCommand> logger;
 
     public ModelCreateSingleCommand(
+        ILoggerFactory loggerFactory,
         IModelService modelService,
-        DigitalTwinsClient client,
-        ILogger<ModelCreateSingleCommand> logger)
+        DigitalTwinsClient client)
     {
+        logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
         this.modelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
         this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelUploadSingleSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelUploadSingleSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelUploadSingleSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelUploadSingleSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

@@ -6,19 +6,24 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
     private readonly IModelService modelService;
     private readonly ILogger<ModelValidateCommand> logger;
 
-    public ModelValidateCommand(IModelService modelService, ILogger<ModelValidateCommand> logger)
+    public ModelValidateCommand(
+        ILoggerFactory loggerFactory,
+        IModelService modelService)
     {
+        logger = loggerFactory.CreateLogger<ModelValidateCommand>();
         this.modelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelPathSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelPathSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelPathSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelPathSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

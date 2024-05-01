@@ -7,16 +7,17 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
     private readonly ILogger<ModelDeleteAllCommand> logger;
 
     public ModelDeleteAllCommand(
+        ILoggerFactory loggerFactory,
         DigitalTwinsClient client,
-        IDigitalTwinParser dtdlParser,
-        ILogger<ModelDeleteAllCommand> logger)
+        IDigitalTwinParser dtdlParser)
     {
+        logger = loggerFactory.CreateLogger<ModelDeleteAllCommand>();
         this.client = client ?? throw new ArgumentNullException(nameof(client));
         this.dtdlParser = dtdlParser ?? throw new ArgumentNullException(nameof(dtdlParser));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public override async Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 
@@ -94,7 +95,8 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
     /// and then find the "leaf" models, and delete these.
     /// We repeat this process until no models are left.
     /// </summary>
-    private List<DTInterfaceInfo> GetInterfacesWhichCanBeDeleted(List<DTInterfaceInfo> interfacesToDelete)
+    private List<DTInterfaceInfo> GetInterfacesWhichCanBeDeleted(
+        List<DTInterfaceInfo> interfacesToDelete)
     {
         var referencedInterfaces = GetInterfacesWithReferences(interfacesToDelete);
 
@@ -113,7 +115,8 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
         return toDelete;
     }
 
-    private static Dictionary<Dtmi, DTInterfaceInfo> GetInterfacesWithReferences(List<DTInterfaceInfo> interfacesToDelete)
+    private static Dictionary<Dtmi, DTInterfaceInfo> GetInterfacesWithReferences(
+        List<DTInterfaceInfo> interfacesToDelete)
     {
         var referenced = new Dictionary<Dtmi, DTInterfaceInfo>();
         foreach (var @interface in interfacesToDelete)
@@ -137,7 +140,8 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
         return referenced;
     }
 
-    private static List<DTInterfaceInfo> GetInterfacesToDelete(IReadOnlyDictionary<Dtmi, DTEntityInfo>? interfaceEntities)
+    private static List<DTInterfaceInfo> GetInterfacesToDelete(
+        IReadOnlyDictionary<Dtmi, DTEntityInfo>? interfaceEntities)
     {
         var interfaces = from entity in interfaceEntities!.Values
             where entity.EntityKind == DTEntityKind.Interface

@@ -4,12 +4,14 @@ public sealed class TwinUpdateCommand : AsyncCommand
 {
     private readonly ILogger<TwinUpdateCommand> logger;
 
-    public TwinUpdateCommand(ILogger<TwinUpdateCommand> logger)
+    public TwinUpdateCommand(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<TwinUpdateCommand>();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 

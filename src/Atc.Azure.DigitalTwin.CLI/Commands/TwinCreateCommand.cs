@@ -4,12 +4,14 @@ public sealed class TwinCreateCommand : AsyncCommand
 {
     private readonly ILogger<TwinCreateCommand> logger;
 
-    public TwinCreateCommand(ILogger<TwinCreateCommand> logger)
+    public TwinCreateCommand(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<TwinCreateCommand>();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 

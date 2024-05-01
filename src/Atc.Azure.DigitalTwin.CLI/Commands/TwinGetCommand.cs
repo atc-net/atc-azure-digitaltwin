@@ -6,20 +6,25 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
     private readonly JsonSerializerOptions jsonSerializerOptions;
     private readonly ILogger<TwinGetCommand> logger;
 
-    public TwinGetCommand(ITwinService twinService, ILogger<TwinGetCommand> logger)
+    public TwinGetCommand(
+        ILoggerFactory loggerFactory,
+        ITwinService twinService)
     {
+        logger = loggerFactory.CreateLogger<TwinGetCommand>();
         this.twinService = twinService ?? throw new ArgumentNullException(nameof(twinService));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, TwinCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        TwinCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(TwinCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        TwinCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

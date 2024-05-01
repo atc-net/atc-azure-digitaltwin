@@ -4,12 +4,14 @@ public sealed class RelationshipDeleteCommand : AsyncCommand
 {
     private readonly ILogger<RelationshipDeleteCommand> logger;
 
-    public RelationshipDeleteCommand(ILogger<RelationshipDeleteCommand> logger)
+    public RelationshipDeleteCommand(
+        ILoggerFactory loggerFactory)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        logger = loggerFactory.CreateLogger<RelationshipDeleteCommand>();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context)
     {
         ConsoleHelper.WriteHeader();
 
