@@ -9,12 +9,71 @@ public static class CommandAppExtensions
 
         app.Configure(config =>
         {
-            config.AddBranch("eventroute", ConfigureEventRouteCommands());
+            //// TODO: Implement
+            //// data-history    : Manage and configure data history.
+            //// job             : Manage and configure jobs for a digital twin instance.
             config.AddBranch("model", ConfigureModelCommands());
-            config.AddBranch("relationship", ConfigureRelationshipCommands());
+            config.AddBranch("route", ConfigureEventRouteCommands());
             config.AddBranch("twin", ConfigureTwinCommands());
         });
     }
+
+    private static Action<IConfigurator<CommandSettings>> ConfigureModelCommands()
+        => node =>
+        {
+            node.SetDescription("Operations related to models.");
+
+            ConfigureModelCreateCommands(node);
+
+            node.AddCommand<ModelDecommissionCommand>("decommission")
+                .WithDescription("Decommission a single model.");
+
+            ConfigureModelDeleteCommands(node);
+
+            ConfigureModelGetCommands(node);
+
+            node.AddCommand<ModelValidateCommand>("validate")
+                .WithDescription("Validate models.");
+        };
+
+    private static void ConfigureModelCreateCommands(
+        IConfigurator<CommandSettings> node)
+        => node.AddBranch("create", upload =>
+        {
+            upload.SetDescription("Operations related to creating models.");
+
+            upload.AddCommand<ModelCreateSingleCommand>("single")
+                .WithDescription("Create single model.");
+
+            upload.AddCommand<ModelCreateAllCommand>("all")
+                .WithDescription("Create all models.");
+        });
+
+    private static void ConfigureModelDeleteCommands(
+        IConfigurator<CommandSettings> node)
+        => node.AddBranch("delete", delete =>
+        {
+            delete.SetDescription("Operations related to deleting models.");
+
+            delete.AddCommand<ModelDeleteSingleCommand>("single")
+                .WithDescription("Delete single model.");
+
+            delete.AddCommand<ModelDeleteAllCommand>("all")
+                .WithDescription("Delete all models.");
+        });
+
+    private static void ConfigureModelGetCommands(
+        IConfigurator<CommandSettings> node)
+        => node.AddBranch("get", get =>
+        {
+            get.SetDescription("Operations related to reading models.");
+
+            get.AddCommand<ModelGetSingleCommand>("single")
+                .WithDescription("Get single model.");
+
+            get.AddCommand<ModelGetAllCommand>("all")
+                .WithDescription("Get all models.");
+        });
 
     private static Action<IConfigurator<CommandSettings>> ConfigureEventRouteCommands()
         => node =>
@@ -43,61 +102,6 @@ public static class CommandAppExtensions
                 .WithDescription("Get all event routes.");
         });
 
-    private static Action<IConfigurator<CommandSettings>> ConfigureModelCommands()
-        => node =>
-        {
-            node.SetDescription("Operations related to models.");
-
-            node.AddCommand<ModelDecommissionCommand>("decommission")
-                .WithDescription("Decommission a single model.");
-
-            ConfigureModelDeleteCommands(node);
-            ConfigureModelGetCommands(node);
-            ConfigureModelUploadCommands(node);
-
-            node.AddCommand<ModelValidateCommand>("validate")
-                .WithDescription("Validate models.");
-        };
-
-    private static void ConfigureModelGetCommands(
-        IConfigurator<CommandSettings> node)
-        => node.AddBranch("get", get =>
-        {
-            get.SetDescription("Operations related to reading models.");
-
-            get.AddCommand<ModelGetSingleCommand>("single")
-                .WithDescription("Get single model.");
-
-            get.AddCommand<ModelGetAllCommand>("all")
-                .WithDescription("Get all models.");
-        });
-
-    private static void ConfigureModelDeleteCommands(
-        IConfigurator<CommandSettings> node)
-        => node.AddBranch("delete", delete =>
-        {
-            delete.SetDescription("Operations related to deleting models.");
-
-            delete.AddCommand<ModelDeleteSingleCommand>("single")
-                .WithDescription("Delete single model.");
-
-            delete.AddCommand<ModelDeleteAllCommand>("all")
-                .WithDescription("Delete all models.");
-        });
-
-    private static void ConfigureModelUploadCommands(
-        IConfigurator<CommandSettings> node)
-        => node.AddBranch("upload", upload =>
-        {
-            upload.SetDescription("Operations related to uploading models.");
-
-            upload.AddCommand<ModelUploadSingleCommand>("single")
-                .WithDescription("Upload single model.");
-
-            upload.AddCommand<ModelUploadAllCommand>("all")
-                .WithDescription("Upload all models.");
-        });
-
     private static Action<IConfigurator<CommandSettings>> ConfigureTwinCommands()
         => node =>
         {
@@ -114,8 +118,10 @@ public static class CommandAppExtensions
             node.AddCommand<TwinGetCommand>("get")
                 .WithDescription("Get single twin.");
 
-            node.AddCommand<TwinUpdateCommand>("create")
+            node.AddCommand<TwinUpdateCommand>("update")
                 .WithDescription("Update single twin.");
+
+            node.AddBranch("relationship", ConfigureRelationshipCommands());
         };
 
     private static void ConfigureTwinDeleteCommands(
@@ -137,7 +143,7 @@ public static class CommandAppExtensions
     private static Action<IConfigurator<CommandSettings>> ConfigureRelationshipCommands()
         => node =>
         {
-            node.SetDescription("Operations related to relationships.");
+            node.SetDescription("Operations related to twin relationships.");
 
             node.AddCommand<RelationshipCreateCommand>("create")
                 .WithDescription("Create relationship.");
@@ -152,7 +158,7 @@ public static class CommandAppExtensions
         IConfigurator<CommandSettings> node)
         => node.AddBranch("get", get =>
         {
-            get.SetDescription("Operations related to reading relationships.");
+            get.SetDescription("Operations related to reading twin relationships.");
 
             get.AddCommand<RelationshipGetSingleCommand>("single")
                 .WithDescription("Get single relationship for twin.");

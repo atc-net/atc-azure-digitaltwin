@@ -1,16 +1,16 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public class ModelUploadAllCommand : AsyncCommand<ModelPathSettings>
+public class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSettings>
 {
     private readonly IModelService modelService;
     private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;
-    private readonly ILogger<ModelUploadAllCommand> logger;
+    private readonly ILogger<ModelCreateSingleCommand> logger;
 
-    public ModelUploadAllCommand(
+    public ModelCreateSingleCommand(
         IModelService modelService,
         DigitalTwinsClient client,
-        ILogger<ModelUploadAllCommand> logger)
+        ILogger<ModelCreateSingleCommand> logger)
     {
         this.modelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
         this.client = client ?? throw new ArgumentNullException(nameof(client));
@@ -18,13 +18,13 @@ public class ModelUploadAllCommand : AsyncCommand<ModelPathSettings>
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelPathSettings settings)
+    public override Task<int> ExecuteAsync(CommandContext context, ModelUploadSingleSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelPathSettings settings)
+    private async Task<int> ExecuteInternalAsync(ModelUploadSingleSettings settings)
     {
         ConsoleHelper.WriteHeader();
 
@@ -36,10 +36,25 @@ public class ModelUploadAllCommand : AsyncCommand<ModelPathSettings>
             return ConsoleExitStatusCodes.Failure;
         }
 
+        var modelId = settings.ModelId;
+
+        logger.LogInformation($"Uploading Model with id '{modelId}'");
+
         try
         {
-            var result = await client.CreateModelsAsync(modelService.GetModelsContent());
-            logger.LogInformation("Models uploaded successfully!");
+            var modelsContent = modelService.GetModelsContent();
+
+            var model = modelsContent!.SingleOrDefault(x => x.Contains($"\"@id\": \"{modelId}\"", StringComparison.Ordinal));
+            if (model is null)
+            {
+                logger.LogError($"Could not find model with the id '{modelId}'");
+                return ConsoleExitStatusCodes.Failure;
+            }
+
+            var models = new[] { model };
+
+            var result = await client.CreateModelsAsync(models);
+            logger.LogInformation("Model uploaded successfully!");
 
             foreach (DigitalTwinsModelData md in result.Value)
             {
