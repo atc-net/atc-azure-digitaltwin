@@ -13,8 +13,8 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
         DigitalTwinsClient client)
     {
         logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
-        this.modelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        this.modelService = modelService;
+        this.client = client;
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 

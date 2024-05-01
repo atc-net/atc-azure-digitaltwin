@@ -11,7 +11,7 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
         IModelService modelService)
     {
         logger = loggerFactory.CreateLogger<ModelValidateCommand>();
-        this.modelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
+        this.modelService = modelService;
     }
 
     public override Task<int> ExecuteAsync(

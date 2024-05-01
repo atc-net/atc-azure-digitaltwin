@@ -12,8 +12,8 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
         IDigitalTwinParser dtdlParser)
     {
         logger = loggerFactory.CreateLogger<ModelDeleteAllCommand>();
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.dtdlParser = dtdlParser ?? throw new ArgumentNullException(nameof(dtdlParser));
+        this.client = client;
+        this.dtdlParser = dtdlParser;
     }
 
     public override async Task<int> ExecuteAsync(

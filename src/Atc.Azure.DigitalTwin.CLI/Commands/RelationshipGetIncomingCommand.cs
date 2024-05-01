@@ -11,7 +11,7 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
         DigitalTwinsClient client)
     {
         logger = loggerFactory.CreateLogger<RelationshipGetIncomingCommand>();
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        this.client = client;
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 

@@ -11,7 +11,7 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
         ITwinService twinService)
     {
         logger = loggerFactory.CreateLogger<TwinGetCommand>();
-        this.twinService = twinService ?? throw new ArgumentNullException(nameof(twinService));
+        this.twinService = twinService;
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 

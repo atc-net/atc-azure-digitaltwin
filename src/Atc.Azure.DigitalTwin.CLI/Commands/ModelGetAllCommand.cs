@@ -11,7 +11,7 @@ public sealed class ModelGetAllCommand : AsyncCommand
         DigitalTwinsClient client)
     {
         logger = loggerFactory.CreateLogger<ModelGetAllCommand>();
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        this.client = client;
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 

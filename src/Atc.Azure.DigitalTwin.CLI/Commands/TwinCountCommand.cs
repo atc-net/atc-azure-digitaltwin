@@ -10,7 +10,7 @@ public sealed class TwinCountCommand : AsyncCommand
         ITwinService twinService)
     {
         logger = loggerFactory.CreateLogger<TwinCountCommand>();
-        this.twinService = twinService ?? throw new ArgumentNullException(nameof(twinService));
+        this.twinService = twinService;
     }
 
     public override async Task<int> ExecuteAsync(

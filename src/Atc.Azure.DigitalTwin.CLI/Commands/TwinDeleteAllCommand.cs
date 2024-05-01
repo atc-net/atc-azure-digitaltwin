@@ -10,7 +10,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand
         ITwinService twinService)
     {
         logger = loggerFactory.CreateLogger<TwinDeleteAllCommand>();
-        this.twinService = twinService ?? throw new ArgumentNullException(nameof(twinService));
+        this.twinService = twinService;
     }
 
     public override async Task<int> ExecuteAsync(

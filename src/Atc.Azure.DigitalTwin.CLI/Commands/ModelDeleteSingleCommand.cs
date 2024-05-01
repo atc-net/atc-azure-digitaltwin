@@ -11,18 +11,21 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
         DigitalTwinsClient client)
     {
         logger = loggerFactory.CreateLogger<ModelDeleteSingleCommand>();
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        this.client = client;
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, ModelCommandSettings settings)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ModelCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
         return ExecuteInternalAsync(settings);
     }
 
-    private async Task<int> ExecuteInternalAsync(ModelCommandSettings settings)
+    private async Task<int> ExecuteInternalAsync(
+        ModelCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 
