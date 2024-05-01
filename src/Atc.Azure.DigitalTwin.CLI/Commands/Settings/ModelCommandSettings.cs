@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
-public class ModelCommandSettings : CommandSettings
+public class ModelCommandSettings : ConnectionBaseCommandSettings
 {
     [CommandOption("-m|--modelId <MODELID>")]
     [Description("The id of the Model")]

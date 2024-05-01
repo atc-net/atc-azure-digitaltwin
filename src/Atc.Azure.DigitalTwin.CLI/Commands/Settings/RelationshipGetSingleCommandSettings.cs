@@ -1,7 +1,7 @@
 // ReSharper disable ConvertIfStatementToReturnStatement
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
-public class RelationshipGetSingleCommandSettings : CommandSettings
+public class RelationshipGetSingleCommandSettings : ConnectionBaseCommandSettings
 {
     [CommandOption("-t|--twinId <TWINID>")]
     [Description("The id of the digital twin")]

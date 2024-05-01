@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
-public class TwinCommandSettings : CommandSettings
+public class TwinCommandSettings : ConnectionBaseCommandSettings
 {
     [CommandOption("-t|--twinId <TWINID>")]
     [Description("The id of the digital twin")]
