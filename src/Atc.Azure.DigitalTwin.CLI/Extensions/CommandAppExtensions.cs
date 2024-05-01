@@ -2,6 +2,7 @@ namespace Atc.Azure.DigitalTwin.CLI.Extensions;
 
 public static class CommandAppExtensions
 {
+    // TODO: Add examples to command
     public static void ConfigureCommands(
         this CommandApp app)
     {

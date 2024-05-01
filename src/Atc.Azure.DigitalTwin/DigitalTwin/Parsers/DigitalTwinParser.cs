@@ -12,11 +12,13 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
         logger = loggerFactory.CreateLogger<DigitalTwinParser>();
     }
 
-    public async Task<(bool, IReadOnlyDictionary<Dtmi, DTEntityInfo>?)> ParseAsync(IEnumerable<string> jsonModelTexts)
+    public async Task<(bool, IReadOnlyDictionary<Dtmi, DTEntityInfo>?)> ParseAsync(
+        IEnumerable<string> jsonModelTexts)
     {
         try
         {
             var interfaces = await parser.ParseAsync(jsonModelTexts);
+
             return (true, interfaces);
         }
         catch (ParsingException pe)

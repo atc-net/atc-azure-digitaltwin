@@ -2,6 +2,7 @@ namespace Atc.Azure.DigitalTwin.DigitalTwin.Services;
 
 public interface IModelService
 {
+    // TODO: Extend and document
     void AddModel(
         Dtmi key,
         DTInterfaceInfo value);

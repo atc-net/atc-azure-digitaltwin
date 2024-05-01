@@ -24,6 +24,7 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
         try
         {
             var jsonModelTexts = await GetTwinModelsAsJsonAsync();
+
             var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(jsonModelTexts);
             if (!succeeded)
             {

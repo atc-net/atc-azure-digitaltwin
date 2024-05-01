@@ -2,6 +2,7 @@ namespace Atc.Azure.DigitalTwin.DigitalTwin.Services;
 
 public interface ITwinService
 {
+    // TODO: Extend and document
     Task<BasicDigitalTwin?> GetTwinById(
         string twinId);
 
