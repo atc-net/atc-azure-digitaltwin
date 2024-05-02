@@ -13,7 +13,6 @@ global using Atc.Console.Spectre.Logging;
 global using Atc.Serialization;
 global using Azure;
 global using Azure.DigitalTwins.Core;
-global using Azure.Identity;
 global using Microsoft.Azure.DigitalTwins.Parser;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
