@@ -1,3 +1,4 @@
+// ReSharper disable SuggestBaseTypeForParameter
 namespace Atc.Azure.DigitalTwin.Services;
 
 // TODO: Logger generated
@@ -38,7 +39,7 @@ public sealed partial class ModelService : IModelService
     {
         if (!path.Exists)
         {
-            logger.LogError("*** DirectoryPath does not exist.");
+            logger.LogError("DirectoryPath does not exist.");
             return false;
         }
 
@@ -77,7 +78,7 @@ public sealed partial class ModelService : IModelService
         }
         catch (ParsingException pe)
         {
-            logger.LogError("*** Error parsing models");
+            logger.LogError("Error parsing models");
             var errorCount = 1;
 
             foreach (var err in pe.Errors)
