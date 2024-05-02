@@ -31,11 +31,17 @@ public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
             settings.TenantId!,
             settings.AdtInstanceUrl!);
 
-        var digitalTwinId = settings.TwinId;
-        logger.LogInformation($"Deleting Twin with id '{digitalTwinId}'");
+        var twinId = settings.TwinId;
+        logger.LogInformation($"Deleting twin with id '{twinId}'");
 
-        return await twinService.DeleteTwinById(digitalTwinId)
-            ? ConsoleExitStatusCodes.Success
-            : ConsoleExitStatusCodes.Failure;
+        var (succeeded, errorMessage) = await twinService.DeleteTwin(twinId);
+        if (!succeeded)
+        {
+            logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");
+            return ConsoleExitStatusCodes.Failure;
+        }
+
+        logger.LogInformation($"Successfully deleted twin with id '{twinId}'");
+        return ConsoleExitStatusCodes.Success;
     }
 }

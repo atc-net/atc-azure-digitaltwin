@@ -53,9 +53,9 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
                 logger.LogInformation(JsonSerializer.Serialize(md.DtdlModel, jsonSerializerOptions));
             }
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)

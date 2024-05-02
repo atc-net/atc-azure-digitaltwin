@@ -31,13 +31,13 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
     {
         ConsoleHelper.WriteHeader();
 
-        var digitalTwinId = settings.TwinId;
+        var twinId = settings.TwinId;
 
-        logger.LogInformation($"Getting relationships for Digital Twin with id '{digitalTwinId}'");
+        logger.LogInformation($"Getting relationships for twin with id '{twinId}'");
 
         try
         {
-            var relationships = client.GetRelationshipsAsync<BasicRelationship>(digitalTwinId);
+            var relationships = client.GetRelationshipsAsync<BasicRelationship>(twinId);
             await foreach (var relationship in relationships)
             {
                 logger.LogInformation(JsonSerializer.Serialize(relationship, jsonSerializerOptions));
@@ -45,9 +45,9 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
 
             return ConsoleExitStatusCodes.Success;
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)

@@ -48,9 +48,9 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
             logger.LogInformation("Successfully fetched model.");
             return ConsoleExitStatusCodes.Success;
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)

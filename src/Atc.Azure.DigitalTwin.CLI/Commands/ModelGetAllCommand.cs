@@ -40,9 +40,9 @@ public sealed class ModelGetAllCommand : AsyncCommand
 
             logger.LogInformation($"Found {resultList.Count} model(s)");
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)

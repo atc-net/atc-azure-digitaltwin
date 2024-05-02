@@ -31,12 +31,12 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
     {
         ConsoleHelper.WriteHeader();
 
-        var digitalTwinId = settings.TwinId;
-        logger.LogInformation($"Getting incoming relationships for Digital Twin with id '{digitalTwinId}'");
+        var twinId = settings.TwinId;
+        logger.LogInformation($"Getting incoming relationships for twin with id '{twinId}'");
 
         try
         {
-            var relationships = client.GetIncomingRelationshipsAsync(digitalTwinId);
+            var relationships = client.GetIncomingRelationshipsAsync(twinId);
             await foreach (var relationship in relationships)
             {
                 logger.LogInformation($"Relationship: {relationship.RelationshipName} from {relationship.SourceId} | {relationship.RelationshipId}");
@@ -45,9 +45,9 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
 
             return ConsoleExitStatusCodes.Success;
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)

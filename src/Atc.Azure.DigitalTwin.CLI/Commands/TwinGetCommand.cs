@@ -32,10 +32,10 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
             settings.TenantId!,
             settings.AdtInstanceUrl!);
 
-        var digitalTwinId = settings.TwinId;
-        logger.LogInformation($"Getting Twin with id '{digitalTwinId}'");
+        var twinId = settings.TwinId;
+        logger.LogInformation($"Getting Twin with id '{twinId}'");
 
-        var twin = await twinService.GetTwinById(digitalTwinId);
+        var twin = await twinService.GetTwins(twinId);
         if (twin is null)
         {
             return ConsoleExitStatusCodes.Failure;

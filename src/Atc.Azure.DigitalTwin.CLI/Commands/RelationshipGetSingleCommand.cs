@@ -31,14 +31,14 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
     {
         ConsoleHelper.WriteHeader();
 
-        var digitalTwinId = settings.TwinId;
+        var twinId = settings.TwinId;
         var relationshipId = settings.RelationshipId;
 
-        logger.LogInformation($"Getting Relationship for Digital Twin with id '{digitalTwinId}' and Relationship id '{relationshipId}'.");
+        logger.LogInformation($"Getting Relationship for twin with id '{twinId}' and relationship id '{relationshipId}'.");
 
         try
         {
-            var result = await client.GetRelationshipAsync<BasicRelationship>(digitalTwinId, relationshipId);
+            var result = await client.GetRelationshipAsync<BasicRelationship>(twinId, relationshipId);
             if (result is not null)
             {
                 logger.LogInformation(JsonSerializer.Serialize(result.Value, jsonSerializerOptions));
@@ -46,9 +46,9 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
 
             return ConsoleExitStatusCodes.Success;
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)

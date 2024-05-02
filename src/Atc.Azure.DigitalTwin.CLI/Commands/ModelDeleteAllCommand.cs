@@ -52,16 +52,16 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
                         await client.DeleteModelAsync(del.Id.ToString());
                         logger.LogInformation($"Model {del.Id} deleted successfully");
                     }
-                    catch (RequestFailedException e)
+                    catch (RequestFailedException ex)
                     {
-                        logger.LogError($"Error deleting model {e.Status}: {e.Message}");
+                        logger.LogError($"Error deleting model {ex.Status}: {ex.GetLastInnerMessage()}");
                     }
                 }
             }
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {e.Status}: {e.Message}");
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
             return ConsoleExitStatusCodes.Failure;
         }
         catch (Exception ex)
