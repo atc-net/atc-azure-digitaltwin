@@ -26,7 +26,7 @@ public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
     {
         ConsoleHelper.WriteHeader();
 
-        var twinService = DigitalTwinServiceFactory.Create(
+        var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
             settings.AdtInstanceUrl!);
@@ -34,7 +34,7 @@ public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
         var twinId = settings.TwinId;
         logger.LogInformation($"Deleting twin with id '{twinId}'");
 
-        var (succeeded, errorMessage) = await twinService.DeleteTwin(twinId);
+        var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId);
         if (!succeeded)
         {
             logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");

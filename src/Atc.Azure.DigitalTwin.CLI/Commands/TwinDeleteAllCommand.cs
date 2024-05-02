@@ -26,7 +26,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
     {
         ConsoleHelper.WriteHeader();
 
-        var twinService = DigitalTwinServiceFactory.Create(
+        var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
             settings.AdtInstanceUrl!);
@@ -34,7 +34,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
         logger.LogInformation("Deleting all twins.");
         logger.LogInformation("Step 1: Find all twins.");
 
-        var twinList = await twinService.GetTwinIds("SELECT * FROM DIGITALTWINS");
+        var twinList = await digitalTwinService.GetTwinIds("SELECT * FROM DIGITALTWINS");
         if (twinList is null)
         {
             return ConsoleExitStatusCodes.Failure;
@@ -43,13 +43,13 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
         logger.LogInformation("Step 2: Find and remove relationships for each twin.");
         foreach (var twinId in twinList)
         {
-            await twinService.DeleteTwinRelationships(twinId);
+            await digitalTwinService.DeleteTwinRelationships(twinId);
         }
 
         logger.LogInformation("Step 3: Delete all twins");
         foreach (var twinId in twinList)
         {
-            var (succeeded, errorMessage) = await twinService.DeleteTwin(twinId);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId);
             if (!succeeded)
             {
                 logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");

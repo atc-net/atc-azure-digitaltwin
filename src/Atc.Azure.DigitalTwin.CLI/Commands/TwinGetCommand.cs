@@ -27,7 +27,7 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
     {
         ConsoleHelper.WriteHeader();
 
-        var twinService = DigitalTwinServiceFactory.Create(
+        var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
             settings.AdtInstanceUrl!);
@@ -35,7 +35,7 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
         var twinId = settings.TwinId;
         logger.LogInformation($"Getting Twin with id '{twinId}'");
 
-        var twin = await twinService.GetTwins(twinId);
+        var twin = await digitalTwinService.GetTwins(twinId);
         if (twin is null)
         {
             return ConsoleExitStatusCodes.Failure;

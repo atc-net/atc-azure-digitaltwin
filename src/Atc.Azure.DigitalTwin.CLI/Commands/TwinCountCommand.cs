@@ -28,12 +28,12 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
 
         logger.LogInformation("Finding all twins");
 
-        var twinService = DigitalTwinServiceFactory.Create(
+        var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
             settings.AdtInstanceUrl!);
 
-        var twinList = await twinService.GetTwins("SELECT * FROM DIGITALTWINS");
+        var twinList = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS");
         if (twinList is null ||
             twinList.Count == 0)
         {
