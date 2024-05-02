@@ -14,9 +14,9 @@ public sealed partial class ModelService : IModelService
         this.dtdlParser = dtdlParser;
     }
 
-    private readonly List<string> modelsContent = new ();
+    private readonly List<string> modelsContent = [];
 
-    private IDictionary<Dtmi, DTInterfaceInfo> Models { get; set; } = new Dictionary<Dtmi, DTInterfaceInfo>();
+    private Dictionary<Dtmi, DTInterfaceInfo> Models { get; set; } = [];
 
     public void AddModel(Dtmi key, DTInterfaceInfo value) => Models.Add(key, value);
 
