@@ -60,7 +60,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message);
+            logger.LogError(ex.GetLastInnerMessage());
             return ConsoleExitStatusCodes.Failure;
         }
 

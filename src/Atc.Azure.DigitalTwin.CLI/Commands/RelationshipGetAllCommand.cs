@@ -52,7 +52,7 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message);
+            logger.LogError(ex.GetLastInnerMessage());
             return ConsoleExitStatusCodes.Failure;
         }
     }

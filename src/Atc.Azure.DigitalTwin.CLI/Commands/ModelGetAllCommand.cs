@@ -47,7 +47,7 @@ public sealed class ModelGetAllCommand : AsyncCommand
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message);
+            logger.LogError(ex.GetLastInnerMessage());
             return ConsoleExitStatusCodes.Failure;
         }
 

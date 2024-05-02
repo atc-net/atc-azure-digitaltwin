@@ -54,7 +54,7 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message);
+            logger.LogError(ex.GetLastInnerMessage());
             return ConsoleExitStatusCodes.Failure;
         }
     }
