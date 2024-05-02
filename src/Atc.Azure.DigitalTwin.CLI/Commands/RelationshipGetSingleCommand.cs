@@ -2,17 +2,19 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetSingleCommandSettings>
 {
+    private readonly ILoggerFactory loggerFactory;
+    private readonly ILogger<RelationshipGetSingleCommand> logger;
     private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;
-    private readonly ILogger<RelationshipGetSingleCommand> logger;
 
     public RelationshipGetSingleCommand(
         ILoggerFactory loggerFactory,
         DigitalTwinsClient client)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetSingleCommand>();
         this.client = client;
-        this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
+        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(

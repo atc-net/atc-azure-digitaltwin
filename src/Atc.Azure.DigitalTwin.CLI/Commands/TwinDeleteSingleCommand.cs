@@ -2,15 +2,14 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
 {
-    private readonly ITwinService twinService;
+    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinDeleteSingleCommand> logger;
 
     public TwinDeleteSingleCommand(
-        ILoggerFactory loggerFactory,
-        ITwinService twinService)
+        ILoggerFactory loggerFactory)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinDeleteSingleCommand>();
-        this.twinService = twinService;
     }
 
     public override Task<int> ExecuteAsync(
@@ -26,6 +25,11 @@ public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
         TwinCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
+
+        var twinService = TwinServiceFactory.Create(
+            loggerFactory,
+            settings.TenantId!,
+            settings.AdtInstanceUrl!);
 
         var digitalTwinId = settings.TwinId;
         logger.LogInformation($"Deleting Twin with id '{digitalTwinId}'");

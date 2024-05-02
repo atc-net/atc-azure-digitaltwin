@@ -1,5 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
+// TODO: Verify base-class
 public class ModelPathSettings : ConnectionBaseCommandSettings
 {
     [CommandOption("-d|--directoryPath <DIRECTORYPATH>")]

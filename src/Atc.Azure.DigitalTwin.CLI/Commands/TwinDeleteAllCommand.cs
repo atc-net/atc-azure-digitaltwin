@@ -1,22 +1,35 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public sealed class TwinDeleteAllCommand : AsyncCommand
+public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSettings>
 {
-    private readonly ITwinService twinService;
+    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinDeleteAllCommand> logger;
 
     public TwinDeleteAllCommand(
-        ILoggerFactory loggerFactory,
-        ITwinService twinService)
+        ILoggerFactory loggerFactory)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinDeleteAllCommand>();
-        this.twinService = twinService;
     }
 
-    public override async Task<int> ExecuteAsync(
-        CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ConnectionBaseCommandSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
+        return ExecuteInternalAsync(settings);
+    }
+
+    private async Task<int> ExecuteInternalAsync(
+        ConnectionBaseCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
+
+        var twinService = TwinServiceFactory.Create(
+            loggerFactory,
+            settings.TenantId!,
+            settings.AdtInstanceUrl!);
 
         logger.LogInformation("Deleting all twins.");
         logger.LogInformation("Step 1: Find all twins.");

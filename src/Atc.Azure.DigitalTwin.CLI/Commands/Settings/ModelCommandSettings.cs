@@ -1,5 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
+// TODO: Verify base-class
 public class ModelCommandSettings : ConnectionBaseCommandSettings
 {
     [CommandOption("-m|--modelId <MODELID>")]

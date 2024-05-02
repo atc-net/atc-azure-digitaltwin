@@ -2,14 +2,15 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 {
-    private const string ListFormat = "{0,-80}{1}";
-    private readonly IModelService modelService;
+    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelValidateCommand> logger;
+    private readonly IModelService modelService;
 
     public ModelValidateCommand(
         ILoggerFactory loggerFactory,
         IModelService modelService)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelValidateCommand>();
         this.modelService = modelService;
     }
@@ -42,7 +43,12 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
         foreach (DTInterfaceInfo @interface in models.Values)
         {
             @interface.DisplayName.TryGetValue("en", out var displayName);
-            logger.LogInformation(string.Format(GlobalizationConstants.EnglishCultureInfo, ListFormat, @interface.Id.AbsoluteUri, displayName ?? "<none>"));
+
+            //// TODO: Log
+            //// Use the logger's built-in formatting capabilities, which avoid creating an intermediate string.
+            ////logger.LogInformation("{0,-80}{1}", @interface.Id.AbsoluteUri, displayName ?? "<none>");
+            //// Assuming @interface.Id.AbsoluteUri and displayName are safe to log
+            ////logger.LogInformation(string.Format(GlobalizationConstants.EnglishCultureInfo, ListFormat, @interface.Id.AbsoluteUri, displayName ?? "<none>"));
         }
 
         return ConsoleExitStatusCodes.Success;

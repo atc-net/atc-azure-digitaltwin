@@ -2,15 +2,17 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class ModelDeleteAllCommand : AsyncCommand
 {
-    private readonly DigitalTwinsClient client;
-    private readonly IDigitalTwinParser dtdlParser;
+    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDeleteAllCommand> logger;
+    private readonly DigitalTwinsClient client; // TODO: XXX
+    private readonly IDigitalTwinParser dtdlParser;
 
     public ModelDeleteAllCommand(
         ILoggerFactory loggerFactory,
         DigitalTwinsClient client,
         IDigitalTwinParser dtdlParser)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDeleteAllCommand>();
         this.client = client;
         this.dtdlParser = dtdlParser;

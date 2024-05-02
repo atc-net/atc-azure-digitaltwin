@@ -2,17 +2,19 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings>
 {
-    private readonly DigitalTwinsClient client;
-    private readonly JsonSerializerOptions jsonSerializerOptions;
+    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDecommissionCommand> logger;
+    private readonly DigitalTwinsClient client; // TODO: XXX
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelDecommissionCommand(
         ILoggerFactory loggerFactory,
         DigitalTwinsClient client)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDecommissionCommand>();
         this.client = client;
-        this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
+        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(

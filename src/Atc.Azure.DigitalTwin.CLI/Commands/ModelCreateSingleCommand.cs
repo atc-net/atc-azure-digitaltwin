@@ -2,20 +2,22 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSettings>
 {
-    private readonly IModelService modelService;
-    private readonly DigitalTwinsClient client;
-    private readonly JsonSerializerOptions jsonSerializerOptions;
+    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateSingleCommand> logger;
+    private readonly IModelService modelService;
+    private readonly DigitalTwinsClient client; // TODO: XXX
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelCreateSingleCommand(
         ILoggerFactory loggerFactory,
         IModelService modelService,
         DigitalTwinsClient client)
     {
+        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
         this.modelService = modelService;
         this.client = client;
-        this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
+        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(
