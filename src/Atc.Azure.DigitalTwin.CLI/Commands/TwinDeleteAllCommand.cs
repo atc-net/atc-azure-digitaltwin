@@ -26,7 +26,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
     {
         ConsoleHelper.WriteHeader();
 
-        var twinService = TwinServiceFactory.Create(
+        var twinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
             settings.AdtInstanceUrl!);

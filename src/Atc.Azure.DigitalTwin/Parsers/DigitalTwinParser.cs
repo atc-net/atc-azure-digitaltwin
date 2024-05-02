@@ -23,7 +23,7 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
         }
         catch (ParsingException pe)
         {
-            logger.LogError("*** Error parsing models");
+            logger.LogError("Error parsing models");
             var errorCount = 1;
             foreach (var err in pe.Errors)
             {

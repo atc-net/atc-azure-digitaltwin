@@ -2,16 +2,16 @@
 namespace Atc.Azure.DigitalTwin.Services;
 
 // TODO: Logger generated
-public sealed partial class ModelService : IModelService
+public sealed partial class ModelRepositoryService : IModelRepositoryService
 {
-    private readonly ILogger<ModelService> logger;
+    private readonly ILogger<ModelRepositoryService> logger;
     private readonly IDigitalTwinParser dtdlParser;
 
-    public ModelService(
+    public ModelRepositoryService(
         ILoggerFactory loggerFactory,
         IDigitalTwinParser dtdlParser)
     {
-        logger = loggerFactory.CreateLogger<ModelService>();
+        logger = loggerFactory.CreateLogger<ModelRepositoryService>();
         this.dtdlParser = dtdlParser;
     }
 
@@ -19,15 +19,21 @@ public sealed partial class ModelService : IModelService
 
     private Dictionary<Dtmi, DTInterfaceInfo> Models { get; set; } = [];
 
-    public void AddModel(Dtmi key, DTInterfaceInfo value) => Models.Add(key, value);
+    public void AddModel(
+        Dtmi key,
+        DTInterfaceInfo value)
+        => Models.Add(key, value);
 
-    public IEnumerable<string> GetModelsContent() => modelsContent;
+    public IEnumerable<string> GetModelsContent()
+        => modelsContent;
 
-    public IDictionary<Dtmi, DTInterfaceInfo> GetModels() => Models;
+    public IDictionary<Dtmi, DTInterfaceInfo> GetModels()
+        => Models;
 
-    public void Clear() => Models.Clear();
+    public void Clear()
+        => Models.Clear();
 
-    public Task<bool> LoadModelContentAsync(
+    public Task<bool> LoadModelContent(
         DirectoryInfo path)
     {
         ArgumentNullException.ThrowIfNull(path);
@@ -65,7 +71,7 @@ public sealed partial class ModelService : IModelService
     public async Task<bool> ValidateModels(
         DirectoryInfo path)
     {
-        if (!await LoadModelContentAsync(path))
+        if (!await LoadModelContent(path))
         {
             return false;
         }

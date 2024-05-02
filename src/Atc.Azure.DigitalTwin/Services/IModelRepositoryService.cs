@@ -1,8 +1,8 @@
 namespace Atc.Azure.DigitalTwin.Services;
 
-public interface IModelService
+public interface IModelRepositoryService
 {
-    // TODO: Extend and document
+    // TODO: document
     void AddModel(
         Dtmi key,
         DTInterfaceInfo value);
@@ -13,7 +13,7 @@ public interface IModelService
 
     void Clear();
 
-    Task<bool> LoadModelContentAsync(
+    Task<bool> LoadModelContent(
         DirectoryInfo path);
 
     Task<bool> ValidateModels(

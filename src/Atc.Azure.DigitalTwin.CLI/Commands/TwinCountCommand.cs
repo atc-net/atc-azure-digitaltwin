@@ -28,7 +28,7 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
 
         logger.LogInformation("Finding all twins");
 
-        var twinService = TwinServiceFactory.Create(
+        var twinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
             settings.AdtInstanceUrl!);

@@ -4,18 +4,18 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateSingleCommand> logger;
-    private readonly IModelService modelService;
+    private readonly IModelRepositoryService modelRepositoryService;
     private readonly DigitalTwinsClient client; // TODO: XXX
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelCreateSingleCommand(
         ILoggerFactory loggerFactory,
-        IModelService modelService,
+        IModelRepositoryService modelRepositoryService,
         DigitalTwinsClient client)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
-        this.modelService = modelService;
+        this.modelRepositoryService = modelRepositoryService;
         this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
@@ -37,7 +37,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
         var directoryPath = settings.DirectoryPath;
         var directoryInfo = new DirectoryInfo(directoryPath);
 
-        if (!await modelService.LoadModelContentAsync(directoryInfo))
+        if (!await modelRepositoryService.LoadModelContent(directoryInfo))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
@@ -49,9 +49,9 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         try
         {
-            var modelsContent = modelService.GetModelsContent();
+            var modelsContent = modelRepositoryService.GetModelsContent();
 
-            var model = modelsContent!.SingleOrDefault(x => x.Contains($"\"@id\": \"{modelId}\"", StringComparison.Ordinal));
+            var model = modelsContent.SingleOrDefault(x => x.Contains($"\"@id\": \"{modelId}\"", StringComparison.Ordinal));
             if (model is null)
             {
                 logger.LogError($"Could not find model with the id '{modelId}'");

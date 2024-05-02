@@ -1,8 +1,8 @@
 namespace Atc.Azure.DigitalTwin.CLI.Factories;
 
-public static class TwinServiceFactory
+public static class DigitalTwinServiceFactory
 {
-    public static TwinService Create(
+    public static DigitalTwinService Create(
         ILoggerFactory loggerFactory,
         string tenantId,
         string instanceUrl)
@@ -20,7 +20,7 @@ public static class TwinServiceFactory
         return Create(loggerFactory, digitalTwinOptions);
     }
 
-    public static TwinService Create(
+    public static DigitalTwinService Create(
         ILoggerFactory loggerFactory,
         DigitalTwinOptions digitalTwinOptions)
     {
@@ -31,7 +31,7 @@ public static class TwinServiceFactory
             new Uri(digitalTwinOptions.InstanceUrl),
             digitalTwinOptions.GetTokenCredential());
 
-        return new TwinService(
+        return new DigitalTwinService(
             loggerFactory,
             client);
     }

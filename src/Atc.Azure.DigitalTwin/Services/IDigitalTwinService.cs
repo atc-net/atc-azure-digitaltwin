@@ -1,8 +1,15 @@
 namespace Atc.Azure.DigitalTwin.Services;
 
-public interface ITwinService
+public interface IDigitalTwinService
 {
-    // TODO: Extend and document
+    Task<DigitalTwinsModelData?> GetModel(
+        string modelId,
+        CancellationToken cancellationToken = default);
+
+    AsyncPageable<DigitalTwinsModelData> GetModels(
+        GetModelsOptions? options = null,
+        CancellationToken cancellationToken = default);
+
     Task<BasicDigitalTwin?> GetTwin(
         string twinId,
         CancellationToken cancellationToken = default);
@@ -34,6 +41,10 @@ public interface ITwinService
         string? relationshipName = null,
         CancellationToken cancellationToken = default);
 
+    Task<(bool Succeeded, string? ErrorMessage)> CreateModels(
+        IEnumerable<string> dtdlModels,
+        CancellationToken cancellationToken = default);
+
     Task<(bool Succeeded, string? ErrorMessage)> CreateRelationship(
         string sourceTwinId,
         string targetTwinId,
@@ -46,6 +57,14 @@ public interface ITwinService
         string targetTwinId,
         string relationshipName,
         bool isActive = true,
+        CancellationToken cancellationToken = default);
+
+    Task<(bool Succeeded, string? ErrorMessage)> DecommissionModel(
+        string modelId,
+        CancellationToken cancellationToken = default);
+
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteModel(
+        string modelId,
         CancellationToken cancellationToken = default);
 
     Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinRelationship(

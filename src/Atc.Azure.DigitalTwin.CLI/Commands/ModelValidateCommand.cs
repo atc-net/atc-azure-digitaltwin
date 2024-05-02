@@ -4,15 +4,15 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelValidateCommand> logger;
-    private readonly IModelService modelService;
+    private readonly IModelRepositoryService modelRepositoryService;
 
     public ModelValidateCommand(
         ILoggerFactory loggerFactory,
-        IModelService modelService)
+        IModelRepositoryService modelRepositoryService)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelValidateCommand>();
-        this.modelService = modelService;
+        this.modelRepositoryService = modelRepositoryService;
     }
 
     public override Task<int> ExecuteAsync(
@@ -30,13 +30,13 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 
         var directoryPath = settings.DirectoryPath;
         var directoryInfo = new DirectoryInfo(directoryPath);
-        if (!await modelService.ValidateModels(directoryInfo))
+        if (!await modelRepositoryService.ValidateModels(directoryInfo))
         {
             logger.LogError($"Could not validate models from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
         }
 
-        var models = modelService.GetModels();
+        var models = modelRepositoryService.GetModels();
 
         logger.LogInformation("Loaded the following models:");
 

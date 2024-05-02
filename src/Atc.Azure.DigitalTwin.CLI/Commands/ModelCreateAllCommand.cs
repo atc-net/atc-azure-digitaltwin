@@ -4,18 +4,18 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateAllCommand> logger;
-    private readonly IModelService modelService;
+    private readonly IModelRepositoryService modelRepositoryService;
     private readonly DigitalTwinsClient client; // TODO: XXX
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelCreateAllCommand(
         ILoggerFactory loggerFactory,
-        IModelService modelService,
+        IModelRepositoryService modelRepositoryService,
         DigitalTwinsClient client)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateAllCommand>();
-        this.modelService = modelService;
+        this.modelRepositoryService = modelRepositoryService;
         this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
@@ -37,7 +37,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
         var directoryPath = settings.DirectoryPath;
         var directoryInfo = new DirectoryInfo(directoryPath);
 
-        if (!await modelService.LoadModelContentAsync(directoryInfo))
+        if (!await modelRepositoryService.LoadModelContent(directoryInfo))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
@@ -45,12 +45,12 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 
         try
         {
-            var result = await client.CreateModelsAsync(modelService.GetModelsContent());
+            var result = await client.CreateModelsAsync(modelRepositoryService.GetModelsContent());
             logger.LogInformation("Models uploaded successfully!");
 
-            foreach (DigitalTwinsModelData md in result.Value)
+            foreach (var digitalTwinsModelData in result.Value)
             {
-                logger.LogInformation(JsonSerializer.Serialize(md.DtdlModel, jsonSerializerOptions));
+                logger.LogInformation(JsonSerializer.Serialize(digitalTwinsModelData.DtdlModel, jsonSerializerOptions));
             }
         }
         catch (RequestFailedException ex)

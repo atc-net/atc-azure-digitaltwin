@@ -1,18 +1,22 @@
 namespace Atc.Azure.DigitalTwin.Services;
 
 // TODO: Logger generated + way more logging
-public sealed partial class TwinService : ITwinService
+public sealed partial class DigitalTwinService : IDigitalTwinService
 {
-    private readonly ILogger<TwinService> logger;
+    private readonly ILogger<DigitalTwinService> logger;
     private readonly DigitalTwinsClient client;
 
-    public TwinService(
+    public DigitalTwinService(
         ILoggerFactory loggerFactory,
         DigitalTwinsClient client)
     {
-        logger = loggerFactory.CreateLogger<TwinService>();
+        logger = loggerFactory.CreateLogger<DigitalTwinService>();
         this.client = client;
     }
+
+    public Task<DigitalTwinsModelData?> GetModel(string modelId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+    public AsyncPageable<DigitalTwinsModelData> GetModels(GetModelsOptions? options = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
     public Task<BasicDigitalTwin?> GetTwin(
         string twinId,
@@ -68,7 +72,7 @@ public sealed partial class TwinService : ITwinService
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"*** Error {ex.Status}/{ex.ErrorCode} retrieving twins due to {ex.GetLastInnerMessage()}");
+            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving twins due to {ex.GetLastInnerMessage()}");
             return null;
         }
         catch (Exception ex)
@@ -96,7 +100,7 @@ public sealed partial class TwinService : ITwinService
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"*** Error {ex.Status}/{ex.ErrorCode} retrieving twins due to {ex.GetLastInnerMessage()}");
+            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving twins due to {ex.GetLastInnerMessage()}");
             return null;
         }
         catch (Exception ex)
@@ -203,6 +207,8 @@ public sealed partial class TwinService : ITwinService
         }
     }
 
+    public Task<(bool Succeeded, string? ErrorMessage)> CreateModels(IEnumerable<string> dtdlModels, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
     public async Task<(bool Succeeded, string? ErrorMessage)> CreateRelationship(
         string sourceTwinId,
         string targetTwinId,
@@ -299,6 +305,10 @@ public sealed partial class TwinService : ITwinService
             return (false, errorMessage);
         }
     }
+
+    public Task<(bool Succeeded, string? ErrorMessage)> DecommissionModel(string modelId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+    public Task<(bool Succeeded, string? ErrorMessage)> DeleteModel(string modelId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
     public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinRelationship(
         string twinId,
@@ -521,7 +531,7 @@ public sealed partial class TwinService : ITwinService
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"*** Error {ex.Status}/{ex.ErrorCode} retrieving or deleting relationships for {twinId} due to {ex.GetLastInnerMessage()}");
+            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving or deleting relationships for {twinId} due to {ex.GetLastInnerMessage()}");
         }
         catch (Exception ex)
         {
@@ -551,7 +561,7 @@ public sealed partial class TwinService : ITwinService
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"*** Error {ex.Status}/{ex.ErrorCode} retrieving or deleting incoming relationships for {twinId} due to {ex.GetLastInnerMessage()}");
+            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving or deleting incoming relationships for {twinId} due to {ex.GetLastInnerMessage()}");
         }
         catch (Exception ex)
         {
