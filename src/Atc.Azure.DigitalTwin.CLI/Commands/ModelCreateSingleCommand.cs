@@ -5,19 +5,14 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateSingleCommand> logger;
     private readonly IModelRepositoryService modelRepositoryService;
-    private readonly DigitalTwinsClient client; // TODO: XXX
-    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelCreateSingleCommand(
         ILoggerFactory loggerFactory,
-        IModelRepositoryService modelRepositoryService,
-        DigitalTwinsClient client)
+        IModelRepositoryService modelRepositoryService)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
         this.modelRepositoryService = modelRepositoryService;
-        this.client = client;
-        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(
@@ -49,6 +44,11 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         try
         {
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
             var modelsContent = modelRepositoryService.GetModelsContent();
 
             var model = modelsContent.SingleOrDefault(x => x.Contains($"\"@id\": \"{modelId}\"", StringComparison.Ordinal));
@@ -60,13 +60,14 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
             var models = new[] { model };
 
-            var result = await client.CreateModelsAsync(models);
-            logger.LogInformation("Model uploaded successfully!");
-
-            foreach (DigitalTwinsModelData md in result.Value)
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(models);
+            if (!succeeded)
             {
-                logger.LogInformation(JsonSerializer.Serialize(md.DtdlModel, jsonSerializerOptions));
+                logger.LogError($"Failed to upload model: {errorMessage}");
+                return ConsoleExitStatusCodes.Failure;
             }
+
+            logger.LogInformation("Successfully uploaded model");
         }
         catch (RequestFailedException ex)
         {

@@ -4,16 +4,13 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<RelationshipGetIncomingCommand> logger;
-    private readonly DigitalTwinsClient client; // TODO: XXX
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public RelationshipGetIncomingCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetIncomingCommand>();
-        this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
@@ -36,8 +33,19 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
 
         try
         {
-            var relationships = client.GetIncomingRelationshipsAsync(twinId);
-            await foreach (var relationship in relationships)
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
+            var response = digitalTwinService.GetIncomingRelationships(twinId);
+            if (response is null)
+            {
+                logger.LogError($"Failed to fetch incoming relationships for twin with id '{twinId}'");
+                return ConsoleExitStatusCodes.Failure;
+            }
+
+            await foreach (var relationship in response)
             {
                 logger.LogInformation($"Relationship: {relationship.RelationshipName} from {relationship.SourceId} | {relationship.RelationshipId}");
                 logger.LogInformation(JsonSerializer.Serialize(relationship, jsonSerializerOptions));

@@ -1,33 +1,49 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public sealed class ModelGetAllCommand : AsyncCommand
+public sealed class ModelGetAllCommand : AsyncCommand<ConnectionBaseCommandSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelGetAllCommand> logger;
-    private readonly DigitalTwinsClient client; // TODO: XXX
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelGetAllCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelGetAllCommand>();
-        this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public override async Task<int> ExecuteAsync(
-        CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ConnectionBaseCommandSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
+        return ExecuteInternalAsync(settings);
+    }
+
+    private async Task<int> ExecuteInternalAsync(
+        ConnectionBaseCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 
         try
         {
-            var digitalTwinsModelDataResponse = client.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true });
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
 
-            var resultList = new List<DigitalTwinsModelData>();
-            await foreach (var digitalTwinsModelData in digitalTwinsModelDataResponse)
+            var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true });
+            if (response is null)
+            {
+                logger.LogError("Failed to get models");
+                return ConsoleExitStatusCodes.Failure;
+            }
+
+            var count = 0;
+            await foreach (var digitalTwinsModelData in response)
             {
                 logger.LogInformation($"ModelId: '{digitalTwinsModelData.Id}'");
                 if (digitalTwinsModelData.DtdlModel != null)
@@ -35,10 +51,10 @@ public sealed class ModelGetAllCommand : AsyncCommand
                     logger.LogInformation(JsonSerializer.Serialize(digitalTwinsModelData.DtdlModel, jsonSerializerOptions));
                 }
 
-                resultList.Add(digitalTwinsModelData);
+                count++;
             }
 
-            logger.LogInformation($"Found {resultList.Count} model(s)");
+            logger.LogInformation($"Found {count} model(s)");
         }
         catch (RequestFailedException ex)
         {

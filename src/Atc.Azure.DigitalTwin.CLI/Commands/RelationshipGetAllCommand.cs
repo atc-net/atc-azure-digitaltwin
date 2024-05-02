@@ -4,16 +4,13 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<RelationshipGetAllCommand> logger;
-    private readonly DigitalTwinsClient client; // TODO: XXX
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public RelationshipGetAllCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetAllCommand>();
-        this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
@@ -37,8 +34,19 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
 
         try
         {
-            var relationships = client.GetRelationshipsAsync<BasicRelationship>(twinId);
-            await foreach (var relationship in relationships)
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
+            var response = digitalTwinService.GetRelationships(twinId);
+            if (response is null)
+            {
+                logger.LogError($"No relationships found for twin '{twinId}'");
+                return ConsoleExitStatusCodes.Failure;
+            }
+
+            await foreach (var relationship in response)
             {
                 logger.LogInformation(JsonSerializer.Serialize(relationship, jsonSerializerOptions));
             }

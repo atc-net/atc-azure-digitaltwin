@@ -14,9 +14,65 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         this.client = client;
     }
 
-    public Task<DigitalTwinsModelData?> GetModel(string modelId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+    public async Task<DigitalTwinsModelData?> GetModel(
+        string modelId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var result = await client.GetModelAsync(
+                modelId,
+                cancellationToken);
 
-    public AsyncPageable<DigitalTwinsModelData> GetModels(GetModelsOptions? options = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+            if (result is null)
+            {
+                return default;
+            }
+
+            logger.LogInformation("Successfully fetched model");
+            return result.Value;
+        }
+        catch (RequestFailedException ex)
+        {
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            return default;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.GetLastInnerMessage());
+            return default;
+        }
+    }
+
+    public AsyncPageable<DigitalTwinsModelData>? GetModels(
+        GetModelsOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var response = client.GetModelsAsync(
+                options,
+                cancellationToken);
+
+            if (response is null)
+            {
+                return default;
+            }
+
+            logger.LogInformation("Successfully fetched models");
+            return response;
+        }
+        catch (RequestFailedException ex)
+        {
+            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            return default;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.GetLastInnerMessage());
+            return default;
+        }
+    }
 
     public Task<BasicDigitalTwin?> GetTwin(
         string twinId,
@@ -207,7 +263,35 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public Task<(bool Succeeded, string? ErrorMessage)> CreateModels(IEnumerable<string> dtdlModels, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateModels(
+        IEnumerable<string> dtdlModels,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var result = await client.CreateModelsAsync(dtdlModels, cancellationToken);
+
+            if (result is null)
+            {
+                return (false, "Failed to create models");
+            }
+
+            logger.LogInformation("Successfully created models");
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            var errorMessage = $"Error {ex.Status}: {ex.GetLastInnerMessage()}";
+            logger.LogError(errorMessage);
+            return (false, errorMessage);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            logger.LogError(errorMessage);
+            return (false, errorMessage);
+        }
+    }
 
     public async Task<(bool Succeeded, string? ErrorMessage)> CreateRelationship(
         string sourceTwinId,
@@ -231,7 +315,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
             if (result is null)
             {
-                return (false, $"Failed to Create Relationship '{relationShipId}' on twin '{sourceTwinId}'");
+                return (false, $"Failed to create Relationship '{relationShipId}' on twin '{sourceTwinId}'");
             }
 
             logger.LogInformation($"Successfully created relationship {relationShipId}.");
@@ -306,9 +390,59 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public Task<(bool Succeeded, string? ErrorMessage)> DecommissionModel(string modelId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+    public async Task<(bool Succeeded, string? ErrorMessage)> DecommissionModel(
+        string modelId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await client.DecommissionModelAsync(
+                modelId,
+                cancellationToken);
 
-    public Task<(bool Succeeded, string? ErrorMessage)> DeleteModel(string modelId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+            logger.LogInformation($"Successfully decommissioned model '{modelId}'");
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} Decommissioning model {modelId} due to {ex.GetLastInnerMessage()}";
+            logger.LogError(errorMessage);
+            return (false, errorMessage);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            logger.LogError(errorMessage);
+            return (false, errorMessage);
+        }
+    }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteModel(
+        string modelId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await client.DeleteModelAsync(
+                modelId,
+                cancellationToken);
+
+            logger.LogInformation($"Successfully deleted model '{modelId}'");
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} deleting model {modelId} due to {ex.GetLastInnerMessage()}";
+            logger.LogError(errorMessage);
+            return (false, errorMessage);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            logger.LogError(errorMessage);
+            return (false, errorMessage);
+        }
+    }
 
     public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinRelationship(
         string twinId,
@@ -366,7 +500,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ifMatch,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully Deleted twin '{twinId}'");
+            logger.LogInformation($"Successfully deleted twin '{twinId}'");
             return (true, null);
         }
         catch (RequestFailedException ex)

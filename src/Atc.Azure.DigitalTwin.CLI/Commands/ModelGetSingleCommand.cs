@@ -4,16 +4,13 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelGetSingleCommand> logger;
-    private readonly DigitalTwinsClient client;  // TODO: XXX
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelGetSingleCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelGetSingleCommand>();
-        this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
@@ -37,15 +34,21 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
 
         try
         {
-            var result = await client.GetModelAsync(modelId);
-            if (result is null)
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
+            var model = await digitalTwinService.GetModel(modelId);
+            if (model is null)
             {
+                logger.LogError($"Failed to fetch model '{modelId}'");
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            logger.LogInformation(JsonSerializer.Serialize(result.Value, jsonSerializerOptions));
-
             logger.LogInformation("Successfully fetched model.");
+            logger.LogInformation(JsonSerializer.Serialize(model, jsonSerializerOptions));
+
             return ConsoleExitStatusCodes.Success;
         }
         catch (RequestFailedException ex)

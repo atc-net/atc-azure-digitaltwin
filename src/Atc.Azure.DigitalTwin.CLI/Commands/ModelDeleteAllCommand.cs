@@ -1,33 +1,45 @@
+// ReSharper disable SuggestBaseTypeForParameter
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public sealed class ModelDeleteAllCommand : AsyncCommand
+public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDeleteAllCommand> logger;
-    private readonly DigitalTwinsClient client; // TODO: XXX
     private readonly IDigitalTwinParser dtdlParser;
 
     public ModelDeleteAllCommand(
         ILoggerFactory loggerFactory,
-        DigitalTwinsClient client,
         IDigitalTwinParser dtdlParser)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDeleteAllCommand>();
-        this.client = client;
         this.dtdlParser = dtdlParser;
     }
 
-    public override async Task<int> ExecuteAsync(
-        CommandContext context)
+    public override Task<int> ExecuteAsync(
+        CommandContext context,
+        ConnectionBaseCommandSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
+        return ExecuteInternalAsync(settings);
+    }
+
+    private async Task<int> ExecuteInternalAsync(
+        ConnectionBaseCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 
         try
         {
-            var jsonModelTexts = await GetTwinModelsAsJsonAsync();
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
 
-            var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(jsonModelTexts);
+            var jsonModels = await GetTwinModelsAsJson(digitalTwinService);
+
+            var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(jsonModels);
             if (!succeeded)
             {
                 return ConsoleExitStatusCodes.Failure;
@@ -49,8 +61,8 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
 
                     try
                     {
-                        await client.DeleteModelAsync(del.Id.ToString());
-                        logger.LogInformation($"Model {del.Id} deleted successfully");
+                        await digitalTwinService.DeleteModel(del.Id.ToString());
+                        logger.LogInformation($"Successfully deleted model {del.Id}");
                     }
                     catch (RequestFailedException ex)
                     {
@@ -73,19 +85,26 @@ public sealed class ModelDeleteAllCommand : AsyncCommand
         return ConsoleExitStatusCodes.Success;
     }
 
-    private async Task<List<string>> GetTwinModelsAsJsonAsync()
+    private async Task<List<string>> GetTwinModelsAsJson(
+        DigitalTwinService digitalTwinService)
     {
         var jsonModelTexts = new List<string>();
-        var results = client.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true });
-        await foreach (var md in results)
+
+        var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true });
+        if (response is null)
         {
-            if (md.DtdlModel == null)
+            return jsonModelTexts;
+        }
+
+        await foreach (var digitalTwinsModelData in response)
+        {
+            if (digitalTwinsModelData.DtdlModel is null)
             {
                 continue;
             }
 
-            logger.LogInformation(md.Id);
-            jsonModelTexts.Add(md.DtdlModel);
+            logger.LogInformation(digitalTwinsModelData.Id);
+            jsonModelTexts.Add(digitalTwinsModelData.DtdlModel);
         }
 
         logger.LogInformation($"Found {jsonModelTexts.Count} model(s)");

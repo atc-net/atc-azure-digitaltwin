@@ -4,17 +4,12 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDecommissionCommand> logger;
-    private readonly DigitalTwinsClient client; // TODO: XXX
-    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelDecommissionCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDecommissionCommand>();
-        this.client = client;
-        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(
@@ -36,13 +31,17 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
 
         try
         {
-            var result = await client.DecommissionModelAsync(modelId);
-            if (result is null)
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
+            var (succeeded, errorMessage) = await digitalTwinService.DecommissionModel(modelId);
+            if (!succeeded)
             {
+                logger.LogError($"Failed to decommission model '{modelId}': {errorMessage}");
                 return ConsoleExitStatusCodes.Failure;
             }
-
-            logger.LogInformation(JsonSerializer.Serialize(result, jsonSerializerOptions));
 
             logger.LogInformation("Successfully decommissioned model.");
             return ConsoleExitStatusCodes.Success;

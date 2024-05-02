@@ -6,7 +6,7 @@ public interface IDigitalTwinService
         string modelId,
         CancellationToken cancellationToken = default);
 
-    AsyncPageable<DigitalTwinsModelData> GetModels(
+    AsyncPageable<DigitalTwinsModelData>? GetModels(
         GetModelsOptions? options = null,
         CancellationToken cancellationToken = default);
 

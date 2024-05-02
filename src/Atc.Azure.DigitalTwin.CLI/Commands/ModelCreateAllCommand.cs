@@ -5,19 +5,14 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateAllCommand> logger;
     private readonly IModelRepositoryService modelRepositoryService;
-    private readonly DigitalTwinsClient client; // TODO: XXX
-    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelCreateAllCommand(
         ILoggerFactory loggerFactory,
-        IModelRepositoryService modelRepositoryService,
-        DigitalTwinsClient client)
+        IModelRepositoryService modelRepositoryService)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateAllCommand>();
         this.modelRepositoryService = modelRepositoryService;
-        this.client = client;
-        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(
@@ -45,13 +40,19 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 
         try
         {
-            var result = await client.CreateModelsAsync(modelRepositoryService.GetModelsContent());
-            logger.LogInformation("Models uploaded successfully!");
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
 
-            foreach (var digitalTwinsModelData in result.Value)
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(modelRepositoryService.GetModelsContent());
+            if (!succeeded)
             {
-                logger.LogInformation(JsonSerializer.Serialize(digitalTwinsModelData.DtdlModel, jsonSerializerOptions));
+                logger.LogError($"Failed to upload models: {errorMessage}");
+                return ConsoleExitStatusCodes.Failure;
             }
+
+            logger.LogInformation("Successfully uploaded models");
         }
         catch (RequestFailedException ex)
         {

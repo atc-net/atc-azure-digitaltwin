@@ -34,7 +34,9 @@ public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTProper
         }
 
         // Get hash code for the Name field if it is not null.
-        var hashPIName = obj.Name == null ? 0 : obj.Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
+        var hashPIName = obj.Name is null
+            ? 0
+            : obj.Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 
         // Get hash code for the Code field.
         var hashPISchema = obj.Schema.GetHashCode();

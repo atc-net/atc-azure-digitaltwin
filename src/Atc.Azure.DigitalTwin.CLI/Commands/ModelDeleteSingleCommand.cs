@@ -4,17 +4,12 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDeleteSingleCommand> logger;
-    private readonly DigitalTwinsClient client; // TODO: XXX
-    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public ModelDeleteSingleCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDeleteSingleCommand>();
-        this.client = client;
-        jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public override Task<int> ExecuteAsync(
@@ -37,13 +32,18 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
 
         try
         {
-            var result = await client.DeleteModelAsync(modelId);
-            if (result is null)
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteModel(modelId);
+
+            if (!succeeded)
             {
+                logger.LogError($"Failed to delete model: {errorMessage}");
                 return ConsoleExitStatusCodes.Failure;
             }
-
-            logger.LogInformation(JsonSerializer.Serialize(result, jsonSerializerOptions));
 
             logger.LogInformation("Successfully deleted model.");
             return ConsoleExitStatusCodes.Success;
