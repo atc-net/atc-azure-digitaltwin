@@ -1,4 +1,4 @@
-namespace Atc.Azure.DigitalTwin.DigitalTwin.Services;
+namespace Atc.Azure.DigitalTwin.Services;
 
 // TODO: Logger generated
 public sealed partial class ModelService : IModelService

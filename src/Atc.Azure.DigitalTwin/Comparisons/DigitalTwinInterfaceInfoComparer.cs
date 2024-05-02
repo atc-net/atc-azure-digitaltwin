@@ -1,4 +1,4 @@
-namespace Atc.Azure.DigitalTwin.DigitalTwin.Comparisons;
+namespace Atc.Azure.DigitalTwin.Comparisons;
 
 public sealed class DigitalTwinInterfaceInfoComparer : IEqualityComparer<DTInterfaceInfo>
 {

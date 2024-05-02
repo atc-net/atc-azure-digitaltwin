@@ -1,11 +1,11 @@
-namespace Atc.Azure.DigitalTwin.DigitalTwin.Comparisons;
+namespace Atc.Azure.DigitalTwin.Comparisons;
 
-public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?>
+public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelationshipInfo?>
 {
     // Products are equal if their names and product numbers are equal.
     public bool Equals(
-        DTPropertyInfo? x,
-        DTPropertyInfo? y)
+        DTRelationshipInfo? x,
+        DTRelationshipInfo? y)
     {
         // Check whether the compared objects reference the same data.
         if (ReferenceEquals(x, y))
@@ -20,13 +20,13 @@ public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTProper
         }
 
         // Check whether the products' properties are equal.
-        return x.Name == y.Name && x.Schema == y.Schema;
+        return x.Name == y.Name && x.Target == y.Target;
     }
 
     // If Equals() returns true for a pair of objects
     // then GetHashCode() must return the same value for these objects.
     public int GetHashCode(
-        DTPropertyInfo? obj)
+        DTRelationshipInfo? obj)
     {
         if (obj is null)
         {
@@ -37,9 +37,14 @@ public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTProper
         var hashPIName = obj.Name == null ? 0 : obj.Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 
         // Get hash code for the Code field.
-        var hashPISchema = obj.Schema.GetHashCode();
+        if (obj.Target == null)
+        {
+            return hashPIName;
+        }
+
+        var hashPITarget = obj.Target.GetHashCode();
 
         // Calculate the hash code for the product.
-        return hashPIName ^ hashPISchema;
+        return hashPIName ^ hashPITarget;
     }
 }

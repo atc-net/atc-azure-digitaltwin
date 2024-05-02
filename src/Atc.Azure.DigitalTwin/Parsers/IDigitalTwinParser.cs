@@ -1,4 +1,4 @@
-namespace Atc.Azure.DigitalTwin.DigitalTwin.Parsers;
+namespace Atc.Azure.DigitalTwin.Parsers;
 
 public interface IDigitalTwinParser
 {
