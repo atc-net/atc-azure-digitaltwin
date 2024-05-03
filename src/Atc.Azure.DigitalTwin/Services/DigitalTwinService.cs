@@ -444,7 +444,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinRelationship(
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteRelationship(
         string twinId,
         string relationshipName,
         CancellationToken cancellationToken = default)
@@ -480,7 +480,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task DeleteTwinRelationships(
+    public async Task DeleteRelationships(
         string twinId,
         CancellationToken cancellationToken = default)
     {

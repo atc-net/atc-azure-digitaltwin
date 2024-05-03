@@ -43,7 +43,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
         logger.LogInformation("Step 2: Find and remove relationships for each twin.");
         foreach (var twinId in twinList)
         {
-            await digitalTwinService.DeleteTwinRelationships(twinId);
+            await digitalTwinService.DeleteRelationships(twinId);
         }
 
         logger.LogInformation("Step 3: Delete all twins");

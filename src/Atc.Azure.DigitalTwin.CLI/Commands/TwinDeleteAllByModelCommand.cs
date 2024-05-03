@@ -43,7 +43,7 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
 
         foreach (var twinId in twinList)
         {
-            await digitalTwinService.DeleteTwinRelationships(twinId);
+            await digitalTwinService.DeleteRelationships(twinId);
         }
 
         foreach (var twinId in twinList)

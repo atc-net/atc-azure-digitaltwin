@@ -170,7 +170,7 @@ public interface IDigitalTwinService
     /// <param name="relationshipName">The name of the relationship to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinRelationship(
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteRelationship(
         string twinId,
         string relationshipName,
         CancellationToken cancellationToken = default);
@@ -181,7 +181,7 @@ public interface IDigitalTwinService
     /// <param name="twinId">The ID of the twin whose relationships are to be deleted.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous delete operation.</returns>
-    Task DeleteTwinRelationships(
+    Task DeleteRelationships(
         string twinId,
         CancellationToken cancellationToken = default);
 
