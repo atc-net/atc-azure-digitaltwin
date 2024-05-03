@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Label="Metadata configuration">
-    <OrganizationName>atc</OrganizationName>
+    <OrganizationName>atc-net</OrganizationName>
     <RepositoryName>atc-azure-digitaltwin</RepositoryName>
   </PropertyGroup>
 
@@ -18,6 +18,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>12.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net8.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1573,1591,1712,CA1014</NoWarn>
 
@@ -27,9 +28,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Analyzer settings">
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisLevel>latest-All</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
