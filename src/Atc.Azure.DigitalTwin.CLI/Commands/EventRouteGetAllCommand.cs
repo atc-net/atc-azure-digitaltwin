@@ -2,13 +2,11 @@ namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
 public sealed class EventRouteGetAllCommand : AsyncCommand
 {
-    private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<EventRouteGetAllCommand> logger;
 
     public EventRouteGetAllCommand(
         ILoggerFactory loggerFactory)
     {
-        this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<EventRouteGetAllCommand>();
     }
 

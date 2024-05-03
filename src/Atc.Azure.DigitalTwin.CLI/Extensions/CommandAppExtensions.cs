@@ -10,9 +10,6 @@ public static class CommandAppExtensions
 
         app.Configure(config =>
         {
-            //// TODO: Implement
-            //// data-history    : Manage and configure data history.
-            //// job             : Manage and configure jobs for a digital twin instance.
             config.AddBranch("model", ConfigureModelCommands());
             config.AddBranch("route", ConfigureEventRouteCommands());
             config.AddBranch("twin", ConfigureTwinCommands());
@@ -91,11 +88,11 @@ public static class CommandAppExtensions
 
             node.AddCommand<EventRouteCreateCommand>("create")
                 .WithDescription("Create event route.")
-                .WithExample("route create"); // TODO: Example
+                .WithExample("route create");
 
             node.AddCommand<EventRouteDeleteCommand>("delete")
                 .WithDescription("Delete event route.")
-                .WithExample("route delete"); // TODO: Example
+                .WithExample("route delete");
 
             ConfigureEventRouteGetCommands(node);
         };
@@ -108,11 +105,11 @@ public static class CommandAppExtensions
 
             get.AddCommand<EventRouteGetSingleCommand>("single")
                 .WithDescription("Get single event route.")
-                .WithExample("route get single"); // TODO: Example
+                .WithExample("route get single");
 
             get.AddCommand<EventRouteGetAllCommand>("all")
                 .WithDescription("Get all event routes.")
-                .WithExample("route get all"); // TODO: Example
+                .WithExample("route get all");
         });
 
     private static Action<IConfigurator<CommandSettings>> ConfigureTwinCommands()
@@ -126,7 +123,7 @@ public static class CommandAppExtensions
 
             node.AddCommand<TwinCreateCommand>("create")
                 .WithDescription("Create single twin.")
-                .WithExample("twin create"); // TODO: Example
+                .WithExample("twin create");
 
             ConfigureTwinDeleteCommands(node);
 
@@ -136,7 +133,7 @@ public static class CommandAppExtensions
 
             node.AddCommand<TwinUpdateCommand>("update")
                 .WithDescription("Update single twin.")
-                .WithExample("twin update"); // TODO: Example
+                .WithExample("twin update");
 
             node.AddBranch("relationship", ConfigureRelationshipCommands());
         };
