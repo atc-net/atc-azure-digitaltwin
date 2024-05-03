@@ -21,12 +21,12 @@ public class RelationshipGetSingleCommandSettings : ConnectionBaseCommandSetting
 
         if (string.IsNullOrEmpty(TwinId))
         {
-            return ValidationResult.Error("TwinId is missing.");
+            return ValidationResult.Error($"{nameof(TwinId)} is missing.");
         }
 
         if (string.IsNullOrEmpty(RelationshipId))
         {
-            return ValidationResult.Error("RelationshipId is missing.");
+            return ValidationResult.Error($"{nameof(RelationshipId)} is missing.");
         }
 
         return ValidationResult.Success();

@@ -15,7 +15,7 @@ public class TwinCommandSettings : ConnectionBaseCommandSettings
         }
 
         return string.IsNullOrEmpty(TwinId)
-            ? ValidationResult.Error("TwinId is missing.")
+            ? ValidationResult.Error($"{nameof(TwinId)} is missing.")
             : ValidationResult.Success();
     }
 }

@@ -15,7 +15,7 @@ public class ModelPathSettings : BaseCommandSettings
         }
 
         return string.IsNullOrEmpty(DirectoryPath)
-            ? ValidationResult.Error("DirectoryPath is missing.")
+            ? ValidationResult.Error($"{nameof(DirectoryPath)} is missing.")
             : ValidationResult.Success();
     }
 }

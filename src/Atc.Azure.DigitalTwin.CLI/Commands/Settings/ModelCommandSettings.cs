@@ -15,7 +15,7 @@ public class ModelCommandSettings : ConnectionBaseCommandSettings
         }
 
         return string.IsNullOrEmpty(ModelId)
-            ? ValidationResult.Error("ModelId is missing.")
+            ? ValidationResult.Error($"{nameof(ModelId)} is missing.")
             : ValidationResult.Success();
     }
 }

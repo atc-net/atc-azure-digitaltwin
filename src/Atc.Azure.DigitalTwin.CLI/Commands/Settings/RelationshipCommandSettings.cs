@@ -15,7 +15,7 @@ public class RelationshipCommandSettings : BaseCommandSettings
         }
 
         return string.IsNullOrEmpty(RelationshipId)
-            ? ValidationResult.Error("RelationshipId is missing.")
+            ? ValidationResult.Error($"{nameof(RelationshipId)} is missing.")
             : ValidationResult.Success();
     }
 }
