@@ -117,7 +117,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     private async Task ParseAndStoreModels(
         IEnumerable<string> modelTexts)
     {
-        var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(modelTexts);
+        var (succeeded, interfaceEntities) = await dtdlParser.Parse(modelTexts);
         if (!succeeded)
         {
             return;

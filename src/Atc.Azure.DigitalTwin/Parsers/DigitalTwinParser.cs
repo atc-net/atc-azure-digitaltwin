@@ -12,7 +12,7 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
         logger = loggerFactory.CreateLogger<DigitalTwinParser>();
     }
 
-    public async Task<(bool Succeeeded, IReadOnlyDictionary<Dtmi, DTEntityInfo>? Interfaces)> ParseAsync(
+    public async Task<(bool Succeeeded, IReadOnlyDictionary<Dtmi, DTEntityInfo>? Interfaces)> Parse(
         IEnumerable<string> jsonModels)
     {
         try

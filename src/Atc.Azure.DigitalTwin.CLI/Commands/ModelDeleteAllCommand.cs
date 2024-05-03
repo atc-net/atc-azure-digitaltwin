@@ -5,15 +5,12 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDeleteAllCommand> logger;
-    private readonly IDigitalTwinParser dtdlParser;
 
     public ModelDeleteAllCommand(
-        ILoggerFactory loggerFactory,
-        IDigitalTwinParser dtdlParser)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDeleteAllCommand>();
-        this.dtdlParser = dtdlParser;
     }
 
     public override Task<int> ExecuteAsync(
@@ -39,7 +36,9 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
 
             var jsonModels = await GetTwinModelsAsJson(digitalTwinService);
 
-            var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(jsonModels);
+            var dtdlParser = DigitalTwinParserFactory.Create(loggerFactory);
+
+            var (succeeded, interfaceEntities) = await dtdlParser.Parse(jsonModels);
             if (!succeeded)
             {
                 return ConsoleExitStatusCodes.Failure;
