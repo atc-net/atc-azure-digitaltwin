@@ -1,0 +1,11 @@
+global using System.Diagnostics.CodeAnalysis;
+global using System.Runtime.CompilerServices;
+global using Atc.Azure.DigitalTwin.Options;
+global using Atc.Azure.DigitalTwin.Parsers;
+global using Azure;
+global using Azure.Core;
+global using Azure.DigitalTwins.Core;
+global using Azure.Identity;
+global using Microsoft.Azure.DigitalTwins.Parser;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
