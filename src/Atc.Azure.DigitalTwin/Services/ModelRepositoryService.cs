@@ -1,10 +1,11 @@
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Atc.Azure.DigitalTwin.Services;
 
-// TODO: Logger generated
+/// <summary>
+/// Service for managing digital twin models locally.
+/// </summary>
 public sealed partial class ModelRepositoryService : IModelRepositoryService
 {
-    private readonly ILogger<ModelRepositoryService> logger;
     private readonly IDigitalTwinParser dtdlParser;
 
     public ModelRepositoryService(
@@ -37,20 +38,17 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         DirectoryInfo path)
     {
         ArgumentNullException.ThrowIfNull(path);
-        return LoadModelContentInternalAsync(path);
+        return LoadModelContentInternal(path);
     }
 
-    private async Task<bool> LoadModelContentInternalAsync(
+    private async Task<bool> LoadModelContentInternal(
         DirectoryInfo path)
     {
         if (!path.Exists)
         {
-            logger.LogError("DirectoryPath does not exist.");
+            LogUnknownDirectoryPath(path.FullName);
             return false;
         }
-
-        logger.LogInformation($"Reading files from {path.FullName}");
-        logger.LogInformation(string.Empty);
 
         var jsonFiles = Directory
             .GetFiles(path.FullName, "*.json", SearchOption.AllDirectories)
@@ -59,12 +57,9 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         foreach (var fileName in jsonFiles)
         {
             modelsContent.Add(await File.ReadAllTextAsync(fileName));
-            logger.LogInformation($"Loaded {fileName}");
         }
 
-        logger.LogInformation(string.Empty);
-        logger.LogInformation("Files loaded.");
-
+        LogModelsLoaded(path.FullName);
         return true;
     }
 
@@ -78,23 +73,14 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
 
         try
         {
-            logger.LogInformation("Parsing Models.");
-            logger.LogInformation(string.Empty);
             await ParseAndStoreModels(modelsContent);
         }
         catch (ParsingException pe)
         {
-            logger.LogError("Error parsing models");
-            var errorCount = 1;
-
-            foreach (var err in pe.Errors)
+            LogParseFailed(pe.GetLastInnerMessage());
+            foreach (var error in pe.Errors)
             {
-                logger.LogError($"Error {errorCount}:");
-                logger.LogError($"{err.Message}");
-                logger.LogError($"Primary ID: {err.PrimaryID}");
-                logger.LogError($"Secondary ID: {err.SecondaryID}");
-                logger.LogError($"Property: {err.Property}\n");
-                errorCount++;
+                LogParseError($"Message: {error.Message}, PrimaryID: {error.PrimaryID}, SecondaryID: {error.SecondaryID}, Property: {error.Property}");
             }
 
             return false;
@@ -130,7 +116,6 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         foreach (var @interface in interfaces)
         {
             AddModel(@interface.Id, @interface);
-            logger.LogInformation($"Successfully parsed Interface '{@interface.Id.AbsoluteUri}'");
         }
     }
 }

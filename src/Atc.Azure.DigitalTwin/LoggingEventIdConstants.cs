@@ -54,4 +54,12 @@ internal static class LoggingEventIdConstants
         public const int UpdateRelationshipFailed = 10_413;
         public const int UpdatedRelationship = 10_414;
     }
+
+    internal static class ModelRepositoryService
+    {
+        public const int UnknownDirectoryPath = 11_000;
+        public const int ModelsLoaded = 11_001;
+        public const int ParseFailed = 11_002;
+        public const int ParseError = 11_003;
+    }
 }
