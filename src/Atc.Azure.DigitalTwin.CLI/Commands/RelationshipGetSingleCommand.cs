@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetSingleCommandSettings>
+public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipCommandSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<RelationshipGetSingleCommand> logger;
@@ -16,7 +16,7 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        RelationshipGetSingleCommandSettings settings)
+        RelationshipCommandSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
@@ -24,7 +24,7 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
     }
 
     private async Task<int> ExecuteInternalAsync(
-        RelationshipGetSingleCommandSettings settings)
+        RelationshipCommandSettings settings)
     {
         ConsoleHelper.WriteHeader();
 
