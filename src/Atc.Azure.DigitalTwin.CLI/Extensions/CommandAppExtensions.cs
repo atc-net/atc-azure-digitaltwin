@@ -1,8 +1,8 @@
+// ReSharper disable StringLiteralTypo
 namespace Atc.Azure.DigitalTwin.CLI.Extensions;
 
 public static class CommandAppExtensions
 {
-    // TODO: Add examples to command
     public static void ConfigureCommands(
         this CommandApp app)
     {
@@ -27,14 +27,16 @@ public static class CommandAppExtensions
             ConfigureModelCreateCommands(node);
 
             node.AddCommand<ModelDecommissionCommand>("decommission")
-                .WithDescription("Decommission a single model.");
+                .WithDescription("Decommission a single model.")
+                .WithExample("model decommission --tenantId -a <adt-instance-url> -m <model-id>");
 
             ConfigureModelDeleteCommands(node);
 
             ConfigureModelGetCommands(node);
 
             node.AddCommand<ModelValidateCommand>("validate")
-                .WithDescription("Validate models.");
+                .WithDescription("Validate models.")
+                .WithExample("model validate -d <directory-path>");
         };
 
     private static void ConfigureModelCreateCommands(
@@ -44,10 +46,12 @@ public static class CommandAppExtensions
             upload.SetDescription("Operations related to creating models.");
 
             upload.AddCommand<ModelCreateSingleCommand>("single")
-                .WithDescription("Create single model.");
+                .WithDescription("Create single model.")
+                .WithExample("model create single --tenantId -a <adt-instance-url> -d <directory-path> -m <model-id>");
 
             upload.AddCommand<ModelCreateAllCommand>("all")
-                .WithDescription("Create all models.");
+                .WithDescription("Create all models.")
+                .WithExample("model create all --tenantId -a <adt-instance-url> -d <directory-path>");
         });
 
     private static void ConfigureModelDeleteCommands(
@@ -57,10 +61,12 @@ public static class CommandAppExtensions
             delete.SetDescription("Operations related to deleting models.");
 
             delete.AddCommand<ModelDeleteSingleCommand>("single")
-                .WithDescription("Delete single model.");
+                .WithDescription("Delete single model.")
+                .WithExample("model delete single --tenantId -a <adt-instance-url> -m <model-id>");
 
             delete.AddCommand<ModelDeleteAllCommand>("all")
-                .WithDescription("Delete all models.");
+                .WithDescription("Delete all models.")
+                .WithExample("model delete all --tenantId -a <adt-instance-url>");
         });
 
     private static void ConfigureModelGetCommands(
@@ -70,10 +76,12 @@ public static class CommandAppExtensions
             get.SetDescription("Operations related to reading models.");
 
             get.AddCommand<ModelGetSingleCommand>("single")
-                .WithDescription("Get single model.");
+                .WithDescription("Get single model.")
+                .WithExample("model get single --tenantId -a <adt-instance-url> -m <model-id>");
 
             get.AddCommand<ModelGetAllCommand>("all")
-                .WithDescription("Get all models.");
+                .WithDescription("Get all models.")
+                .WithExample("model get all --tenantId -a <adt-instance-url>");
         });
 
     private static Action<IConfigurator<CommandSettings>> ConfigureEventRouteCommands()
@@ -82,10 +90,12 @@ public static class CommandAppExtensions
             node.SetDescription("Operations related to event routes.");
 
             node.AddCommand<EventRouteCreateCommand>("create")
-                .WithDescription("Create event route.");
+                .WithDescription("Create event route.")
+                .WithExample("route create"); // TODO: Example
 
             node.AddCommand<EventRouteDeleteCommand>("delete")
-                .WithDescription("Delete event route.");
+                .WithDescription("Delete event route.")
+                .WithExample("route delete"); // TODO: Example
 
             ConfigureEventRouteGetCommands(node);
         };
@@ -94,13 +104,16 @@ public static class CommandAppExtensions
         IConfigurator<CommandSettings> node)
         => node.AddBranch("get", get =>
         {
+            // TODO: Add examples
             get.SetDescription("Operations related to reading event routes.");
 
             get.AddCommand<EventRouteGetSingleCommand>("single")
-                .WithDescription("Get single event route.");
+                .WithDescription("Get single event route.")
+                .WithExample("route get single"); // TODO: Example
 
             get.AddCommand<EventRouteGetAllCommand>("all")
-                .WithDescription("Get all event routes.");
+                .WithDescription("Get all event routes.")
+                .WithExample("route get all"); // TODO: Example
         });
 
     private static Action<IConfigurator<CommandSettings>> ConfigureTwinCommands()
@@ -109,18 +122,22 @@ public static class CommandAppExtensions
             node.SetDescription("Operations related to twins.");
 
             node.AddCommand<TwinCountCommand>("count")
-                .WithDescription("Count the different types of twins.");
+                .WithDescription("Count the different types of twins.")
+                .WithExample("twin count --tenantId -a <adt-instance-url>");
 
             node.AddCommand<TwinCreateCommand>("create")
-                .WithDescription("Create single twin.");
+                .WithDescription("Create single twin.")
+                .WithExample("twin create"); // TODO: Example
 
             ConfigureTwinDeleteCommands(node);
 
             node.AddCommand<TwinGetCommand>("get")
-                .WithDescription("Get single twin.");
+                .WithDescription("Get single twin.")
+                .WithExample("twin get --tenantId -a <adt-instance-url> -t <twin-id>");
 
             node.AddCommand<TwinUpdateCommand>("update")
-                .WithDescription("Update single twin.");
+                .WithDescription("Update single twin.")
+                .WithExample("twin update"); // TODO: Example
 
             node.AddBranch("relationship", ConfigureRelationshipCommands());
         };
@@ -132,13 +149,16 @@ public static class CommandAppExtensions
             delete.SetDescription("Operations related to deleting twins.");
 
             delete.AddCommand<TwinDeleteSingleCommand>("single")
-                .WithDescription("Delete single twin.");
+                .WithDescription("Delete single twin.")
+                .WithExample("twin delete single --tenantId -a <adt-instance-url> -t <twin-id>");
 
             delete.AddCommand<TwinDeleteAllCommand>("all")
-                .WithDescription("Delete all twins.");
+                .WithDescription("Delete all twins.")
+                .WithExample("twin delete all --tenantId -a <adt-instance-url>");
 
-            delete.AddCommand<TwinDeleteAllByModelCommand>("allByModel")
-                .WithDescription("Delete all twins by a modelId.");
+            delete.AddCommand<TwinDeleteAllByModelCommand>("allbymodel")
+                .WithDescription("Delete all twins by a modelId.")
+                .WithExample("twin delete allbymodel --tenantId -a <adt-instance-url> -m <model-id>");
         });
 
     private static Action<IConfigurator<CommandSettings>> ConfigureRelationshipCommands()
@@ -147,10 +167,12 @@ public static class CommandAppExtensions
             node.SetDescription("Operations related to twin relationships.");
 
             node.AddCommand<RelationshipCreateCommand>("create")
-                .WithDescription("Create relationship.");
+                .WithDescription("Create relationship.")
+                .WithExample("twin relationship create"); // TODO: Example
 
             node.AddCommand<RelationshipDeleteCommand>("delete")
-                .WithDescription("Delete relationship.");
+                .WithDescription("Delete relationship.")
+                .WithExample("twin relationship delete"); // TODO: Example
 
             ConfigureRelationshipGetCommands(node);
         };
@@ -162,12 +184,15 @@ public static class CommandAppExtensions
             get.SetDescription("Operations related to reading twin relationships.");
 
             get.AddCommand<RelationshipGetSingleCommand>("single")
-                .WithDescription("Get single relationship for twin.");
+                .WithDescription("Get single relationship for twin.")
+                .WithExample("twin relationship get single --tenantId -a <adt-instance-url> -t <twin-id> -r <relationship-id>");
 
             get.AddCommand<RelationshipGetAllCommand>("all")
-                .WithDescription("Get all relationships for twin.");
+                .WithDescription("Get all relationships for twin.")
+                .WithExample("twin relationship get all --tenantId -a <adt-instance-url> -t <twin-id>");
 
             get.AddCommand<RelationshipGetIncomingCommand>("incoming")
-                .WithDescription("Get all incoming relationships for twin.");
+                .WithDescription("Get all incoming relationships for twin.")
+                .WithExample("twin relationship get incoming --tenantId -a <adt-instance-url> -t <twin-id>");
         });
 }
