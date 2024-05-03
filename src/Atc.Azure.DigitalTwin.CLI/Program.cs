@@ -1,3 +1,4 @@
+// ReSharper disable ConvertIfStatementToReturnStatement
 namespace Atc.Azure.DigitalTwin.CLI;
 
 public static class Program
@@ -18,8 +19,6 @@ public static class Program
         ProgramCsHelper.SetMinimumLogLevelIfNeeded(args, consoleLoggerConfiguration);
 
         var serviceCollection = ServiceCollectionFactory.Create(consoleLoggerConfiguration);
-        serviceCollection.TryAddSingleton<IDigitalTwinParser, DigitalTwinParser>();
-        serviceCollection.AddDigitalTwinsClient(configuration);
 
         var app = CommandAppFactory.Create(serviceCollection);
         app.ConfigureCommands();
@@ -34,7 +33,6 @@ public static class Program
             return [CommandConstants.ArgumentShortHelp];
         }
 
-        // TODO: Add multiple command help commands
         return args;
     }
 }
