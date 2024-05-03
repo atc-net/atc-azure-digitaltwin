@@ -3,7 +3,7 @@
 
   <PropertyGroup Label="Metadata configuration">
     <OrganizationName>atc</OrganizationName>
-    <RepositoryName>atc-iot-digitaltwin</RepositoryName>
+    <RepositoryName>atc-azure-digitaltwin</RepositoryName>
   </PropertyGroup>
 
   <!-- Solution wide properties -->
