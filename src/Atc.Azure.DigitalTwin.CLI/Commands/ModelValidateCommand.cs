@@ -40,15 +40,11 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 
         logger.LogInformation("Loaded the following models:");
 
-        foreach (DTInterfaceInfo @interface in models.Values)
+        foreach (var interfaceInfo in models.Values)
         {
-            @interface.DisplayName.TryGetValue("en", out var displayName);
+            interfaceInfo.DisplayName.TryGetValue("en", out var displayName);
 
-            //// TODO: Log
-            //// Use the logger's built-in formatting capabilities, which avoid creating an intermediate string.
-            ////logger.LogInformation("{0,-80}{1}", @interface.Id.AbsoluteUri, displayName ?? "<none>");
-            //// Assuming @interface.Id.AbsoluteUri and displayName are safe to log
-            ////logger.LogInformation(string.Format(GlobalizationConstants.EnglishCultureInfo, ListFormat, @interface.Id.AbsoluteUri, displayName ?? "<none>"));
+            logger.LogInformation($"{interfaceInfo.Id.AbsoluteUri} - {displayName ?? "<none>"}");
         }
 
         return ConsoleExitStatusCodes.Success;
