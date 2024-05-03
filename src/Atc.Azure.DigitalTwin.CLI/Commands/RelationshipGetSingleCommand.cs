@@ -4,16 +4,13 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<RelationshipGetSingleCommand> logger;
-    private readonly DigitalTwinsClient client;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public RelationshipGetSingleCommand(
-        ILoggerFactory loggerFactory,
-        DigitalTwinsClient client)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetSingleCommand>();
-        this.client = client;
         jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
@@ -34,16 +31,23 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipGetS
         var twinId = settings.TwinId;
         var relationshipId = settings.RelationshipId;
 
-        logger.LogInformation($"Getting Relationship for twin with id '{twinId}' and relationship id '{relationshipId}'.");
+        logger.LogInformation($"Getting relationship for twin '{twinId}' and relationship id '{relationshipId}'.");
 
         try
         {
-            var result = await client.GetRelationshipAsync<BasicRelationship>(twinId, relationshipId);
-            if (result is not null)
+            var digitalTwinService = DigitalTwinServiceFactory.Create(
+                loggerFactory,
+                settings.TenantId!,
+                settings.AdtInstanceUrl!);
+
+            var result = await digitalTwinService.GetRelationship(twinId, relationshipId);
+            if (result is null)
             {
-                logger.LogInformation(JsonSerializer.Serialize(result.Value, jsonSerializerOptions));
+                logger.LogError($"Failed to retrieve relationship for twin '{twinId} and relationship id '{relationshipId}''");
+                return ConsoleExitStatusCodes.Failure;
             }
 
+            logger.LogInformation(JsonSerializer.Serialize(result, jsonSerializerOptions));
             return ConsoleExitStatusCodes.Success;
         }
         catch (RequestFailedException ex)
