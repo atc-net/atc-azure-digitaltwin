@@ -2,7 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Atc.Azure.DigitalTwin</PackageId>
+    <PackageTags>azure;iot;digitaltwin;twin</PackageTags>
+    <Description>Atc.Azure.DigitalTwin Contains common services for azure digital twins, validate DTDL models, upload DTDL models etc.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Atc" Version="2.0.472" />
