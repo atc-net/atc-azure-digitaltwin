@@ -168,7 +168,7 @@ public static class CommandAppExtensions
 
             node.AddCommand<RelationshipCreateCommand>("create")
                 .WithDescription("Create relationship.")
-                .WithExample("twin relationship create"); // TODO: Example
+                .WithExample("twin relationship create --tenantId -a <adt-instance-url> --source-twinId <source-twin-id> --target-twinId <target-twin-id> --relationshipName <relationship-name>");
 
             node.AddCommand<RelationshipDeleteCommand>("delete")
                 .WithDescription("Delete relationship.")
