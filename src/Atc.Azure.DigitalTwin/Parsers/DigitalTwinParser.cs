@@ -21,17 +21,17 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
 
             return (true, interfaces);
         }
-        catch (ParsingException pe)
+        catch (ParsingException ex)
         {
             logger.LogError("Error parsing models");
             var errorCount = 1;
-            foreach (var err in pe.Errors)
+            foreach (var error in ex.Errors)
             {
                 logger.LogError($"Error {errorCount}:");
-                logger.LogError($"{err.Message}");
-                logger.LogError($"Primary ID: {err.PrimaryID}");
-                logger.LogError($"Secondary ID: {err.SecondaryID}");
-                logger.LogError($"Property: {err.Property}");
+                logger.LogError($"{error.Message}");
+                logger.LogError($"Primary ID: {error.PrimaryID}");
+                logger.LogError($"Secondary ID: {error.SecondaryID}");
+                logger.LogError($"Property: {error.Property}");
                 errorCount++;
             }
 
