@@ -4,15 +4,12 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateSingleCommand> logger;
-    private readonly IModelRepositoryService modelRepositoryService;
 
     public ModelCreateSingleCommand(
-        ILoggerFactory loggerFactory,
-        IModelRepositoryService modelRepositoryService)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
-        this.modelRepositoryService = modelRepositoryService;
     }
 
     public override Task<int> ExecuteAsync(
@@ -31,6 +28,8 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         var directoryPath = settings.DirectoryPath;
         var directoryInfo = new DirectoryInfo(directoryPath);
+
+        var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
         if (!await modelRepositoryService.LoadModelContent(directoryInfo))
         {

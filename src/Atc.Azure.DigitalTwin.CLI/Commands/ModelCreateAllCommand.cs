@@ -4,15 +4,12 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateAllCommand> logger;
-    private readonly IModelRepositoryService modelRepositoryService;
 
     public ModelCreateAllCommand(
-        ILoggerFactory loggerFactory,
-        IModelRepositoryService modelRepositoryService)
+        ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateAllCommand>();
-        this.modelRepositoryService = modelRepositoryService;
     }
 
     public override Task<int> ExecuteAsync(
@@ -31,6 +28,8 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 
         var directoryPath = settings.DirectoryPath;
         var directoryInfo = new DirectoryInfo(directoryPath);
+
+        var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
         if (!await modelRepositoryService.LoadModelContent(directoryInfo))
         {
