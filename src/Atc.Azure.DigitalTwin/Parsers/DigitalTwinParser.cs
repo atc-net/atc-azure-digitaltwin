@@ -1,9 +1,10 @@
 namespace Atc.Azure.DigitalTwin.Parsers;
 
-// TODO: Logger generated
+/// <summary>
+/// Defines a parser that handles the transformation of JSON models into digital twin interface definitions.
+/// </summary>
 public sealed partial class DigitalTwinParser : IDigitalTwinParser
 {
-    private readonly ILogger<DigitalTwinParser> logger;
     private readonly ModelParser parser = new ();
 
     public DigitalTwinParser(
@@ -23,16 +24,10 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
         }
         catch (ParsingException ex)
         {
-            logger.LogError("Error parsing models");
-            var errorCount = 1;
+            LogParseFailed(ex.GetLastInnerMessage());
             foreach (var error in ex.Errors)
             {
-                logger.LogError($"Error {errorCount}:");
-                logger.LogError($"{error.Message}");
-                logger.LogError($"Primary ID: {error.PrimaryID}");
-                logger.LogError($"Secondary ID: {error.SecondaryID}");
-                logger.LogError($"Property: {error.Property}");
-                errorCount++;
+                LogParseError($"Message: {error.Message}, PrimaryID: {error.PrimaryID}, SecondaryID: {error.SecondaryID}, Property: {error.Property}");
             }
 
             return (false, null);

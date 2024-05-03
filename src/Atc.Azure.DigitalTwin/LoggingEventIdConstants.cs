@@ -62,4 +62,10 @@ internal static class LoggingEventIdConstants
         public const int ParseFailed = 11_002;
         public const int ParseError = 11_003;
     }
+
+    internal static class DigitalTwinParser
+    {
+        public const int ParseFailed = 12_000;
+        public const int ParseError = 12_001;
+    }
 }
