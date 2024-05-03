@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands;
 
-public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
+public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSettings>
 {
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateAllCommand> logger;
@@ -14,7 +14,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelPathSettings settings)
+        ModelUploadMultipleSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
@@ -22,7 +22,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelPathSettings>
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelPathSettings settings)
+        ModelUploadMultipleSettings settings)
     {
         ConsoleHelper.WriteHeader();
 

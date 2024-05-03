@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
-public class RelationshipCommandSettings : ConnectionBaseCommandSettings
+public class RelationshipCommandSettings : BaseCommandSettings
 {
     [CommandOption("-r|--relationshipId <RELATIONSHIPID>")]
     [Description("The id of the relationship")]

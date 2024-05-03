@@ -1,6 +1,6 @@
 namespace Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 
-public class ModelPathSettings : BaseCommandSettings
+public class ModelUploadMultipleSettings : ConnectionBaseCommandSettings
 {
     [CommandOption("-d|--directoryPath <DIRECTORYPATH>")]
     [Description("Path to files (directory)")]
