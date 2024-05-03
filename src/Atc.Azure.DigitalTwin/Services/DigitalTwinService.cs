@@ -1,9 +1,10 @@
 namespace Atc.Azure.DigitalTwin.Services;
 
-// TODO: Logger generated + way more logging
+/// <summary>
+/// Service for managing and interacting with digital twins and their models.
+/// </summary>
 public sealed partial class DigitalTwinService : IDigitalTwinService
 {
-    private readonly ILogger<DigitalTwinService> logger;
     private readonly DigitalTwinsClient client;
 
     public DigitalTwinService(
@@ -20,26 +21,34 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = await client.GetModelAsync(
+            LogRetrieving("model", modelId);
+
+            var response = await client.GetModelAsync(
                 modelId,
                 cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogNotFound("model", modelId);
                 return default;
             }
 
-            logger.LogInformation("Successfully fetched model");
-            return result.Value;
+            LogRetrieved("model", modelId);
+            return response.Value;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -50,26 +59,33 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
+            LogRetrievingModels();
             var response = client.GetModelsAsync(
                 options,
                 cancellationToken);
 
             if (response is null)
             {
+                LogModelsNotFound();
                 return default;
             }
 
-            logger.LogInformation("Successfully fetched models");
+            LogRetrievedModels();
             return response;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -88,26 +104,33 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = await client.GetDigitalTwinAsync<T>(
+            LogRetrieving("twin", twinId);
+            var response = await client.GetDigitalTwinAsync<T>(
                 twinId,
                 cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogNotFound("twin", twinId);
                 return default;
             }
 
-            logger.LogInformation("Successfully fetched twin.");
-            return result.Value;
+            LogRetrieved("twin", twinId);
+            return response.Value;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -120,23 +143,30 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
         try
         {
-            var queryResult = client.QueryAsync<BasicDigitalTwin>(query, cancellationToken);
-            await foreach (var item in queryResult)
+            LogRetrievingTwinIds(query);
+            var response = client.QueryAsync<BasicDigitalTwin>(query, cancellationToken);
+            await foreach (var twin in response)
             {
-                twinList.Add(item.Id);
+                twinList.Add(twin.Id);
             }
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving twins due to {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return null;
         }
         catch (Exception ex)
         {
-            logger.LogError($"Error in query execution: {ex.GetLastInnerMessage()}");
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return null;
         }
 
+        LogRetrievedTwinIds(query);
         return twinList;
     }
 
@@ -148,23 +178,30 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
         try
         {
-            var queryResult = client.QueryAsync<BasicDigitalTwin>(query, cancellationToken);
-            await foreach (var item in queryResult)
+            LogRetrievingTwins(query);
+            var response = client.QueryAsync<BasicDigitalTwin>(query, cancellationToken);
+            await foreach (var twin in response)
             {
-                twinList.Add(item);
+                twinList.Add(twin);
             }
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving twins due to {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return null;
         }
         catch (Exception ex)
         {
-            logger.LogError($"Error in query execution: {ex.GetLastInnerMessage()}");
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return null;
         }
 
+        LogRetrievedTwins(query);
         return twinList;
     }
 
@@ -174,24 +211,31 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = client.GetIncomingRelationshipsAsync(twinId, cancellationToken);
+            LogRetrieving("incoming-relationships", twinId);
+            var response = client.GetIncomingRelationshipsAsync(twinId, cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogNotFound("incoming-relationships", twinId);
                 return default;
             }
 
-            logger.LogInformation("Successfully fetched incoming relationships.");
-            return result;
+            LogRetrieved("incoming-relationships", twinId);
+            return response;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -203,30 +247,38 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = GetRelationships(twinId, relationshipName, cancellationToken);
+            LogRetrievingRelationship(twinId, relationshipName);
+            var response = GetRelationships(twinId, relationshipName, cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogRelationshipsNotFound(twinId);
                 return null;
             }
 
-            var relationship = await result.SingleOrDefaultAsync(cancellationToken);
+            var relationship = await response.SingleOrDefaultAsync(cancellationToken);
             if (relationship is null)
             {
+                LogRelationshipNotFound(twinId, relationshipName);
                 return null;
             }
 
-            logger.LogInformation("Successfully fetched relationship.");
+            LogRetrievedRelationship(twinId, relationshipName);
             return relationship;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -238,27 +290,34 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = client.GetRelationshipsAsync<BasicRelationship>(
+            LogRetrievingRelationships(twinId);
+            var response = client.GetRelationshipsAsync<BasicRelationship>(
                 twinId,
                 relationshipName,
                 cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogRelationshipsNotFound(twinId);
                 return default;
             }
 
-            logger.LogInformation("Successfully fetched incoming relationships.");
-            return result;
+            LogRetrievedRelationships(twinId);
+            return response;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -269,26 +328,33 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = await client.CreateModelsAsync(dtdlModels, cancellationToken);
+            LogCreatingModels();
+            var response = await client.CreateModelsAsync(dtdlModels, cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogCreateModelsFailed();
                 return (false, "Failed to create models");
             }
 
-            logger.LogInformation("Successfully created models");
+            LogCreatedModels();
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}: {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -302,6 +368,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
+            LogCreatingOrUpdatingRelationship(sourceTwinId, targetTwinId, relationshipName);
             var relationship = new BasicRelationship
             {
                 Name = relationshipName,
@@ -311,26 +378,32 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             };
 
             var relationShipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
-            var result = await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationShipId, relationship, cancellationToken: cancellationToken);
+            var response = await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationShipId, relationship, cancellationToken: cancellationToken);
 
-            if (result is null)
+            if (response is null)
             {
+                LogCreateOrUpdateRelationshipFailed(sourceTwinId, targetTwinId, relationshipName);
                 return (false, $"Failed to create Relationship '{relationShipId}' on twin '{sourceTwinId}'");
             }
 
-            logger.LogInformation($"Successfully created relationship {relationShipId}.");
+            LogCreatedOrUpdatedRelationship(sourceTwinId, targetTwinId, relationshipName);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}: {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -344,6 +417,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
+            LogCreatingOrUpdatingRelationship(sourceTwinId, targetTwinId, relationshipName);
             var relationship = new BasicRelationship
             {
                 Name = relationshipName,
@@ -374,18 +448,24 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationShipId, relationship, cancellationToken: cancellationToken);
             }
 
+            LogCreatedOrUpdatedRelationship(sourceTwinId, targetTwinId, relationshipName);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}: {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -396,23 +476,36 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            await client.DecommissionModelAsync(
+            LogDecommissioningModel(modelId);
+            var response = await client.DecommissionModelAsync(
                 modelId,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully decommissioned model '{modelId}'");
+            if (response is null ||
+                response.IsError)
+            {
+                LogDecommissionModelFailed(modelId);
+                return (false, "Failed to decommission model");
+            }
+
+            LogDecommissionedModel(modelId);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} Decommissioning model {modelId} due to {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -423,23 +516,35 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            await client.DeleteModelAsync(
+            LogDeletingModel(modelId);
+            var response = await client.DeleteModelAsync(
                 modelId,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully deleted model '{modelId}'");
+            if (response is null ||
+                response.IsError)
+            {
+                LogDeleteModelFailed(modelId);
+            }
+
+            LogDeletedModel(modelId);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} deleting model {modelId} due to {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -451,31 +556,46 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var relationship = await GetRelationship(twinId, relationshipName, cancellationToken);
-            if (relationship is null)
+            LogRetrievingRelationship(twinId, relationshipName);
+            var getResponse = await GetRelationship(twinId, relationshipName, cancellationToken);
+            if (getResponse is null)
             {
+                LogRelationshipNotFound(twinId, relationshipName);
                 return (false, "RelationShip not found");
             }
 
-            await client.DeleteRelationshipAsync(
+            LogDeletingRelationship(twinId, relationshipName);
+            var deleteResponse = await client.DeleteRelationshipAsync(
                 twinId,
-                relationship.Id,
-                relationship.ETag,
+                getResponse.Id,
+                getResponse.ETag,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully deleted relationship '{relationship.Id}' for twin '{twinId}'.");
+            if (deleteResponse is null ||
+                deleteResponse.IsError)
+            {
+                LogDeleteRelationshipFailed(twinId, relationshipName);
+                return (false, "Failed to delete relationship");
+            }
+
+            LogDeletedRelationship(twinId, relationshipName);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}: {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -484,8 +604,8 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         string twinId,
         CancellationToken cancellationToken = default)
     {
-        await FindAndDeleteOutgoingRelationshipsForTwinAsync(twinId, cancellationToken);
-        await FindAndDeleteIncomingRelationshipsForTwinAsync(twinId, cancellationToken);
+        await FindAndDeleteOutgoingRelationshipsForTwin(twinId, cancellationToken);
+        await FindAndDeleteIncomingRelationshipsForTwin(twinId, cancellationToken);
     }
 
     public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwin(
@@ -495,24 +615,37 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            await client.DeleteDigitalTwinAsync(
+            LogDeletingTwin(twinId);
+            var response = await client.DeleteDigitalTwinAsync(
                 twinId,
                 ifMatch,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully deleted twin '{twinId}'");
+            if (response is null ||
+                response.IsError)
+            {
+                LogDeleteTwinFailed(twinId);
+                return (false, "Failed to delete twin");
+            }
+
+            LogDeletedTwin(twinId);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} deleting twin {twinId} due to {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -526,26 +659,39 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            await client.UpdateRelationshipAsync(
+            LogUpdatingRelationship(twinId, relationshipId);
+            var response = await client.UpdateRelationshipAsync(
                 twinId,
                 relationshipId,
                 jsonPatchDocument,
                 ifMatch,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully updated relationship '{relationshipId}' on twin '{twinId}'");
+            if (response is null ||
+                response.IsError)
+            {
+                LogUpdateRelationshipFailed(twinId, relationshipId);
+                return (false, "Failed to update relationship");
+            }
+
+            LogUpdatedRelationship(twinId, relationshipId);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} updating relationship '{relationshipId}' on twin '{twinId}' due to {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -558,25 +704,38 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            await client.UpdateDigitalTwinAsync(
+            LogUpdatingTwin(twinId);
+            var response = await client.UpdateDigitalTwinAsync(
                 twinId,
                 jsonPatchDocument,
                 ifMatch,
                 cancellationToken);
 
-            logger.LogInformation($"Successfully updated twin '{twinId}'");
+            if (response is null ||
+                response.IsError)
+            {
+                LogUpdateTwinFailed(twinId);
+                return (false, "Failed to update twin");
+            }
+
+            LogUpdatedTwin(twinId);
             return (true, null);
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = $"Error {ex.Status}/{ex.ErrorCode} updating twin '{twinId}' due to {ex.GetLastInnerMessage()}";
-            logger.LogError(errorMessage);
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
             return (false, errorMessage);
         }
         catch (Exception ex)
         {
             var errorMessage = ex.GetLastInnerMessage();
-            logger.LogError(errorMessage);
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
             return (false, errorMessage);
         }
     }
@@ -588,24 +747,30 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            var result = client.QueryAsync<T>(query, cancellationToken);
-
-            if (result is null)
+            LogQuerying(query);
+            var response = client.QueryAsync<T>(query, cancellationToken);
+            if (response is null)
             {
+                LogQueryingFailed(query);
                 return default;
             }
 
-            logger.LogInformation($"Successfully queried for '{query}'.");
-            return result;
+            LogQueried(query);
+            return response;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
@@ -619,31 +784,38 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
+            LogQuerying(query);
             var response = client.QueryAsync<T>(query, cancellationToken);
             var pagedResult = response.AsPages(continuationToken, pageSize);
             var result = await pagedResult.FirstOrDefaultAsync(cancellationToken);
 
             if (result is null)
             {
+                LogQueryingFailed(query);
                 return default;
             }
 
-            logger.LogInformation($"Successfully queried for '{query}'.");
+            LogQueried(query);
             return result;
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}: {ex.GetLastInnerMessage()}");
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                ex.GetLastInnerMessage());
             return default;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
             return default;
         }
     }
 
-    private async Task FindAndDeleteOutgoingRelationshipsForTwinAsync(
+    private async Task FindAndDeleteOutgoingRelationshipsForTwin(
         string twinId,
         CancellationToken cancellationToken = default)
     {
@@ -660,20 +832,22 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                     relationship.Id,
                     cancellationToken: cancellationToken);
 
-                logger.LogInformation($"Deleted relationship {relationship.Id} from {twinId}");
+                LogDeletingRelationship(twinId, relationship.Id);
             }
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving or deleting relationships for {twinId} due to {ex.GetLastInnerMessage()}");
+            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
         }
     }
 
-    private async Task FindAndDeleteIncomingRelationshipsForTwinAsync(
+    private async Task FindAndDeleteIncomingRelationshipsForTwin(
         string twinId,
         CancellationToken cancellationToken = default)
     {
@@ -690,16 +864,18 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                     incomingRelationship.RelationshipId,
                     cancellationToken: cancellationToken);
 
-                logger.LogInformation($"Deleted incoming relationship {incomingRelationship.RelationshipId} from {twinId}");
+                LogDeletingRelationship(twinId, incomingRelationship.RelationshipId);
             }
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError($"Error {ex.Status}/{ex.ErrorCode} retrieving or deleting incoming relationships for {twinId} due to {ex.GetLastInnerMessage()}");
+            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.GetLastInnerMessage());
+            LogFailure(
+                ex.GetType().ToString(),
+                ex.GetLastInnerMessage());
         }
     }
 }
