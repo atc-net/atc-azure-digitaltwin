@@ -2,7 +2,7 @@ namespace Atc.Azure.DigitalTwin.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDigitalTwinsClient(
+    public static IServiceCollection ConfigureDigitalTwinsClient(
         this IServiceCollection services)
     {
         services.AddSingleton(sp =>
