@@ -104,7 +104,6 @@ public static class CommandAppExtensions
         IConfigurator<CommandSettings> node)
         => node.AddBranch("get", get =>
         {
-            // TODO: Add examples
             get.SetDescription("Operations related to reading event routes.");
 
             get.AddCommand<EventRouteGetSingleCommand>("single")
