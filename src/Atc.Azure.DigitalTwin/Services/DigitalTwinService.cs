@@ -446,12 +446,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
     public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinRelationship(
         string twinId,
-        string relationShipName,
+        string relationshipName,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var relationship = await GetRelationship(twinId, relationShipName, cancellationToken);
+            var relationship = await GetRelationship(twinId, relationshipName, cancellationToken);
             if (relationship is null)
             {
                 return (false, "RelationShip not found");
@@ -581,7 +581,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public AsyncPageable<T>? QueryAsync<T>(
+    public AsyncPageable<T>? Query<T>(
         string query,
         CancellationToken cancellationToken = default)
         where T : notnull
@@ -610,7 +610,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<Page<T>?> QueryAsync<T>(
+    public async Task<Page<T>?> Query<T>(
         string query,
         int pageSize,
         string? continuationToken = null,
