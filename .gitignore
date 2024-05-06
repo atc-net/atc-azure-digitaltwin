@@ -347,3 +347,4 @@ src/DTDL.Client/build
 src/DTDL.Functions/ApplicationInsights.config
 sample/DTDL.SignalR.Client.Wpf/appsettings.json
 sample/Moulding.Factory.Acceptance.Test.FlowRunner.Sample/appsettings.json
+/sample/Atc.Azure.DigitalTwin.Console.Sample/appsettings.development.json
