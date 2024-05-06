@@ -32,7 +32,10 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         => Models;
 
     public void Clear()
-        => Models.Clear();
+    {
+        Models.Clear();
+        modelsContent.Clear();
+    }
 
     public Task<bool> LoadModelContent(
         DirectoryInfo path)
@@ -74,6 +77,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         try
         {
             await ParseAndStoreModels(modelsContent);
+            Clear();
         }
         catch (ParsingException pe)
         {
