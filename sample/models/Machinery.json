@@ -1,0 +1,25 @@
+{
+  "@id": "dtmi:com:atc:Machinery;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "extends": "dtmi:com:atc:Equipment;1",
+  "displayName": {
+    "en": "Machinery",
+    "es": "Maquinaria",
+    "fr": "Machinerie",
+    "de": "Maschinerie",
+    "zh": "机械"
+  },
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "operationalStatus",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "maintenanceSchedule",
+      "schema": "string"
+    }
+  ]
+}

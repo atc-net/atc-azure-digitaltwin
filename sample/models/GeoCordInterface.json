@@ -1,0 +1,31 @@
+{
+  "@id": "dtmi:com:atc:GeoCord;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "GeoLocation",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "GeoLocation",
+      "schema": "dtmi:com:atc:GeoLocation;1"
+    }
+  ],
+  "schemas": [
+    {
+      "@id": "dtmi:com:atc:GeoLocation;1",
+      "@type": "Object",
+      "fields": [
+        {
+          "@id": "dtmi:com:atc:GeoLocation:lat;1",
+          "name": "latitude",
+          "schema": "double"
+        },
+        {
+          "@id": "dtmi:com:atc:GeoLocation:lon;1",
+          "name": "longitude",
+          "schema": "double"
+        }
+      ]
+    }
+  ]
+}
