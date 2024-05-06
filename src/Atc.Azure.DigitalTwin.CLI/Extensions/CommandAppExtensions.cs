@@ -123,7 +123,7 @@ public static class CommandAppExtensions
 
             node.AddCommand<TwinCreateCommand>("create")
                 .WithDescription("Create single twin.")
-                .WithExample("twin create");
+                .WithExample("twin create --tenantId -a <adt-instance-url> -t <twin-id> -m <model-id> -modelVersion <model-version> --jsonPayload <json-payload>");
 
             ConfigureTwinDeleteCommands(node);
 

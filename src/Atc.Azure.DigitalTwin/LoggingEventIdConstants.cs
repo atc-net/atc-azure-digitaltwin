@@ -27,16 +27,19 @@ internal static class LoggingEventIdConstants
         public const int DeleteModelFailed = 10_210;
         public const int DeletedModel = 10_211;
 
-        public const int RetrievingTwinIds = 10_300;
-        public const int RetrievedTwinIds = 10_301;
-        public const int RetrievingTwins = 10_302;
-        public const int RetrievedTwins = 10_303;
-        public const int DeletingTwin = 10_304;
-        public const int DeleteTwinFailed = 10_305;
-        public const int DeletedTwin = 10_306;
-        public const int UpdatingTwin = 10_307;
-        public const int UpdateTwinFailed = 10_308;
-        public const int UpdatedTwin = 10_309;
+        public const int CreatingOrReplacingTwin = 10_300;
+        public const int CreateOrReplaceTwinFailed = 10_301;
+        public const int CreatedOrReplacedTwin = 10_302;
+        public const int RetrievingTwinIds = 10_303;
+        public const int RetrievedTwinIds = 10_304;
+        public const int RetrievingTwins = 10_305;
+        public const int RetrievedTwins = 10_306;
+        public const int DeletingTwin = 10_307;
+        public const int DeleteTwinFailed = 10_308;
+        public const int DeletedTwin = 10_309;
+        public const int UpdatingTwin = 10_310;
+        public const int UpdateTwinFailed = 10_311;
+        public const int UpdatedTwin = 10_312;
 
         public const int RetrievingRelationship = 10_400;
         public const int RelationshipNotFound = 10_401;

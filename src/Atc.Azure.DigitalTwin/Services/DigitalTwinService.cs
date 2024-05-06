@@ -6,6 +6,7 @@ namespace Atc.Azure.DigitalTwin.Services;
 public sealed partial class DigitalTwinService : IDigitalTwinService
 {
     private readonly DigitalTwinsClient client;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public DigitalTwinService(
         ILoggerFactory loggerFactory,
@@ -13,6 +14,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         logger = loggerFactory.CreateLogger<DigitalTwinService>();
         this.client = client;
+        this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
     public async Task<DigitalTwinsModelData?> GetModel(
@@ -319,6 +321,44 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
             return default;
+        }
+    }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwin<T>(
+        string twinId,
+        T twin,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogCreatingOrReplacingTwin(twinId, JsonSerializer.Serialize(twin, jsonSerializerOptions));
+            var response = await client.CreateOrReplaceDigitalTwinAsync(twinId, twin, cancellationToken: cancellationToken);
+
+            if (response is null)
+            {
+                LogCreateOrReplaceTwinFailed(twinId, JsonSerializer.Serialize(twin, jsonSerializerOptions));
+                return (false, "Failed to create twin");
+            }
+
+            LogCreatedOrReplacedTwin(twinId, JsonSerializer.Serialize(twin, jsonSerializerOptions));
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(
+                ex.Status,
+                ex.ErrorCode,
+                errorMessage);
+            return (false, errorMessage);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            LogFailure(
+                ex.GetType().ToString(),
+                errorMessage);
+            return (false, errorMessage);
         }
     }
 

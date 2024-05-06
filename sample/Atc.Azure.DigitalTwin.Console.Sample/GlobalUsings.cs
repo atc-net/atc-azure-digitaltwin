@@ -1,0 +1,10 @@
+global using System.Text.Json.Serialization;
+global using Atc.Azure.DigitalTwin.Console.Sample.Contracts;
+global using Atc.Azure.DigitalTwin.Extensions;
+global using Atc.Azure.DigitalTwin.Options;
+global using Atc.Azure.DigitalTwin.Parsers;
+global using Atc.Azure.DigitalTwin.Services;
+global using Azure;
+global using Azure.DigitalTwins.Core;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Logging;

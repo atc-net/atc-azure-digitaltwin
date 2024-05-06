@@ -1,0 +1,34 @@
+{
+  "@id": "dtmi:com:atc:ProductionLine;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "extends": "dtmi:com:atc:Equipment;1",
+  "displayName": {
+    "en": "Production Line",
+    "es": "Línea de Producción",
+    "fr": "Ligne de Production",
+    "de": "Produktionslinie",
+    "zh": "生产线"
+  },
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "lineCapacity",
+      "schema": "integer"
+    },
+    {
+      "@type": "Relationship",
+      "@id": "dtmi:com:atc:ProductionLine:organizedInDepartment;1",
+      "name": "organizedInDepartment",
+      "displayName": "ProductionLine OrganizedIn Department",
+      "target": "dtmi:com:atc:Department;1",
+      "properties": [
+        {
+          "@type": "Property",
+          "name": "isActive",
+          "schema": "boolean"
+        }
+      ]
+    }
+  ]
+}

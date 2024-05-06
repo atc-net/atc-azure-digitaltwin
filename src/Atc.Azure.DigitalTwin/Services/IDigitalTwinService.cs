@@ -102,6 +102,19 @@ public interface IDigitalTwinService
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Creates digital twin based on the instance of the provided type.
+    /// </summary>
+    /// <typeparam name="T">The type of the digital twin object to create or replace.</typeparam>
+    /// <param name="twinId">The ID of the twin to create.</param>
+    /// <param name="twin">The twin to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwin<T>(
+        string twinId,
+        T twin,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Creates digital twin models based on the provided DTDL (Digital Twins Definition Language) models.
     /// </summary>
     /// <param name="dtdlModels">The DTDL models as a collection of strings.</param>

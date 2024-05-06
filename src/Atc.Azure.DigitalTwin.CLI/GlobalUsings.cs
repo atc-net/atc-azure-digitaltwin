@@ -1,7 +1,10 @@
 global using System.ComponentModel;
+global using System.Dynamic;
 global using System.Text.Json;
+global using System.Text.Json.Serialization;
 global using Atc.Azure.DigitalTwin.CLI.Commands;
 global using Atc.Azure.DigitalTwin.CLI.Commands.Settings;
+global using Atc.Azure.DigitalTwin.CLI.Contract;
 global using Atc.Azure.DigitalTwin.CLI.Extensions;
 global using Atc.Azure.DigitalTwin.CLI.Factories;
 global using Atc.Azure.DigitalTwin.Extensions;

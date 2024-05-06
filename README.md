@@ -23,6 +23,8 @@ Azure Digital Twin library, which contains common services for Azure Digital Twi
   - [Update](#update)
   - [Usage](#usage)
     - [Option --help](#option---help)
+- [Sample Project](#sample-project)
+  - [Atc.Azure.DigitalTwin.Console.Sample](#atcazuredigitaltwinconsolesample)
 - [Requirements](#requirements)
 - [How to contribute](#how-to-contribute)
 
@@ -208,14 +210,14 @@ Since the tool is published as a .NET Tool, it can be launched from anywhere usi
 atc-azure-digitaltwin --help
 
 USAGE:
-    Atc.Azure.DigitalTwin.CLI.exe [OPTIONS] <COMMAND>
+    atc-azure-digitaltwin.exe [OPTIONS] <COMMAND>
 
 EXAMPLES:
-    Atc.Azure.DigitalTwin.CLI.exe model decommission --tenantId -a <adt-instance-url> -m <model-id>
-    Atc.Azure.DigitalTwin.CLI.exe model validate -d <directory-path>
-    Atc.Azure.DigitalTwin.CLI.exe route create
-    Atc.Azure.DigitalTwin.CLI.exe route delete
-    Atc.Azure.DigitalTwin.CLI.exe twin count --tenantId -a <adt-instance-url>
+    atc-azure-digitaltwin.exe model decommission --tenantId -a <adt-instance-url> -m <model-id>
+    atc-azure-digitaltwin.exe model validate -d <directory-path>
+    atc-azure-digitaltwin.exe route create
+    atc-azure-digitaltwin.exe route delete
+    atc-azure-digitaltwin.exe twin count --tenantId -a <adt-instance-url>
 
 OPTIONS:
     -h, --help       Prints help information
@@ -226,6 +228,23 @@ COMMANDS:
     route    Operations related to event routes
     twin     Operations related to twins
 ```
+
+# Sample Project
+
+## Atc.Azure.DigitalTwin.Console.Sample
+
+This console application serves as an example to demonstrate the utilization of services provided by the library. It showcases a series of operations related to Digital Twins using the example DTDL (Digital Twins Definition Language) models.
+
+The sample application executes the following operations:
+
+1. **Validate Models:** Validates the DTDL models located in the [models folder](sample/models/).
+2. **Load Models:** Loads the DTDL models from the [models folder](sample/models/).
+3. **Create Models:** Registers the loaded models with a Digital Twin instance.
+4. **Retrieve Model:** Fetches a specific model from the Digital Twin instance.
+5. **Create Digital Twin:** Generates a digital twin instance of a Press Machine.
+   > **Note:** This twin inherits properties from `TwinModelBase`, which provides essential attributes for twin creation.
+6. **Retrieve Twins:** Collects all existing twins.
+7. **Delete Twin:** Removes the specified twin instance.
 
 # Requirements
 

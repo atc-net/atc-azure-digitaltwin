@@ -1,0 +1,24 @@
+{
+  "@id": "dtmi:com:atc:Equipment;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": {
+    "en": "Base Equipment",
+    "es": "Equipo Base",
+    "fr": "Équipement de Base",
+    "de": "Basisausrüstung",
+    "zh": "基础设备"
+  },
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "manufacturer",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "serialNumber",
+      "schema": "string"
+    }
+  ]
+}

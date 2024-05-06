@@ -204,6 +204,39 @@ public sealed partial class DigitalTwinService
         [CallerLineNumber] int callerLineNumber = 0);
 
     [LoggerMessage(
+        EventId = LoggingEventIdConstants.DigitalTwinService.CreatingOrReplacingTwin,
+        Level = LogLevel.Trace,
+        Message = "{callerMethodName}({callerLineNumber}) - Creating twin '{twinId}' with payload: {jsonPayload}")]
+    private partial void LogCreatingOrReplacingTwin(
+        string twinId,
+        [StringSyntax(StringSyntaxAttribute.Json)]
+        string jsonPayload,
+        [CallerMemberName] string callerMethodName = "",
+        [CallerLineNumber] int callerLineNumber = 0);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.DigitalTwinService.CreateOrReplaceTwinFailed,
+        Level = LogLevel.Warning,
+        Message = "{callerMethodName}({callerLineNumber}) - Failed to create/replace twin '{twinId}' with payload: {jsonPayload}")]
+    private partial void LogCreateOrReplaceTwinFailed(
+        string twinId,
+        [StringSyntax(StringSyntaxAttribute.Json)]
+        string jsonPayload,
+        [CallerMemberName] string callerMethodName = "",
+        [CallerLineNumber] int callerLineNumber = 0);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.DigitalTwinService.CreatedOrReplacedTwin,
+        Level = LogLevel.Trace,
+        Message = "{callerMethodName}({callerLineNumber}) - Created/Replaced twin '{twinId}' with payload: {jsonPayload}")]
+    private partial void LogCreatedOrReplacedTwin(
+        string twinId,
+        [StringSyntax(StringSyntaxAttribute.Json)]
+        string jsonPayload,
+        [CallerMemberName] string callerMethodName = "",
+        [CallerLineNumber] int callerLineNumber = 0);
+
+    [LoggerMessage(
         EventId = LoggingEventIdConstants.DigitalTwinService.CreatingModels,
         Level = LogLevel.Trace,
         Message = "{callerMethodName}({callerLineNumber}) - Creating models")]

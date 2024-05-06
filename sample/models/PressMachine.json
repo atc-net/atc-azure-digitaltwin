@@ -1,0 +1,29 @@
+{
+  "@id": "dtmi:com:atc:PressMachine;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "extends": "dtmi:com:atc:Machinery;1",
+  "displayName": {
+    "en": "Press Machine",
+    "es": "Prensa",
+    "fr": "Presse",
+    "de": "Pressemaschine",
+    "zh": "压力机"
+  },
+  "contents": [
+    {
+      "@type": "Relationship",
+      "@id": "dtmi:com:atc:PressMachine:partOfProductionLine;1",
+      "name": "partOfProductionLine",
+      "displayName": "PressMachine Part Of ProductionLine",
+      "target": "dtmi:com:atc:ProductionLine;1",
+      "properties": [
+        {
+          "@type": "Property",
+          "name": "isActive",
+          "schema": "boolean"
+        }
+      ]
+    }
+  ]
+}

@@ -19,7 +19,7 @@ public sealed partial class ModelRepositoryService
 
     [LoggerMessage(
         EventId = LoggingEventIdConstants.ModelRepositoryService.ModelsLoaded,
-        Level = LogLevel.Error,
+        Level = LogLevel.Trace,
         Message = "{callerMethodName}({callerLineNumber}) - Loaded models from directory '{path}'")]
     private partial void LogModelsLoaded(
         string path,

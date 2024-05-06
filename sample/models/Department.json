@@ -1,0 +1,55 @@
+{
+  "@id": "dtmi:com:atc:Department;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "extends": "dtmi:com:atc:GeoCord;1",
+  "displayName": {
+    "en": "Department",
+    "es": "Departamento",
+    "fr": "Département",
+    "de": "Abteilung",
+    "zh": "部门"
+  },
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "departmentSize",
+      "schema": "integer",
+      "displayName": {
+        "en": "Department Size",
+        "es": "Tamaño del Departamento",
+        "fr": "Taille du Département",
+        "de": "Größe der Abteilung",
+        "zh": "部门大小"
+      },
+      "comment": "Indicates the number of employees or size of the department in square meters."
+    },
+    {
+      "@type": "Property",
+      "name": "safetyRating",
+      "schema": "integer",
+      "displayName": {
+        "en": "Safety Rating",
+        "es": "Calificación de Seguridad",
+        "fr": "Note de Sécurité",
+        "de": "Sicherheitsbewertung",
+        "zh": "安全等级"
+      },
+      "comment": "Safety rating as per the latest evaluation, on a scale of 1 to 10."
+    },
+    {
+      "@type": "Relationship",
+      "@id": "dtmi:com:atc:Department:containsProductionLines;1",
+      "name": "containsProductionLines",
+      "displayName": "Department Contains ProductionLines",
+      "target": "dtmi:com:atc:ProductionLine;1",
+      "properties": [
+        {
+          "@type": "Property",
+          "name": "isActive",
+          "schema": "boolean"
+        }
+      ]
+    }
+  ]
+}
