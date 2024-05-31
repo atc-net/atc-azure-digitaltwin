@@ -79,5 +79,5 @@ jobs:
 
       - name: 📦 Push packages to GitHub Package Registry
         run: |
-          dotnet nuget push ${GITHUB_WORKSPACE}/packages/'Atc.Azure.DigitalTwin.'${NBGV_NuGetPackageVersion}'.nupkg' -k ${{ secrets.GITHUB_TOKEN }} -s ${{ env.NUGET_REPO_URL }} --skip-duplicate
-          dotnet nuget push ${GITHUB_WORKSPACE}/packages/'atc-azure-digitaltwin.'${NBGV_NuGetPackageVersion}'.nupkg' -k ${{ secrets.GITHUB_TOKEN }} -s ${{ env.NUGET_REPO_URL }} --skip-duplicate
+          dotnet nuget push ${GITHUB_WORKSPACE}/packages/Atc.Azure.DigitalTwin.${{ env.NBGV_NuGetPackageVersion }}.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s ${{ env.NUGET_REPO_URL }} --skip-duplicate
+          dotnet nuget push ${GITHUB_WORKSPACE}/packages/atc-azure-digitaltwin.${{ env.NBGV_NuGetPackageVersion }}.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s ${{ env.NUGET_REPO_URL }} --skip-duplicate
