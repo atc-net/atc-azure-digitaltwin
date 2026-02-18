@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <PackageId>atc-azure-digitaltwin</PackageId>
     <PackageTags>azure-digitaltwin</PackageTags>
     <Description>A .NET Tool that can interact with Azure Digital Twin instances, validate models, upload models etc.</Description>
