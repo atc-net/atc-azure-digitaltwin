@@ -5,8 +5,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateAllCommand> logger;
 
-    public ModelCreateAllCommand(
-        ILoggerFactory loggerFactory)
+    public ModelCreateAllCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateAllCommand>();
@@ -14,15 +13,17 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelUploadMultipleSettings settings)
+        ModelUploadMultipleSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelUploadMultipleSettings settings)
+        ModelUploadMultipleSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -31,7 +32,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
 
         var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
-        if (!await modelRepositoryService.LoadModelContent(directoryInfo))
+        if (!await modelRepositoryService.LoadModelContent(directoryInfo, cancellationToken))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
@@ -42,9 +43,9 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(modelRepositoryService.GetModelsContent());
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(modelRepositoryService.GetModelsContent(), cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to upload models: {errorMessage}");

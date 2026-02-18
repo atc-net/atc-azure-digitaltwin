@@ -5,8 +5,7 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinCountCommand> logger;
 
-    public TwinCountCommand(
-        ILoggerFactory loggerFactory)
+    public TwinCountCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinCountCommand>();
@@ -14,15 +13,17 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -31,9 +32,9 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
         var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
-            settings.AdtInstanceUrl!);
+            new Uri(settings.AdtInstanceUrl!));
 
-        var twinList = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS");
+        var twinList = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS", cancellationToken);
         if (twinList is null ||
             twinList.Count == 0)
         {
@@ -41,15 +42,19 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
             return ConsoleExitStatusCodes.Failure;
         }
 
-        var groupedTwinList = twinList
-            .GroupBy(x => x.Metadata.ModelId, StringComparer.Ordinal)
-            .ToList();
+        var twinsByModel = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var twin in twinList)
+        {
+            var modelId = twin.Metadata.ModelId;
+            twinsByModel.TryGetValue(modelId, out var count);
+            twinsByModel[modelId] = count + 1;
+        }
 
         logger.LogInformation("Found:");
 
-        foreach (var group in groupedTwinList)
+        foreach (var (modelId, count) in twinsByModel)
         {
-            logger.LogInformation($"     {group.ToList().Count} twin(s) based on model '{group.Key}'.");
+            logger.LogInformation($"     {count} twin(s) based on model '{modelId}'.");
         }
 
         return ConsoleExitStatusCodes.Success;

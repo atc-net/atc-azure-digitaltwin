@@ -6,8 +6,7 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
     private readonly ILogger<RelationshipGetIncomingCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public RelationshipGetIncomingCommand(
-        ILoggerFactory loggerFactory)
+    public RelationshipGetIncomingCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetIncomingCommand>();
@@ -16,15 +15,17 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -36,9 +37,9 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetIncomingRelationships(twinId);
+            var response = digitalTwinService.GetIncomingRelationships(twinId, cancellationToken);
             if (response is null)
             {
                 logger.LogError($"Failed to fetch incoming relationships for twin with id '{twinId}'");

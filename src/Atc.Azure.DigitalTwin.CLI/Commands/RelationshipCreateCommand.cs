@@ -5,8 +5,7 @@ public sealed class RelationshipCreateCommand : AsyncCommand<RelationshipCreateC
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<RelationshipCreateCommand> logger;
 
-    public RelationshipCreateCommand(
-        ILoggerFactory loggerFactory)
+    public RelationshipCreateCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipCreateCommand>();
@@ -14,15 +13,17 @@ public sealed class RelationshipCreateCommand : AsyncCommand<RelationshipCreateC
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        RelationshipCreateCommandSettings settings)
+        RelationshipCreateCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        RelationshipCreateCommandSettings settings)
+        RelationshipCreateCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -37,12 +38,13 @@ public sealed class RelationshipCreateCommand : AsyncCommand<RelationshipCreateC
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
             var (succeeded, errorMessage) = await digitalTwinService.CreateRelationship(
                 sourceTwinId,
                 targetTwinId,
-                relationshipName);
+                relationshipName,
+                cancellationToken: cancellationToken);
 
             if (!succeeded)
             {

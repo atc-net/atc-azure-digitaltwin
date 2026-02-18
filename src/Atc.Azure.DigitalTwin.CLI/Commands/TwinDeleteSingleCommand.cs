@@ -5,8 +5,7 @@ public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinDeleteSingleCommand> logger;
 
-    public TwinDeleteSingleCommand(
-        ILoggerFactory loggerFactory)
+    public TwinDeleteSingleCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinDeleteSingleCommand>();
@@ -14,27 +13,29 @@ public sealed class TwinDeleteSingleCommand : AsyncCommand<TwinCommandSettings>
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
         var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
-            settings.AdtInstanceUrl!);
+            new Uri(settings.AdtInstanceUrl!));
 
         var twinId = settings.TwinId;
         logger.LogInformation($"Deleting twin with id '{twinId}'");
 
-        var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId);
+        var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId, cancellationToken: cancellationToken);
         if (!succeeded)
         {
             logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");

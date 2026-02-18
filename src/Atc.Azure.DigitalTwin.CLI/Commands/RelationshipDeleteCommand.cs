@@ -5,8 +5,7 @@ public sealed class RelationshipDeleteCommand : AsyncCommand<RelationshipCommand
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<RelationshipDeleteCommand> logger;
 
-    public RelationshipDeleteCommand(
-        ILoggerFactory loggerFactory)
+    public RelationshipDeleteCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipDeleteCommand>();
@@ -14,15 +13,17 @@ public sealed class RelationshipDeleteCommand : AsyncCommand<RelationshipCommand
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        RelationshipCommandSettings settings)
+        RelationshipCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        RelationshipCommandSettings settings)
+        RelationshipCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -36,11 +37,12 @@ public sealed class RelationshipDeleteCommand : AsyncCommand<RelationshipCommand
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
             var (succeeded, errorMessage) = await digitalTwinService.DeleteRelationship(
                 twinId,
-                relationshipId);
+                relationshipId,
+                cancellationToken);
 
             if (!succeeded)
             {

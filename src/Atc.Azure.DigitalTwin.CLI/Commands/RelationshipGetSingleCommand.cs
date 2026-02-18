@@ -6,8 +6,7 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipComm
     private readonly ILogger<RelationshipGetSingleCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public RelationshipGetSingleCommand(
-        ILoggerFactory loggerFactory)
+    public RelationshipGetSingleCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetSingleCommand>();
@@ -16,15 +15,17 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipComm
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        RelationshipCommandSettings settings)
+        RelationshipCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        RelationshipCommandSettings settings)
+        RelationshipCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -38,9 +39,9 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipComm
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var result = await digitalTwinService.GetRelationship(twinId, relationshipId);
+            var result = await digitalTwinService.GetRelationship(twinId, relationshipId, cancellationToken);
             if (result is null)
             {
                 logger.LogError($"Failed to retrieve relationship for twin '{twinId} and relationship id '{relationshipId}''");

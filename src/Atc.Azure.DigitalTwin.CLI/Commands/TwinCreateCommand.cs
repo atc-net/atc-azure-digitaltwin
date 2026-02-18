@@ -5,8 +5,7 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinCreateCommand> logger;
 
-    public TwinCreateCommand(
-        ILoggerFactory loggerFactory)
+    public TwinCreateCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinCreateCommand>();
@@ -14,15 +13,17 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        TwinCreateCommandSettings settings)
+        TwinCreateCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        TwinCreateCommandSettings settings)
+        TwinCreateCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -41,11 +42,12 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
             var (succeeded, errorMessage) = await digitalTwinService.CreateOrReplaceDigitalTwin(
                 twinId,
-                twinData);
+                twinData,
+                cancellationToken);
 
             if (!succeeded)
             {
@@ -113,14 +115,13 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
         return mergedObject;
     }
 
-    private static object? JsonElementToObject(
-        JsonElement element)
+    private static object? JsonElementToObject(JsonElement element)
         => element.ValueKind switch
         {
             JsonValueKind.String => element.GetString(),
             JsonValueKind.Number => element.GetDouble(),
             JsonValueKind.True or JsonValueKind.False => element.GetBoolean(),
             JsonValueKind.Object or JsonValueKind.Array => element.GetRawText(),
-            _ => null
+            _ => null,
         };
 }

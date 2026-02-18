@@ -3,7 +3,7 @@ namespace Atc.Azure.DigitalTwin.CLI.Contract;
 public class TwinModelBase
 {
     [JsonPropertyName(DigitalTwinsJsonPropertyNames.DigitalTwinMetadata)]
-    public DigitalTwinMetadata Metadata { get; set; } = new ();
+    public DigitalTwinMetadata Metadata { get; set; } = new();
 
     [JsonIgnore]
     public ETag? ETag
