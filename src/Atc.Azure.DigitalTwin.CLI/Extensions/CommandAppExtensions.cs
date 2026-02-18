@@ -3,8 +3,7 @@ namespace Atc.Azure.DigitalTwin.CLI.Extensions;
 
 public static class CommandAppExtensions
 {
-    public static void ConfigureCommands(
-        this CommandApp app)
+    public static void ConfigureCommands(this CommandApp app)
     {
         ArgumentNullException.ThrowIfNull(app);
 
@@ -88,11 +87,11 @@ public static class CommandAppExtensions
 
             node.AddCommand<EventRouteCreateCommand>("create")
                 .WithDescription("Create event route.")
-                .WithExample("route create");
+                .WithExample("route create --tenantId -a <adt-instance-url> -e <event-route-id> --endpointName <endpoint-name>");
 
             node.AddCommand<EventRouteDeleteCommand>("delete")
                 .WithDescription("Delete event route.")
-                .WithExample("route delete");
+                .WithExample("route delete --tenantId -a <adt-instance-url> -e <event-route-id>");
 
             ConfigureEventRouteGetCommands(node);
         };
@@ -105,11 +104,11 @@ public static class CommandAppExtensions
 
             get.AddCommand<EventRouteGetSingleCommand>("single")
                 .WithDescription("Get single event route.")
-                .WithExample("route get single");
+                .WithExample("route get single --tenantId -a <adt-instance-url> -e <event-route-id>");
 
             get.AddCommand<EventRouteGetAllCommand>("all")
                 .WithDescription("Get all event routes.")
-                .WithExample("route get all");
+                .WithExample("route get all --tenantId -a <adt-instance-url>");
         });
 
     private static Action<IConfigurator<CommandSettings>> ConfigureTwinCommands()
@@ -133,7 +132,7 @@ public static class CommandAppExtensions
 
             node.AddCommand<TwinUpdateCommand>("update")
                 .WithDescription("Update single twin.")
-                .WithExample("twin update");
+                .WithExample("twin update --tenantId -a <adt-instance-url> -t <twin-id> --jsonPatch <json-patch>");
 
             node.AddBranch("relationship", ConfigureRelationshipCommands());
         };
