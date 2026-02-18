@@ -106,14 +106,7 @@ public static class Program
 
         if (twinList is not null)
         {
-            var groupedTwinList = twinList
-                .GroupBy(x => x.Metadata.ModelId, StringComparer.Ordinal)
-                .ToList();
-
-            foreach (var group in groupedTwinList)
-            {
-                logger.LogInformation($"{group.ToList().Count} twin(s) based on model '{group.Key}'.");
-            }
+            LogTwinCounts(logger, twinList);
         }
 
         var (deleteTwinSucceeded, deleteTwinErrorMessage) = await digitalTwinService.DeleteTwin(
@@ -123,7 +116,24 @@ public static class Program
         if (!deleteTwinSucceeded)
         {
             logger.LogError($"Failed to delete twin: {deleteTwinErrorMessage}");
-            return;
+        }
+    }
+
+    private static void LogTwinCounts(
+        ILogger logger,
+        IReadOnlyList<BasicDigitalTwin> twinList)
+    {
+        var twinsByModel = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var twin in twinList)
+        {
+            var modelId = twin.Metadata.ModelId;
+            twinsByModel.TryGetValue(modelId, out var count);
+            twinsByModel[modelId] = count + 1;
+        }
+
+        foreach (var (modelId, count) in twinsByModel)
+        {
+            logger.LogInformation($"{count} twin(s) based on model '{modelId}'.");
         }
     }
 }
