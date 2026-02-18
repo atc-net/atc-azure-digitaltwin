@@ -5,10 +5,9 @@ namespace Atc.Azure.DigitalTwin.Parsers;
 /// </summary>
 public sealed partial class DigitalTwinParser : IDigitalTwinParser
 {
-    private readonly ModelParser parser = new ();
+    private readonly ModelParser parser = new();
 
-    public DigitalTwinParser(
-        ILoggerFactory loggerFactory)
+    public DigitalTwinParser(ILoggerFactory loggerFactory)
     {
         logger = loggerFactory.CreateLogger<DigitalTwinParser>();
     }

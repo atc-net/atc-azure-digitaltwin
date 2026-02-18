@@ -25,8 +25,7 @@ public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRe
 
     // If Equals() returns true for a pair of objects
     // then GetHashCode() must return the same value for these objects.
-    public int GetHashCode(
-        DTRelationshipInfo? obj)
+    public int GetHashCode(DTRelationshipInfo? obj)
     {
         if (obj is null)
         {

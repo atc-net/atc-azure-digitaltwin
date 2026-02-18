@@ -2,7 +2,9 @@ namespace Atc.Azure.DigitalTwin.Comparisons;
 
 public sealed class DigitalTwinInterfaceInfoComparer : IEqualityComparer<DTInterfaceInfo>
 {
-    public bool Equals(DTInterfaceInfo? x, DTInterfaceInfo? y)
+    public bool Equals(
+        DTInterfaceInfo? x,
+        DTInterfaceInfo? y)
     {
         if (ReferenceEquals(x, y))
         {

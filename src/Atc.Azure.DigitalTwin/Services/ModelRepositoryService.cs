@@ -38,14 +38,16 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     }
 
     public Task<bool> LoadModelContent(
-        DirectoryInfo path)
+        DirectoryInfo path,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(path);
-        return LoadModelContentInternal(path);
+        return LoadModelContentInternal(path, cancellationToken);
     }
 
     private async Task<bool> LoadModelContentInternal(
-        DirectoryInfo path)
+        DirectoryInfo path,
+        CancellationToken cancellationToken)
     {
         if (!path.Exists)
         {
@@ -59,7 +61,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
 
         foreach (var fileName in jsonFiles)
         {
-            modelsContent.Add(await File.ReadAllTextAsync(fileName));
+            modelsContent.Add(await File.ReadAllTextAsync(fileName, cancellationToken));
         }
 
         LogModelsLoaded(path.FullName);
@@ -67,9 +69,10 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     }
 
     public async Task<bool> ValidateModels(
-        DirectoryInfo path)
+        DirectoryInfo path,
+        CancellationToken cancellationToken = default)
     {
-        if (!await LoadModelContent(path))
+        if (!await LoadModelContent(path, cancellationToken))
         {
             return false;
         }
@@ -104,8 +107,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     ///  - Exclude interfaces that were loaded by the resolver.
     /// </remarks>
     /// <param name="modelTexts">The model texts.</param>
-    private async Task ParseAndStoreModels(
-        IEnumerable<string> modelTexts)
+    private async Task ParseAndStoreModels(IEnumerable<string> modelTexts)
     {
         var (succeeded, interfaceEntities) = await dtdlParser.Parse(modelTexts);
         if (!succeeded)

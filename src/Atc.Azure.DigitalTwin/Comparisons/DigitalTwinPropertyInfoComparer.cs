@@ -25,8 +25,7 @@ public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTProper
 
     // If Equals() returns true for a pair of objects
     // then GetHashCode() must return the same value for these objects.
-    public int GetHashCode(
-        DTPropertyInfo? obj)
+    public int GetHashCode(DTPropertyInfo? obj)
     {
         if (obj is null)
         {
