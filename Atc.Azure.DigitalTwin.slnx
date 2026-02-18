@@ -6,5 +6,7 @@
     <Project Path="src/Atc.Azure.DigitalTwin.CLI/Atc.Azure.DigitalTwin.CLI.csproj" />
     <Project Path="src/Atc.Azure.DigitalTwin/Atc.Azure.DigitalTwin.csproj" />
   </Folder>
-  <Folder Name="/test/" />
+  <Folder Name="/test/">
+    <Project Path="test/Atc.Azure.DigitalTwin.Tests/Atc.Azure.DigitalTwin.Tests.csproj" />
+  </Folder>
 </Solution>

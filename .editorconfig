@@ -583,6 +583,7 @@ dotnet_diagnostic.S6964.severity = none             # Value type property used a
 dotnet_diagnostic.SA1010.severity = none            #
 dotnet_diagnostic.SA1615.severity = none            # Element return value should be documented
 
+dotnet_diagnostic.CA1031.severity = none            #
 dotnet_diagnostic.CA1056.severity = none            # URI properties should not be strings
 dotnet_diagnostic.CA1852.severity = none            # False-Positive on sealed classes
 dotnet_diagnostic.CA1859.severity = none            #
@@ -598,6 +599,7 @@ dotnet_diagnostic.S1135.severity = none             #
 dotnet_diagnostic.S1172.severity = suggestion       # Temporary, due to false positive in latest version of the analyzer package
 dotnet_diagnostic.S1192.severity = none             #
 dotnet_diagnostic.S2094.severity = none             #
+dotnet_diagnostic.S3267.severity = none             #
 dotnet_diagnostic.S3776.severity = none             #
 dotnet_diagnostic.S4487.severity = none             #
 dotnet_diagnostic.S6667.severity = none             #
