@@ -5,8 +5,7 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDecommissionCommand> logger;
 
-    public ModelDecommissionCommand(
-        ILoggerFactory loggerFactory)
+    public ModelDecommissionCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDecommissionCommand>();
@@ -14,15 +13,17 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -34,9 +35,9 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.DecommissionModel(modelId);
+            var (succeeded, errorMessage) = await digitalTwinService.DecommissionModel(modelId, cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to decommission model '{modelId}': {errorMessage}");

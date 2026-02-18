@@ -6,8 +6,7 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
     private readonly ILogger<TwinGetCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public TwinGetCommand(
-        ILoggerFactory loggerFactory)
+    public TwinGetCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinGetCommand>();
@@ -16,26 +15,28 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
         var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
-            settings.AdtInstanceUrl!);
+            new Uri(settings.AdtInstanceUrl!));
 
         var twinId = settings.TwinId;
         logger.LogInformation($"Getting Twin with id '{twinId}'");
 
-        var twin = await digitalTwinService.GetTwins(twinId);
+        var twin = await digitalTwinService.GetTwins(twinId, cancellationToken);
         if (twin is null)
         {
             return ConsoleExitStatusCodes.Failure;

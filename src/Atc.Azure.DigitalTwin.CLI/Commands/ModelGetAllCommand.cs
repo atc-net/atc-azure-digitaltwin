@@ -6,8 +6,7 @@ public sealed class ModelGetAllCommand : AsyncCommand<ConnectionBaseCommandSetti
     private readonly ILogger<ModelGetAllCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public ModelGetAllCommand(
-        ILoggerFactory loggerFactory)
+    public ModelGetAllCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelGetAllCommand>();
@@ -16,15 +15,17 @@ public sealed class ModelGetAllCommand : AsyncCommand<ConnectionBaseCommandSetti
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -33,9 +34,9 @@ public sealed class ModelGetAllCommand : AsyncCommand<ConnectionBaseCommandSetti
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true });
+            var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
             if (response is null)
             {
                 logger.LogError("Failed to get models");

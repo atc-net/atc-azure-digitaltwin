@@ -5,8 +5,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinDeleteAllCommand> logger;
 
-    public TwinDeleteAllCommand(
-        ILoggerFactory loggerFactory)
+    public TwinDeleteAllCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinDeleteAllCommand>();
@@ -14,27 +13,29 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
         var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
-            settings.AdtInstanceUrl!);
+            new Uri(settings.AdtInstanceUrl!));
 
         logger.LogInformation("Deleting all twins.");
         logger.LogInformation("Step 1: Find all twins.");
 
-        var twinList = await digitalTwinService.GetTwinIds("SELECT * FROM DIGITALTWINS");
+        var twinList = await digitalTwinService.GetTwinIds("SELECT * FROM DIGITALTWINS", cancellationToken);
         if (twinList is null)
         {
             return ConsoleExitStatusCodes.Failure;
@@ -43,13 +44,13 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
         logger.LogInformation("Step 2: Find and remove relationships for each twin.");
         foreach (var twinId in twinList)
         {
-            await digitalTwinService.DeleteRelationships(twinId);
+            await digitalTwinService.DeleteRelationships(twinId, cancellationToken);
         }
 
         logger.LogInformation("Step 3: Delete all twins");
         foreach (var twinId in twinList)
         {
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId, cancellationToken: cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");

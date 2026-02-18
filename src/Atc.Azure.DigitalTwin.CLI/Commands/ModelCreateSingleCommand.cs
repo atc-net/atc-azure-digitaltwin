@@ -5,8 +5,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelCreateSingleCommand> logger;
 
-    public ModelCreateSingleCommand(
-        ILoggerFactory loggerFactory)
+    public ModelCreateSingleCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelCreateSingleCommand>();
@@ -14,15 +13,17 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelUploadSingleSettings settings)
+        ModelUploadSingleSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelUploadSingleSettings settings)
+        ModelUploadSingleSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -31,7 +32,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
-        if (!await modelRepositoryService.LoadModelContent(directoryInfo))
+        if (!await modelRepositoryService.LoadModelContent(directoryInfo, cancellationToken))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
@@ -46,7 +47,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
             var modelsContent = modelRepositoryService.GetModelsContent();
 
@@ -59,7 +60,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
             var models = new[] { model };
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(models);
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(models, cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to upload model: {errorMessage}");

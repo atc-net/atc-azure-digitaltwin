@@ -6,8 +6,7 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDeleteAllCommand> logger;
 
-    public ModelDeleteAllCommand(
-        ILoggerFactory loggerFactory)
+    public ModelDeleteAllCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDeleteAllCommand>();
@@ -15,15 +14,17 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ConnectionBaseCommandSettings settings)
+        ConnectionBaseCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -32,9 +33,9 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var jsonModels = await GetTwinModelsAsJson(digitalTwinService);
+            var jsonModels = await GetTwinModelsAsJson(digitalTwinService, cancellationToken);
 
             var dtdlParser = DigitalTwinParserFactory.Create(loggerFactory);
 
@@ -60,7 +61,7 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
 
                     try
                     {
-                        await digitalTwinService.DeleteModel(del.Id.ToString());
+                        await digitalTwinService.DeleteModel(del.Id.ToString(), cancellationToken);
                         logger.LogInformation($"Successfully deleted model {del.Id}");
                     }
                     catch (RequestFailedException ex)
@@ -85,11 +86,12 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
     }
 
     private async Task<List<string>> GetTwinModelsAsJson(
-        DigitalTwinService digitalTwinService)
+        DigitalTwinService digitalTwinService,
+        CancellationToken cancellationToken)
     {
         var jsonModelTexts = new List<string>();
 
-        var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true });
+        var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
         if (response is null)
         {
             return jsonModelTexts;

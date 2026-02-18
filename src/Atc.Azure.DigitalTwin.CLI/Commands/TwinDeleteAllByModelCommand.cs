@@ -5,8 +5,7 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<TwinDeleteAllByModelCommand> logger;
 
-    public TwinDeleteAllByModelCommand(
-        ILoggerFactory loggerFactory)
+    public TwinDeleteAllByModelCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<TwinDeleteAllByModelCommand>();
@@ -14,28 +13,30 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
         var digitalTwinService = DigitalTwinServiceFactory.Create(
             loggerFactory,
             settings.TenantId!,
-            settings.AdtInstanceUrl!);
+            new Uri(settings.AdtInstanceUrl!));
 
         var modelId = settings.ModelId;
 
         logger.LogInformation($"Deleting all twins by modelId '{modelId}");
 
-        var twinList = await digitalTwinService.GetTwinIds($"SELECT * FROM DIGITALTWINS WHERE IS_OF_MODEL('{modelId}')");
+        var twinList = await digitalTwinService.GetTwinIds($"SELECT * FROM DIGITALTWINS WHERE IS_OF_MODEL('{modelId}')", cancellationToken);
         if (twinList is null)
         {
             return ConsoleExitStatusCodes.Failure;
@@ -43,12 +44,12 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
 
         foreach (var twinId in twinList)
         {
-            await digitalTwinService.DeleteRelationships(twinId);
+            await digitalTwinService.DeleteRelationships(twinId, cancellationToken);
         }
 
         foreach (var twinId in twinList)
         {
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId, cancellationToken: cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");

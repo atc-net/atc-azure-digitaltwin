@@ -5,8 +5,7 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
     private readonly ILoggerFactory loggerFactory;
     private readonly ILogger<ModelDeleteSingleCommand> logger;
 
-    public ModelDeleteSingleCommand(
-        ILoggerFactory loggerFactory)
+    public ModelDeleteSingleCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelDeleteSingleCommand>();
@@ -14,15 +13,17 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -35,9 +36,9 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteModel(modelId);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteModel(modelId, cancellationToken);
 
             if (!succeeded)
             {

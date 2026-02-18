@@ -6,8 +6,7 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
     private readonly ILogger<RelationshipGetAllCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public RelationshipGetAllCommand(
-        ILoggerFactory loggerFactory)
+    public RelationshipGetAllCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<RelationshipGetAllCommand>();
@@ -16,15 +15,17 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        TwinCommandSettings settings)
+        TwinCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -37,9 +38,9 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetRelationships(twinId);
+            var response = digitalTwinService.GetRelationships(twinId, cancellationToken: cancellationToken);
             if (response is null)
             {
                 logger.LogError($"No relationships found for twin '{twinId}'");

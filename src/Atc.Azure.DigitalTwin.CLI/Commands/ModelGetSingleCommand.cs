@@ -6,8 +6,7 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
     private readonly ILogger<ModelGetSingleCommand> logger;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public ModelGetSingleCommand(
-        ILoggerFactory loggerFactory)
+    public ModelGetSingleCommand(ILoggerFactory loggerFactory)
     {
         this.loggerFactory = loggerFactory;
         logger = loggerFactory.CreateLogger<ModelGetSingleCommand>();
@@ -16,15 +15,17 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
 
     public override Task<int> ExecuteAsync(
         CommandContext context,
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        return ExecuteInternalAsync(settings);
+        return ExecuteInternalAsync(settings, cancellationToken);
     }
 
     private async Task<int> ExecuteInternalAsync(
-        ModelCommandSettings settings)
+        ModelCommandSettings settings,
+        CancellationToken cancellationToken)
     {
         ConsoleHelper.WriteHeader();
 
@@ -37,9 +38,9 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
             var digitalTwinService = DigitalTwinServiceFactory.Create(
                 loggerFactory,
                 settings.TenantId!,
-                settings.AdtInstanceUrl!);
+                new Uri(settings.AdtInstanceUrl!));
 
-            var model = await digitalTwinService.GetModel(modelId);
+            var model = await digitalTwinService.GetModel(modelId, cancellationToken);
             if (model is null)
             {
                 logger.LogError($"Failed to fetch model '{modelId}'");

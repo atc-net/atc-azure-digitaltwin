@@ -5,16 +5,16 @@ public static class DigitalTwinServiceFactory
     public static DigitalTwinService Create(
         ILoggerFactory loggerFactory,
         string tenantId,
-        string instanceUrl)
+        Uri instanceUrl)
     {
         ArgumentNullException.ThrowIfNull(loggerFactory);
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(instanceUrl);
+        ArgumentNullException.ThrowIfNull(instanceUrl);
 
         var digitalTwinOptions = new DigitalTwinOptions
         {
             TenantId = tenantId,
-            InstanceUrl = instanceUrl,
+            InstanceUrl = instanceUrl.ToString(),
         };
 
         return Create(loggerFactory, digitalTwinOptions);
