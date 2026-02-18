@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <PackageId>Atc.Azure.DigitalTwin</PackageId>
     <PackageTags>azure;iot;digitaltwin;twin</PackageTags>
     <Description>Atc.Azure.DigitalTwin Contains common services for azure digital twins, validate DTDL models, upload DTDL models etc.</Description>
