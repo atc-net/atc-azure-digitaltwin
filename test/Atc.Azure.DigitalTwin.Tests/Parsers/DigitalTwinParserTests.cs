@@ -1,0 +1,165 @@
+namespace Atc.Azure.DigitalTwin.Tests.Parsers;
+
+public sealed class DigitalTwinParserTests
+{
+    private const string ValidDtdlModel = """
+        {
+            "@id": "dtmi:com:example:Thermostat;1",
+            "@type": "Interface",
+            "displayName": "Thermostat",
+            "contents": [
+                {
+                    "@type": "Property",
+                    "name": "temperature",
+                    "schema": "double"
+                }
+            ],
+            "@context": "dtmi:dtdl:context;2"
+        }
+        """;
+
+    private readonly DigitalTwinParser sut;
+
+    public DigitalTwinParserTests()
+    {
+        sut = new DigitalTwinParser(NullLoggerFactory.Instance);
+    }
+
+    [Fact]
+    public async Task Parse_ValidModel_ReturnsSucceededTrue()
+    {
+        // Act
+        var result = await sut.Parse(new[] { ValidDtdlModel });
+
+        // Assert - Note: The tuple property is misspelled as "Succeeeded" (3 e's) in the interface
+        result.Succeeeded.Should().BeTrue();
+        result.Interfaces.Should().NotBeNull();
+        result.Interfaces.Should().ContainKey(new Dtmi("dtmi:com:example:Thermostat;1"));
+    }
+
+    [Fact]
+    public async Task Parse_ValidModel_ReturnsInterfaces()
+    {
+        // Act
+        var (_, interfaces) = await sut.Parse(new[] { ValidDtdlModel });
+
+        // Assert
+        interfaces.Should().NotBeNullOrEmpty();
+        interfaces!.Values.Should().Contain(e => e.EntityKind == DTEntityKind.Interface);
+    }
+
+    [Fact]
+    public async Task Parse_InvalidModel_ReturnsSucceededFalse()
+    {
+        // Arrange
+        var invalidModel = """{ "invalid": "not a dtdl model" }""";
+
+        // Act
+        var (succeeded, interfaces) = await sut.Parse(new[] { invalidModel });
+
+        // Assert
+        succeeded.Should().BeFalse();
+        interfaces.Should().BeNull();
+    }
+
+    [Fact]
+    public Task Parse_MalformedJson_ThrowsParserJsonException()
+    {
+        // Arrange
+        // BUG: DigitalTwinParser.Parse only catches ParsingException, but
+        // ModelParser.ParseAsync throws Microsoft.Azure.DigitalTwins.Parser.JsonException
+        // for malformed JSON input. This exception inherits directly from System.Exception
+        // (not ParsingException), so it propagates unhandled and could crash a host application.
+        var malformedJson = "{ this is not json }";
+
+        // Act & Assert
+        return Assert.ThrowsAsync<Microsoft.Azure.DigitalTwins.Parser.JsonException>(
+            () => sut.Parse(new[] { malformedJson }));
+    }
+
+    [Fact]
+    public async Task Parse_EmptyCollection_ReturnsSucceededTrue()
+    {
+        // Act
+        var (succeeded, interfaces) = await sut.Parse(Array.Empty<string>());
+
+        // Assert
+        succeeded.Should().BeTrue();
+        interfaces.Should().NotBeNull();
+        interfaces.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Parse_MultipleValidModels_ReturnsAllInterfaces()
+    {
+        // Arrange
+        const string model1 = """
+            {
+                "@id": "dtmi:com:example:Thermostat;1",
+                "@type": "Interface",
+                "displayName": "Thermostat",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        const string model2 = """
+            {
+                "@id": "dtmi:com:example:Room;1",
+                "@type": "Interface",
+                "displayName": "Room",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        // Act
+        var (succeeded, interfaces) = await sut.Parse(new[] { model1, model2 });
+
+        // Assert
+        succeeded.Should().BeTrue();
+        interfaces.Should().NotBeNull();
+        interfaces!.Keys.Should().Contain(new Dtmi("dtmi:com:example:Thermostat;1"));
+        interfaces.Keys.Should().Contain(new Dtmi("dtmi:com:example:Room;1"));
+    }
+
+    [Fact]
+    public async Task Parse_DependentModels_BothOrdersSucceed()
+    {
+        // Arrange - Room extends Thermostat via relationship
+        const string baseModel = """
+            {
+                "@id": "dtmi:com:example:Sensor;1",
+                "@type": "Interface",
+                "displayName": "Sensor",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        const string dependentModel = """
+            {
+                "@id": "dtmi:com:example:Room;1",
+                "@type": "Interface",
+                "displayName": "Room",
+                "contents": [
+                    {
+                        "@type": "Relationship",
+                        "name": "hasSensor",
+                        "target": "dtmi:com:example:Sensor;1"
+                    }
+                ],
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        // Act - Parse with dependent model listed BEFORE its dependency
+        // The underlying ModelParser handles resolution internally,
+        // but there is no topological sorting in the upload pipeline.
+        var (succeededReverse, interfacesReverse) = await sut.Parse(new[] { dependentModel, baseModel });
+        var (succeededNormal, interfacesNormal) = await sut.Parse(new[] { baseModel, dependentModel });
+
+        // Assert - Both orders parse successfully (parser resolves internally)
+        succeededReverse.Should().BeTrue();
+        interfacesReverse.Should().NotBeNull();
+        succeededNormal.Should().BeTrue();
+        interfacesNormal.Should().NotBeNull();
+    }
+}
