@@ -241,6 +241,48 @@ public interface IDigitalTwinService
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Creates or replaces an event route.
+    /// </summary>
+    /// <param name="eventRouteId">The ID of the event route.</param>
+    /// <param name="endpointName">The name of the endpoint to route events to.</param>
+    /// <param name="filter">An optional filter expression. Defaults to "true" (all events).</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceEventRoute(
+        string eventRouteId,
+        string endpointName,
+        string? filter = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes an event route.
+    /// </summary>
+    /// <param name="eventRouteId">The ID of the event route to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteEventRoute(
+        string eventRouteId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a specific event route.
+    /// </summary>
+    /// <param name="eventRouteId">The ID of the event route to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>The event route if found; otherwise, null.</returns>
+    Task<DigitalTwinsEventRoute?> GetEventRoute(
+        string eventRouteId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves all event routes.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>An async pageable of event routes; otherwise, null.</returns>
+    AsyncPageable<DigitalTwinsEventRoute>? GetEventRoutes(
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Queries digital twins using a specified query string and returns a pageable set of results of a specific type.
     /// </summary>
     /// <param name="query">The query string used to filter and retrieve digital twins.</param>

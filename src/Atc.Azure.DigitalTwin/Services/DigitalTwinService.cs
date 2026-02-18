@@ -855,6 +855,124 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceEventRoute(
+        string eventRouteId,
+        string endpointName,
+        string? filter = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var eventRoute = new DigitalTwinsEventRoute(endpointName, filter ?? "true");
+
+            var response = await client.CreateOrReplaceEventRouteAsync(
+                eventRouteId,
+                eventRoute,
+                cancellationToken);
+
+            if (response is null ||
+                response.IsError)
+            {
+                return (false, $"Failed to create event route '{eventRouteId}'");
+            }
+
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(ex.Status, ex.ErrorCode, errorMessage);
+            return (false, errorMessage);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            LogFailure(ex.GetType().ToString(), errorMessage);
+            return (false, errorMessage);
+        }
+    }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteEventRoute(
+        string eventRouteId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var response = await client.DeleteEventRouteAsync(
+                eventRouteId,
+                cancellationToken);
+
+            if (response is null ||
+                response.IsError)
+            {
+                return (false, $"Failed to delete event route '{eventRouteId}'");
+            }
+
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            LogRequestFailed(ex.Status, ex.ErrorCode, errorMessage);
+            return (false, errorMessage);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = ex.GetLastInnerMessage();
+            LogFailure(ex.GetType().ToString(), errorMessage);
+            return (false, errorMessage);
+        }
+    }
+
+    public async Task<DigitalTwinsEventRoute?> GetEventRoute(
+        string eventRouteId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var response = await client.GetEventRouteAsync(
+                eventRouteId,
+                cancellationToken);
+
+            if (response is null)
+            {
+                return default;
+            }
+
+            return response.Value;
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
+            return default;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex.GetType().ToString(), ex.GetLastInnerMessage());
+            return default;
+        }
+    }
+
+    public AsyncPageable<DigitalTwinsEventRoute>? GetEventRoutes(
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var response = client.GetEventRoutesAsync(cancellationToken);
+            return response;
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
+            return default;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex.GetType().ToString(), ex.GetLastInnerMessage());
+            return default;
+        }
+    }
+
     private async Task FindAndDeleteOutgoingRelationshipsForTwin(
         string twinId,
         CancellationToken cancellationToken = default)
