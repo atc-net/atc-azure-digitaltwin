@@ -2,7 +2,7 @@
 # Version: 1.0.0
 # Updated: 25-09-2023
 # Location: sample
-# Distribution: DotNet8
+# Distribution: DotNet10
 # Inspired by: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/code-style-rule-options
 
 ##########################################
@@ -54,3 +54,5 @@ MA0051.maximum_lines_per_method = 200
 MA0051.maximum_statements_per_method = 50
 
 dotnet_diagnostic.MA0079.severity = none             #
+
+dotnet_diagnostic.CA1848.severity = none            # LoggerMessage delegates
