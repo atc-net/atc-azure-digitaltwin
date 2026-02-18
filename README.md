@@ -1,256 +1,211 @@
-# Introduction
-
-Azure Digital Twin library, which contains common services for Azure Digital Twins, Model Validation and parsing.
-
-# Table of Content
-
-- [Introduction](#introduction)
-- [Table of Content](#table-of-content)
-- [Atc.Azure.DigitalTwin](#atcazuredigitaltwin)
-  - [IDigitalTwinService](#idigitaltwinservice)
-    - [Features](#features)
-    - [Usage Example](#usage-example)
-    - [Configuring IDigitalTwinService](#configuring-idigitaltwinservice)
-      - [Example Usage](#example-usage)
-  - [IModelRepositoryService](#imodelrepositoryservice)
-    - [Features](#features-1)
-    - [Usage Example](#usage-example-1)
-  - [IDigitalTwinParser](#idigitaltwinparser)
-    - [Features](#features-2)
-    - [Usage Example](#usage-example-2)
-- [CLI](#cli)
-  - [Installation](#installation)
-  - [Update](#update)
-  - [Usage](#usage)
-    - [Option --help](#option---help)
-- [Sample Project](#sample-project)
-  - [Atc.Azure.DigitalTwin.Console.Sample](#atcazuredigitaltwinconsolesample)
-- [Requirements](#requirements)
-- [How to contribute](#how-to-contribute)
+[![NuGet Version](https://img.shields.io/nuget/v/atc.azure.digitaltwin.svg?logo=nuget&style=for-the-badge)](https://www.nuget.org/packages/atc.azure.digitaltwin)
 
 # Atc.Azure.DigitalTwin
 
-[![NuGet Version](https://img.shields.io/nuget/v/atc.azure.digitaltwin.svg?logo=nuget&style=for-the-badge)](https://www.nuget.org/packages/atc.azure.digitaltwin)
+A .NET library and CLI tool for managing Azure Digital Twins — providing DTDL model validation, twin lifecycle management, relationship handling, and event route configuration.
 
-The `Atc.Azure.DigitalTwin` library provides a suite of services designed to facilitate the development, deployment, and management of Azure Digital Twins solutions. This library encompasses tools for robust model validation, efficient parsing, and comprehensive management of digital twins and their relationships. It supports seamless integration with existing Azure services, offering scalable options for managing complex digital twins environments. The library is essential for developers looking to leverage Azure Digital Twins in their IoT, AI, and data analytics applications, ensuring both flexibility and precision in digital twin interactions.
+- 🏗️ **Model Management** — create, retrieve, decommission, and delete DTDL models with full validation
+- 🔗 **Twin & Relationship CRUD** — create, query, update, and delete digital twins and their relationships
+- 📡 **Event Routes** — create, delete, and list event routes for Digital Twin endpoints
+- 🔍 **Query Engine** — execute ADT queries with pagination support
+- 📋 **DTDL Parser** — validate and parse JSON models into Digital Twin interface definitions
+- 🖥️ **Cross-Platform CLI** — global .NET tool for command-line management of Azure Digital Twins
+- 💉 **DI Integration** — `ServiceCollection` extensions for seamless dependency injection setup
 
-## IDigitalTwinService
+## 📋 Requirements
 
-The `IDigitalTwinService` offers comprehensive functionalities for managing and interacting with digital twins and their models, including CRUD operations, relationship handling, and querying capabilities within an Azure Digital Twins instance.
+- [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 
-### Features
+## 🚀 Getting Started
 
-- **Model Management**: Create, retrieve, update, and delete digital twin models.
-- **Twin Management**: Perform operations on digital twins such as creation, retrieval, update, and deletion
-- **Relationship Management**: Manage relationships between digital twins, including creation, updates, and deletions.
-- **Querying Capabilities**: Execute queries to retrieve twins, relationships, and other data points based on specific criteria.
+### Installation
 
-### Usage Example
+Install the NuGet package:
 
-Below is a usage example of how to interact with digital twins using `IDigitalTwinService`:
+```bash
+dotnet add package Atc.Azure.DigitalTwin
+```
+
+### Basic Usage
 
 ```csharp
 var digitalTwinService = serviceProvider.GetRequiredService<IDigitalTwinService>();
 
-var twinId = "your_twin_id";
-var twinData = await digitalTwinService.GetTwin(twinId);
-if (twinData is not null)
-{
-    Console.WriteLine($"Retrieved Twin: {twinData.Id}");
-}
+// Retrieve a twin
+var twin = await digitalTwinService.GetTwin("my-twin-id");
 
-// Create a new relationship between two twins
-var sourceTwinId = "source_twin_id";
-var targetTwinId = "target_twin_id";
-var relationshipName = "relatesTo";
-var createResult = await digitalTwinService.CreateRelationship(sourceTwinId, targetTwinId, relationshipName);
-
-if (createResult.Succeeded)
-{
-    Console.WriteLine("Relationship created successfully.");
-}
-else
-{
-    Console.WriteLine($"Failed to create relationship: {createResult.ErrorMessage}");
-}
+// Create a relationship
+var (succeeded, errorMessage) = await digitalTwinService.CreateRelationship(
+    "source-twin-id",
+    "target-twin-id",
+    "relatesTo");
 ```
 
-### Configuring IDigitalTwinService
-
-The `ConfigureDigitalTwinsClient` extension method from `ServiceCollectionExtensions` helps configure and register Digital Twin related services with your application's `IServiceCollection`.
-
-#### Example Usage
-
-Here's how you can configure your services using this extension method:
+### Configuring with ServiceCollection Extensions
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    var digitalTwinOptions = new DigitalTwinOptions
+    services.AddSingleton(new DigitalTwinOptions
     {
         TenantId = "your_tenant_id",
         InstanceUrl = "your_instance_url",
-    };
-
-    // Ensure these options are added to the DI container
-    services.AddSingleton<DigitalTwinOptions>(digitalTwinOptions);
+    });
 
     services.ConfigureDigitalTwinsClient();
 }
 ```
 
-## IModelRepositoryService
+## ✨ Features
 
-The `IModelRepositoryService` manages local repositories of digital twin models, providing functionality for adding, retrieving, and clearing models from the local store.
+### 🏗️ IDigitalTwinService
 
-### Features
+Comprehensive CRUD operations for models, twins, relationships, and event routes within an Azure Digital Twins instance.
 
-- **Model Storage**: Manage a local repository of digital twin models.
-- **Content Management**: Handle the content of model files, including loading and storing JSON representations.
-- **Validation**: Validate the models against a set of predefined rules and definitions.
+```csharp
+var digitalTwinService = serviceProvider.GetRequiredService<IDigitalTwinService>();
 
-### Usage Example
+// Query twins
+var twins = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS", cancellationToken);
 
-Below is an example demonstrating how to utilize the `IModelRepositoryService` to manage DTDL models:
+// Update a twin with JSON Patch
+var patchDocument = new JsonPatchDocument();
+patchDocument.AppendReplace("/temperature", 25.0);
+await digitalTwinService.UpdateTwin("my-twin-id", patchDocument, cancellationToken: cancellationToken);
+
+// Manage event routes
+await digitalTwinService.CreateOrReplaceEventRoute(
+    "my-route",
+    "my-endpoint",
+    filter: "type = 'Microsoft.DigitalTwins.Twin.Update'",
+    cancellationToken: cancellationToken);
+```
+
+### 📋 IModelRepositoryService
+
+Local DTDL model storage, loading from directories, and validation.
 
 ```csharp
 var modelRepositoryService = serviceProvider.GetRequiredService<IModelRepositoryService>();
-var modelDirectoryInfo = new DirectoryInfo("path_to_model_files"); // Specify the path to your model files
+var modelsPath = new DirectoryInfo("path/to/models");
 
-var loadedSuccessfully = await modelRepositoryService.LoadModelContent(modelDirectoryInfo);
+var isValid = await modelRepositoryService.ValidateModels(modelsPath, cancellationToken);
 
-if (loadedSuccessfully)
+if (isValid)
 {
-    var validationSucceeded = await modelRepositoryService.ValidateModels(modelDirectoryInfo);
-    if (validationSucceeded)
-    {
-        Console.WriteLine("Models loaded and validated successfully.");
-    }
-    else
-    {
-        Console.WriteLine("Model validation failed.");
-    }
-}
-else
-{
-    Console.WriteLine("Failed to load model content.");
+    await modelRepositoryService.LoadModelContent(modelsPath, cancellationToken);
+    var models = modelRepositoryService.GetModels();
 }
 ```
 
-## IDigitalTwinParser
+### 🔍 IDigitalTwinParser
 
-The `IDigitalTwinParser` provides functionality for parsing JSON models into Digital Twin Interface definitions, aiding in the transformation and validation of digital twin data schemas.
-
-### Features
-
-- **Model Transformation**: Convert JSON formatted digital twin models into DTDL (Digital Twins Definition Language) interface definitions.
-- **Validation**: Ensure the integrity and correctness of digital twin models through rigorous validation checks.
-- - **Error Handling**: Efficiently manage parsing errors, providing detailed insight into the issues encountered during the parsing process.
-
-### Usage Example
-
-Below is an example demonstrating how to utilize the `IDigitalTwinParser` to parse JSON DTDL models:
+Parses JSON DTDL models into Digital Twin interface definitions with validation.
 
 ```csharp
-var digitalTwinParser = serviceProvider.GetRequiredService<IDigitalTwinParser>();
-var jsonModels = new[] { "{...JSON data...}" }; // Replace with actual JSON strings
-var parsingResult = await digitalTwinParser.Parse(jsonModels);
+var parser = serviceProvider.GetRequiredService<IDigitalTwinParser>();
+var (succeeded, interfaces) = await parser.Parse(jsonModels);
 
-if (parsingResult.Succeeeded)
+if (succeeded)
 {
-    foreach (var dtInterface in parsingResult.Interfaces)
+    foreach (var (dtmi, entity) in interfaces!)
     {
-        Console.WriteLine($"Parsed Interface: {dtInterface.Key}, Info: {dtInterface.Value}");
+        Console.WriteLine($"Parsed: {dtmi}");
     }
-}
-else
-{
-    Console.WriteLine("Failed to parse models.");
 }
 ```
 
-# CLI
+## 🖥️ CLI Tool
 
 [![NuGet Version](https://img.shields.io/nuget/v/atc-azure-digitaltwin.svg?logo=nuget&style=for-the-badge)](https://www.nuget.org/packages/atc-azure-digitaltwin)
 
-The `Atc.Azure.DigitalTwin.CLI` tool is available through a cross platform command line application.
+### Install
 
-## Installation
-
-The tool can be installed as a .NET global tool by the following command
-
-```powershell
+```bash
 dotnet tool install --global atc-azure-digitaltwin
 ```
 
-or by following the instructions [here](https://www.nuget.org/packages/atc-azure-digitaltwin/) to install a specific version of the tool.
+### Update
 
-A successful installation will output something like
-
-```powershell
-The tool can be invoked by the following command: atc-azure-digitaltwin
-Tool 'atc-azure-digitaltwin' (version '1.0.xxx') was successfully installed.`
-```
-
-## Update
-
-The tool can be updated by the following command
-
-```powershell
+```bash
 dotnet tool update --global atc-azure-digitaltwin
 ```
 
-## Usage
+### Commands
 
-Since the tool is published as a .NET Tool, it can be launched from anywhere using any shell or command-line interface by calling **atc-azure-digitaltwin**. The help information is displayed when providing the `--help` argument to **atc-azure-digitaltwin**
+The CLI is organized into three command groups:
 
-### Option <span style="color:yellow">--help</span>
+#### Model Commands
 
-```powershell
-atc-azure-digitaltwin --help
+```bash
+# Validate models from a directory
+atc-azure-digitaltwin model validate -d <directory-path>
 
-USAGE:
-    atc-azure-digitaltwin.exe [OPTIONS] <COMMAND>
+# Create all models
+atc-azure-digitaltwin model create all --tenantId -a <adt-instance-url> -d <directory-path>
 
-EXAMPLES:
-    atc-azure-digitaltwin.exe model decommission --tenantId -a <adt-instance-url> -m <model-id>
-    atc-azure-digitaltwin.exe model validate -d <directory-path>
-    atc-azure-digitaltwin.exe route create
-    atc-azure-digitaltwin.exe route delete
-    atc-azure-digitaltwin.exe twin count --tenantId -a <adt-instance-url>
+# Create single model
+atc-azure-digitaltwin model create single --tenantId -a <adt-instance-url> -d <directory-path> -m <model-id>
 
-OPTIONS:
-    -h, --help       Prints help information
-    -v, --version    Prints version information
+# Get all models
+atc-azure-digitaltwin model get all --tenantId -a <adt-instance-url>
 
-COMMANDS:
-    model    Operations related to models
-    route    Operations related to event routes
-    twin     Operations related to twins
+# Decommission a model
+atc-azure-digitaltwin model decommission --tenantId -a <adt-instance-url> -m <model-id>
+
+# Delete all models
+atc-azure-digitaltwin model delete all --tenantId -a <adt-instance-url>
 ```
 
-# Sample Project
+#### Twin Commands
 
-## Atc.Azure.DigitalTwin.Console.Sample
+```bash
+# Count twins by model
+atc-azure-digitaltwin twin count --tenantId -a <adt-instance-url>
 
-This console application serves as an example to demonstrate the utilization of services provided by the library. It showcases a series of operations related to Digital Twins using the example DTDL (Digital Twins Definition Language) models.
+# Create a twin
+atc-azure-digitaltwin twin create --tenantId -a <adt-instance-url> -t <twin-id> -m <model-id> -modelVersion <version> --jsonPayload <json>
 
-The sample application executes the following operations:
+# Get a twin
+atc-azure-digitaltwin twin get --tenantId -a <adt-instance-url> -t <twin-id>
 
-1. **Validate Models:** Validates the DTDL models located in the [models folder](sample/models/).
-2. **Load Models:** Loads the DTDL models from the [models folder](sample/models/).
-3. **Create Models:** Registers the loaded models with a Digital Twin instance.
-4. **Retrieve Model:** Fetches a specific model from the Digital Twin instance.
-5. **Create Digital Twin:** Generates a digital twin instance of a Press Machine.
-   > **Note:** This twin inherits properties from `TwinModelBase`, which provides essential attributes for twin creation.
-6. **Retrieve Twins:** Collects all existing twins.
-7. **Delete Twin:** Removes the specified twin instance.
+# Update a twin with JSON Patch
+atc-azure-digitaltwin twin update --tenantId -a <adt-instance-url> -t <twin-id> --jsonPatch <json-patch>
 
-# Requirements
+# Delete all twins
+atc-azure-digitaltwin twin delete all --tenantId -a <adt-instance-url>
 
-* [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+# Manage relationships
+atc-azure-digitaltwin twin relationship create --tenantId -a <adt-instance-url> --source-twinId <src> --target-twinId <tgt> --relationshipName <name>
+atc-azure-digitaltwin twin relationship get all --tenantId -a <adt-instance-url> -t <twin-id>
+```
 
-# How to contribute
+#### Event Route Commands
+
+```bash
+# Create an event route
+atc-azure-digitaltwin route create --tenantId -a <adt-instance-url> -e <route-id> --endpointName <endpoint>
+
+# Get all event routes
+atc-azure-digitaltwin route get all --tenantId -a <adt-instance-url>
+
+# Delete an event route
+atc-azure-digitaltwin route delete --tenantId -a <adt-instance-url> -e <route-id>
+```
+
+Use `--help` on any command for detailed options:
+
+```bash
+atc-azure-digitaltwin --help
+atc-azure-digitaltwin model --help
+atc-azure-digitaltwin twin relationship get --help
+```
+
+## 📂 Sample
+
+See the [sample console application](./sample/Atc.Azure.DigitalTwin.Console.Sample/) for a complete example demonstrating model validation, twin creation, querying, and cleanup using the DTDL models in the [models folder](./sample/models/).
+
+## 🤝 How to contribute
 
 [Contribution Guidelines](https://atc-net.github.io/introduction/about-atc#how-to-contribute)
 
