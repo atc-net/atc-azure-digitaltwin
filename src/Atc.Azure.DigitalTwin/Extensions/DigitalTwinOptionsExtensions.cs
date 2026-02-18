@@ -25,7 +25,6 @@ public static class DigitalTwinOptionsExtensions
 #endif
             ExcludeAzurePowerShellCredential = true,
             ExcludeInteractiveBrowserCredential = true,
-            ExcludeSharedTokenCacheCredential = true,
             ExcludeEnvironmentCredential = true,
             ExcludeVisualStudioCodeCredential = true,
         };

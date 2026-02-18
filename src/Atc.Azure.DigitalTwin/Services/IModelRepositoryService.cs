@@ -35,15 +35,19 @@ public interface IModelRepositoryService
     /// Loads model content from a specified directory into the repository.
     /// </summary>
     /// <param name="path">The directory containing model files to load.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns><see langword="true" /> if the load is successful; otherwise, <see langword="false" />.</returns>
     Task<bool> LoadModelContent(
-        DirectoryInfo path);
+        DirectoryInfo path,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Validates the models in a specified directory.
     /// </summary>
     /// <param name="path">The directory containing model files to validate.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns><see langword="true" /> if the load is successful; otherwise, <see langword="false" />.</returns>
     Task<bool> ValidateModels(
-        DirectoryInfo path);
+        DirectoryInfo path,
+        CancellationToken cancellationToken = default);
 }
