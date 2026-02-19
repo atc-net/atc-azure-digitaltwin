@@ -57,9 +57,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            var models = new[] { model };
-
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync(models, cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync([model], cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to upload model: {errorMessage}");

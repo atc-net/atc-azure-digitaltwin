@@ -180,7 +180,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         string dtdlModel)
     {
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { dtdlModel });
+        var result = await parser.ParseAsync([dtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
         return interfaceInfo.Contents.Values.OfType<DTPropertyInfo>().First();
     }
@@ -188,7 +188,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
     private static async Task<List<DTPropertyInfo>> GetProperties()
     {
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { DtdlModelWithProperties });
+        var result = await parser.ParseAsync([DtdlModelWithProperties]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
         return [.. interfaceInfo.Contents.Values.OfType<DTPropertyInfo>()];
     }
