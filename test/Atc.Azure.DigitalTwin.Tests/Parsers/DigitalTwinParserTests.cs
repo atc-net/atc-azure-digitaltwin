@@ -63,18 +63,17 @@ public sealed class DigitalTwinParserTests
     }
 
     [Fact]
-    public Task Parse_MalformedJson_ThrowsParserJsonException()
+    public async Task Parse_MalformedJson_ReturnsSucceededFalse()
     {
         // Arrange
-        // BUG: DigitalTwinParser.Parse only catches ParsingException, but
-        // ModelParser.ParseAsync throws Microsoft.Azure.DigitalTwins.Parser.JsonException
-        // for malformed JSON input. This exception inherits directly from System.Exception
-        // (not ParsingException), so it propagates unhandled and could crash a host application.
         var malformedJson = "{ this is not json }";
 
-        // Act & Assert
-        return Assert.ThrowsAsync<Microsoft.Azure.DigitalTwins.Parser.JsonException>(
-            () => sut.Parse(new[] { malformedJson }));
+        // Act
+        var (succeeded, interfaces) = await sut.Parse(new[] { malformedJson });
+
+        // Assert
+        succeeded.Should().BeFalse();
+        interfaces.Should().BeNull();
     }
 
     [Fact]

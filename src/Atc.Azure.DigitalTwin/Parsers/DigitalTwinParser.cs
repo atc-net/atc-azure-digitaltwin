@@ -31,5 +31,10 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
 
             return (false, null);
         }
+        catch (Exception ex) when (ex is not OutOfMemoryException and not StackOverflowException)
+        {
+            LogParseFailed(ex.GetLastInnerMessage());
+            return (false, null);
+        }
     }
 }
