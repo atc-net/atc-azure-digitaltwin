@@ -309,4 +309,34 @@ public interface IDigitalTwinService
         string? continuationToken = null,
         CancellationToken cancellationToken = default)
         where T : notnull;
+
+    /// <summary>
+    /// Publishes telemetry data for a digital twin.
+    /// </summary>
+    /// <param name="twinId">The ID of the twin to publish telemetry for.</param>
+    /// <param name="payload">The telemetry payload as a JSON string.</param>
+    /// <param name="timestamp">Optional timestamp for the telemetry message.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> PublishTelemetryAsync(
+        string twinId,
+        string payload,
+        DateTimeOffset? timestamp = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Publishes telemetry data for a specific component of a digital twin.
+    /// </summary>
+    /// <param name="twinId">The ID of the twin to publish telemetry for.</param>
+    /// <param name="componentName">The name of the component.</param>
+    /// <param name="payload">The telemetry payload as a JSON string.</param>
+    /// <param name="timestamp">Optional timestamp for the telemetry message.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> PublishComponentTelemetryAsync(
+        string twinId,
+        string componentName,
+        string payload,
+        DateTimeOffset? timestamp = null,
+        CancellationToken cancellationToken = default);
 }

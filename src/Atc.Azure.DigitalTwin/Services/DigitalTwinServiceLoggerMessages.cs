@@ -340,4 +340,46 @@ public sealed partial class DigitalTwinService
         Level = LogLevel.Trace,
         Message = "Updated twin '{TwinId}'")]
     private partial void LogUpdatedTwin(string twinId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Telemetry.PublishingTelemetry,
+        Level = LogLevel.Trace,
+        Message = "Publishing telemetry for twin '{TwinId}'")]
+    private partial void LogPublishingTelemetry(string twinId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Telemetry.PublishedTelemetry,
+        Level = LogLevel.Trace,
+        Message = "Published telemetry for twin '{TwinId}'")]
+    private partial void LogPublishedTelemetry(string twinId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Telemetry.PublishTelemetryFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to publish telemetry for twin '{TwinId}'")]
+    private partial void LogPublishTelemetryFailed(string twinId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Telemetry.PublishingComponentTelemetry,
+        Level = LogLevel.Trace,
+        Message = "Publishing component telemetry for twin '{TwinId}' component '{ComponentName}'")]
+    private partial void LogPublishingComponentTelemetry(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Telemetry.PublishedComponentTelemetry,
+        Level = LogLevel.Trace,
+        Message = "Published component telemetry for twin '{TwinId}' component '{ComponentName}'")]
+    private partial void LogPublishedComponentTelemetry(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Telemetry.PublishComponentTelemetryFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to publish component telemetry for twin '{TwinId}' component '{ComponentName}'")]
+    private partial void LogPublishComponentTelemetryFailed(
+        string twinId,
+        string componentName);
 }

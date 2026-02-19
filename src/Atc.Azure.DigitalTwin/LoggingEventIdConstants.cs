@@ -58,12 +58,23 @@ internal static class LoggingEventIdConstants
         public const int UpdatedRelationship = 10_414;
     }
 
+    internal static class Telemetry
+    {
+        public const int PublishingTelemetry = 10_500;
+        public const int PublishedTelemetry = 10_501;
+        public const int PublishTelemetryFailed = 10_502;
+        public const int PublishingComponentTelemetry = 10_503;
+        public const int PublishedComponentTelemetry = 10_504;
+        public const int PublishComponentTelemetryFailed = 10_505;
+    }
+
     internal static class ModelRepositoryService
     {
         public const int UnknownDirectoryPath = 11_000;
         public const int ModelsLoaded = 11_001;
         public const int ParseFailed = 11_002;
         public const int ParseError = 11_003;
+        public const int DependencyOrderingFailed = 11_004;
     }
 
     internal static class DigitalTwinParser

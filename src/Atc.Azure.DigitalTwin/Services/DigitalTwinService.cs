@@ -934,4 +934,84 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             LogFailure(ex);
         }
     }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> PublishTelemetryAsync(
+        string twinId,
+        string payload,
+        DateTimeOffset? timestamp = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogPublishingTelemetry(twinId);
+            var messageId = Guid.NewGuid().ToString();
+            var response = await client.PublishTelemetryAsync(
+                twinId,
+                messageId,
+                payload,
+                timestamp,
+                cancellationToken);
+
+            if (response is null ||
+                response.IsError)
+            {
+                LogPublishTelemetryFailed(twinId);
+                return (false, $"Failed to publish telemetry for twin '{twinId}'");
+            }
+
+            LogPublishedTelemetry(twinId);
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
+        }
+    }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> PublishComponentTelemetryAsync(
+        string twinId,
+        string componentName,
+        string payload,
+        DateTimeOffset? timestamp = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogPublishingComponentTelemetry(twinId, componentName);
+            var messageId = Guid.NewGuid().ToString();
+            var response = await client.PublishComponentTelemetryAsync(
+                twinId,
+                componentName,
+                messageId,
+                payload,
+                timestamp,
+                cancellationToken);
+
+            if (response is null ||
+                response.IsError)
+            {
+                LogPublishComponentTelemetryFailed(twinId, componentName);
+                return (false, $"Failed to publish component telemetry for twin '{twinId}' component '{componentName}'");
+            }
+
+            LogPublishedComponentTelemetry(twinId, componentName);
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
+        }
+    }
 }
