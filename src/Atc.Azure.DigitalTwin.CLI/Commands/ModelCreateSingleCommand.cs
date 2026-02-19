@@ -51,7 +51,19 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
             var modelsContent = modelRepositoryService.GetModelsContent();
 
-            var model = modelsContent.SingleOrDefault(x => x.Contains($"\"@id\": \"{modelId}\"", StringComparison.Ordinal));
+            var model = modelsContent.SingleOrDefault(x =>
+            {
+                try
+                {
+                    var doc = JsonDocument.Parse(x);
+                    return doc.RootElement.TryGetProperty("@id", out var idProp) &&
+                           string.Equals(idProp.GetString(), modelId, StringComparison.Ordinal);
+                }
+                catch (System.Text.Json.JsonException)
+                {
+                    return false;
+                }
+            });
             if (model is null)
             {
                 logger.LogError($"Could not find model with the id '{modelId}'");
