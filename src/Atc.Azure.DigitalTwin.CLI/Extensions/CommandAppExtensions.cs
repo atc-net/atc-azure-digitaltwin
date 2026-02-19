@@ -12,6 +12,10 @@ public static class CommandAppExtensions
             config.AddBranch("model", ConfigureModelCommands());
             config.AddBranch("route", ConfigureEventRouteCommands());
             config.AddBranch("twin", ConfigureTwinCommands());
+            config.AddCommand<QueryCommand>("query")
+                .WithDescription("Query digital twins.")
+                .WithExample("query --tenantId <tenantId> -a <adt-instance-url> -q \"SELECT * FROM DIGITALTWINS\"");
+            config.AddBranch("telemetry", ConfigureTelemetryCommands());
         });
     }
 
@@ -190,4 +194,14 @@ public static class CommandAppExtensions
                 .WithDescription("Get all incoming relationships for twin.")
                 .WithExample("twin relationship get incoming --tenantId -a <adt-instance-url> -t <twin-id>");
         });
+
+    private static Action<IConfigurator<CommandSettings>> ConfigureTelemetryCommands()
+        => node =>
+        {
+            node.SetDescription("Operations related to telemetry.");
+
+            node.AddCommand<TelemetryPublishCommand>("publish")
+                .WithDescription("Publish telemetry for a twin.")
+                .WithExample("telemetry publish --tenantId <tenantId> -a <adt-instance-url> -t <twin-id> -p <json-payload>");
+        };
 }
