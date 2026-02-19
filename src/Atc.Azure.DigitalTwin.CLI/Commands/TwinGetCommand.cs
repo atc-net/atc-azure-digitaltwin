@@ -36,9 +36,10 @@ public sealed class TwinGetCommand : AsyncCommand<TwinCommandSettings>
         var twinId = settings.TwinId;
         logger.LogInformation($"Getting Twin with id '{twinId}'");
 
-        var twin = await digitalTwinService.GetTwins(twinId, cancellationToken);
+        var twin = await digitalTwinService.GetTwin<BasicDigitalTwin>(twinId!, cancellationToken);
         if (twin is null)
         {
+            logger.LogError($"Twin '{twinId}' not found");
             return ConsoleExitStatusCodes.Failure;
         }
 
