@@ -137,14 +137,9 @@ public sealed class DigitalTwinPropertyInfoComparerTests
     }
 
     [Fact]
-    public async Task GetHashCode_CaseDifferingNames_ReturnsSameHashCode_ContractViolation()
+    public async Task GetHashCode_CaseDifferingNames_ReturnsDifferentHashCode()
     {
         // Arrange - Create two properties that differ only in name casing
-        // BUG: Equals uses ordinal (case-sensitive) comparison but GetHashCode uses
-        // OrdinalIgnoreCase, violating the IEqualityComparer contract:
-        // "If Equals returns true, GetHashCode must return the same value"
-        // The inverse is also expected: different hash codes should mean not-equal.
-        // Here, same hash codes but Equals returns false.
         var lowerCaseProperty = await GetPropertyFromModel("""
             {
                 "@id": "dtmi:com:example:DeviceA;1",
@@ -170,13 +165,9 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var hashCodeLower = sut.GetHashCode(lowerCaseProperty);
         var hashCodeUpper = sut.GetHashCode(upperCaseProperty);
 
-        // Assert - Documents the contract violation:
-        // Properties are NOT equal (case-sensitive name comparison)...
+        // Assert - Both Equals and GetHashCode use ordinal (case-sensitive) comparison
         areEqual.Should().BeFalse();
-
-        // ...but hash codes ARE equal (case-insensitive hash).
-        // This violates IEqualityComparer contract and causes issues with HashSet/Dictionary.
-        hashCodeLower.Should().Be(hashCodeUpper);
+        hashCodeLower.Should().NotBe(hashCodeUpper);
     }
 
     private static async Task<DTPropertyInfo> GetFirstProperty()

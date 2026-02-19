@@ -143,11 +143,9 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
     }
 
     [Fact]
-    public async Task GetHashCode_CaseDifferingNames_ReturnsSameHashCode_ContractViolation()
+    public async Task GetHashCode_CaseDifferingNames_ReturnsDifferentHashCode()
     {
         // Arrange - Create two relationships that differ only in name casing
-        // BUG: Equals uses ordinal (case-sensitive) comparison but GetHashCode uses
-        // OrdinalIgnoreCase, violating the IEqualityComparer contract.
         const string lowerCaseModel = """
             [{
                 "@id": "dtmi:com:example:Target;1",
@@ -193,9 +191,9 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var hashCodeLower = sut.GetHashCode(lowerCaseRel);
         var hashCodeUpper = sut.GetHashCode(upperCaseRel);
 
-        // Assert - Documents the contract violation
+        // Assert - Both Equals and GetHashCode use ordinal (case-sensitive) comparison
         areEqual.Should().BeFalse();
-        hashCodeLower.Should().Be(hashCodeUpper);
+        hashCodeLower.Should().NotBe(hashCodeUpper);
     }
 
     private static async Task<DTRelationshipInfo> GetFirstRelationship()

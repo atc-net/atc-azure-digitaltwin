@@ -31,7 +31,7 @@ public sealed class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void ConfigureDigitalTwinsClient_DoesNotRegisterDigitalTwinService()
+    public void ConfigureDigitalTwinsClient_RegistersAllServices()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -39,9 +39,10 @@ public sealed class ServiceCollectionExtensionsTests
         // Act
         services.ConfigureDigitalTwinsClient();
 
-        // Assert - Only DigitalTwinsClient is registered, not the higher-level services
-        services.Should().NotContain(d => d.ServiceType == typeof(IDigitalTwinService));
-        services.Should().NotContain(d => d.ServiceType == typeof(IModelRepositoryService));
+        // Assert - All higher-level services are registered
+        services.Should().Contain(d => d.ServiceType == typeof(IDigitalTwinService));
+        services.Should().Contain(d => d.ServiceType == typeof(IModelRepositoryService));
+        services.Should().Contain(d => d.ServiceType == typeof(IDigitalTwinParser));
     }
 
     [Fact]

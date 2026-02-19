@@ -251,11 +251,9 @@ public sealed class ModelRepositoryServiceTests
     }
 
     [Fact]
-    public async Task ValidateModels_WithValidModels_ClearsModelsAfterValidation()
+    public async Task ValidateModels_WithValidModels_ModelsAvailableAfterValidation()
     {
         // Arrange
-        // BUG: ValidateModels calls Clear() at the end, so any parsed models
-        // are wiped. After ValidateModels, GetModels() is always empty.
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
         await File.WriteAllTextAsync(
             Path.Combine(tempDir.FullName, "model.json"),
@@ -271,10 +269,10 @@ public sealed class ModelRepositoryServiceTests
             // Act
             var result = await serviceWithRealParser.ValidateModels(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
-            // Assert - Validation succeeds but models are cleared
+            // Assert - Validation succeeds and models are available
             result.Should().BeTrue();
-            serviceWithRealParser.GetModels().Should().BeEmpty("ValidateModels calls Clear() after parsing");
-            serviceWithRealParser.GetModelsContent().Should().BeEmpty("ValidateModels calls Clear() after parsing");
+            serviceWithRealParser.GetModels().Should().NotBeEmpty();
+            serviceWithRealParser.GetModelsContent().Should().NotBeEmpty();
         }
         finally
         {
@@ -283,7 +281,7 @@ public sealed class ModelRepositoryServiceTests
     }
 
     [Fact]
-    public async Task ValidateModels_WithInvalidDtdl_ReturnsTrue_BugSilentlySwallowsParsingFailure()
+    public async Task ValidateModels_WithInvalidDtdl_ReturnsFalse()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
@@ -300,13 +298,8 @@ public sealed class ModelRepositoryServiceTests
             // Act
             var result = await serviceWithRealParser.ValidateModels(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
-            // Assert
-            // BUG: Should return false for invalid DTDL, but returns true.
-            // ValidateModels catches ParsingException directly, but DigitalTwinParser.Parse
-            // already catches ParsingException internally and returns (false, null).
-            // ParseAndStoreModels sees !succeeded and returns without throwing,
-            // so ValidateModels never sees the exception and returns true.
-            result.Should().BeTrue("BUG: invalid models silently pass validation");
+            // Assert - Invalid DTDL correctly fails validation
+            result.Should().BeFalse();
         }
         finally
         {
