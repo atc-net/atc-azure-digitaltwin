@@ -31,8 +31,8 @@ public sealed class DigitalTwinParserTests
         // Act
         var result = await sut.Parse(new[] { ValidDtdlModel });
 
-        // Assert - Note: The tuple property is misspelled as "Succeeeded" (3 e's) in the interface
-        result.Succeeeded.Should().BeTrue();
+        // Assert
+        result.Succeeded.Should().BeTrue();
         result.Interfaces.Should().NotBeNull();
         result.Interfaces.Should().ContainKey(new Dtmi("dtmi:com:example:Thermostat;1"));
     }
