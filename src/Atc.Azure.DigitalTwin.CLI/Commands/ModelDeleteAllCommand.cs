@@ -91,13 +91,13 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
     {
         var jsonModelTexts = new List<string>();
 
-        var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
-        if (response is null)
+        var models = await digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
+        if (models is null)
         {
             return jsonModelTexts;
         }
 
-        await foreach (var digitalTwinsModelData in response)
+        foreach (var digitalTwinsModelData in models)
         {
             if (digitalTwinsModelData.DtdlModel is null)
             {

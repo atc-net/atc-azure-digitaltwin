@@ -40,14 +40,14 @@ public sealed class RelationshipGetAllCommand : AsyncCommand<TwinCommandSettings
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetRelationships(twinId, cancellationToken: cancellationToken);
-            if (response is null)
+            var relationships = await digitalTwinService.GetRelationships(twinId, cancellationToken: cancellationToken);
+            if (relationships is null)
             {
                 logger.LogError($"No relationships found for twin '{twinId}'");
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            await foreach (var relationship in response)
+            foreach (var relationship in relationships)
             {
                 logger.LogInformation(JsonSerializer.Serialize(relationship, jsonSerializerOptions));
             }

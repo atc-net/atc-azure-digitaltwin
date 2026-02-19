@@ -36,26 +36,23 @@ public sealed class ModelGetAllCommand : AsyncCommand<ConnectionBaseCommandSetti
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
-            if (response is null)
+            var models = await digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
+            if (models is null)
             {
                 logger.LogError("Failed to get models");
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            var count = 0;
-            await foreach (var digitalTwinsModelData in response)
+            foreach (var digitalTwinsModelData in models)
             {
                 logger.LogInformation($"ModelId: '{digitalTwinsModelData.Id}'");
                 if (digitalTwinsModelData.DtdlModel != null)
                 {
                     logger.LogInformation(JsonSerializer.Serialize(digitalTwinsModelData.DtdlModel, jsonSerializerOptions));
                 }
-
-                count++;
             }
 
-            logger.LogInformation($"Found {count} model(s)");
+            logger.LogInformation($"Found {models.Count} model(s)");
         }
         catch (RequestFailedException ex)
         {

@@ -10,6 +10,6 @@ public interface IDigitalTwinParser
     /// </summary>
     /// <param name="jsonModels">The JSON models to parse.</param>
     /// <returns>A tuple indicating whether the parsing was successful and the interfaces if it was; otherwise, null.</returns>
-    Task<(bool Succeeded, IReadOnlyDictionary<Dtmi, DTEntityInfo>? Interfaces)> Parse(
+    Task<(bool Succeeded, IReadOnlyDictionary<Dtmi, DTEntityInfo>? Interfaces)> ParseAsync(
         IEnumerable<string> jsonModels);
 }

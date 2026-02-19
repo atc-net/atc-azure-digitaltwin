@@ -50,20 +50,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
                 new Uri(settings.AdtInstanceUrl!));
 
             var modelsContent = modelRepositoryService.GetModelsContent();
-
-            var model = modelsContent.SingleOrDefault(x =>
-            {
-                try
-                {
-                    var doc = JsonDocument.Parse(x);
-                    return doc.RootElement.TryGetProperty("@id", out var idProp) &&
-                           string.Equals(idProp.GetString(), modelId, StringComparison.Ordinal);
-                }
-                catch (System.Text.Json.JsonException)
-                {
-                    return false;
-                }
-            });
+            var model = FindModelById(modelsContent, modelId);
             if (model is null)
             {
                 logger.LogError($"Could not find model with the id '{modelId}'");
@@ -94,4 +81,21 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         return ConsoleExitStatusCodes.Success;
     }
+
+    private static string? FindModelById(
+        IEnumerable<string> modelsContent,
+        string modelId)
+        => modelsContent.SingleOrDefault(x =>
+        {
+            try
+            {
+                var doc = JsonDocument.Parse(x);
+                return doc.RootElement.TryGetProperty("@id", out var idProp) &&
+                       string.Equals(idProp.GetString(), modelId, StringComparison.Ordinal);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return false;
+            }
+        });
 }

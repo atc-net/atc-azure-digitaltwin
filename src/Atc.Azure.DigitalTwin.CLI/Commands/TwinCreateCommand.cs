@@ -145,6 +145,7 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
     private static List<object?> JsonElementToList(JsonElement element)
     {
         var list = new List<object?>();
+
         foreach (var item in element.EnumerateArray())
         {
             list.Add(JsonElementToObject(item));

@@ -36,22 +36,20 @@ public sealed class EventRouteGetAllCommand : AsyncCommand<ConnectionBaseCommand
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetEventRoutes(cancellationToken);
-            if (response is null)
+            var routes = await digitalTwinService.GetEventRoutes(cancellationToken);
+            if (routes is null)
             {
                 logger.LogError("Failed to get event routes");
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            var count = 0;
-            await foreach (var eventRoute in response)
+            foreach (var eventRoute in routes)
             {
                 logger.LogInformation($"EventRouteId: '{eventRoute.Id}'");
                 logger.LogInformation(JsonSerializer.Serialize(eventRoute, jsonSerializerOptions));
-                count++;
             }
 
-            logger.LogInformation($"Found {count} event route(s)");
+            logger.LogInformation($"Found {routes.Count} event route(s)");
         }
         catch (RequestFailedException ex)
         {

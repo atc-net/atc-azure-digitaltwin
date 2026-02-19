@@ -37,7 +37,7 @@ public interface IModelRepositoryService
     /// <param name="path">The directory containing model files to load.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns><see langword="true" /> if the load is successful; otherwise, <see langword="false" />.</returns>
-    Task<bool> LoadModelContent(
+    Task<bool> LoadModelContentAsync(
         DirectoryInfo path,
         CancellationToken cancellationToken = default);
 
@@ -47,7 +47,7 @@ public interface IModelRepositoryService
     /// <param name="path">The directory containing model files to validate.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns><see langword="true" /> if the load is successful; otherwise, <see langword="false" />.</returns>
-    Task<bool> ValidateModels(
+    Task<bool> ValidateModelsAsync(
         DirectoryInfo path,
         CancellationToken cancellationToken = default);
 }
