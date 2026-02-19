@@ -565,6 +565,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 response.IsError)
             {
                 LogDeleteModelFailed(modelId);
+                return (false, $"Failed to delete model '{modelId}'");
             }
 
             LogDeletedModel(modelId);
