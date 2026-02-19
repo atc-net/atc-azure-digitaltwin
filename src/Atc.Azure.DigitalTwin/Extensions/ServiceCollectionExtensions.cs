@@ -16,6 +16,10 @@ public static class ServiceCollectionExtensions
             return client;
         });
 
+        services.AddSingleton<IDigitalTwinParser, DigitalTwinParser>();
+        services.AddSingleton<IModelRepositoryService, ModelRepositoryService>();
+        services.AddSingleton<IDigitalTwinService, DigitalTwinService>();
+
         return services;
     }
 }
