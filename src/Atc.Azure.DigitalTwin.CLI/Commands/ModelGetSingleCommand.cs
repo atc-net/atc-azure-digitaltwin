@@ -40,7 +40,7 @@ public sealed class ModelGetSingleCommand : AsyncCommand<ModelCommandSettings>
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var model = await digitalTwinService.GetModel(modelId, cancellationToken);
+            var model = await digitalTwinService.GetModelAsync(modelId, cancellationToken);
             if (model is null)
             {
                 logger.LogError($"Failed to fetch model '{modelId}'");

@@ -11,7 +11,7 @@ public interface IDigitalTwinService
     /// <param name="modelId">The ID of the model to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The model data if found; otherwise, null.</returns>
-    Task<DigitalTwinsModelData?> GetModel(
+    Task<DigitalTwinsModelData?> GetModelAsync(
         string modelId,
         CancellationToken cancellationToken = default);
 
@@ -21,7 +21,7 @@ public interface IDigitalTwinService
     /// <param name="options">The options to apply to the models' retrieval.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A list of digital twins model data; otherwise, null on failure.</returns>
-    Task<List<DigitalTwinsModelData>?> GetModels(
+    Task<List<DigitalTwinsModelData>?> GetModelsAsync(
         GetModelsOptions? options = null,
         CancellationToken cancellationToken = default);
 
@@ -31,7 +31,7 @@ public interface IDigitalTwinService
     /// <param name="twinId">The ID of the twin to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The digital twin data if found; otherwise, null.</returns>
-    Task<BasicDigitalTwin?> GetTwin(
+    Task<BasicDigitalTwin?> GetTwinAsync(
         string twinId,
         CancellationToken cancellationToken = default);
 
@@ -42,7 +42,7 @@ public interface IDigitalTwinService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <typeparam name="T">The type to which the twin data will be cast.</typeparam>
     /// <returns>The digital twin data if found; otherwise, null.</returns>
-    Task<T?> GetTwin<T>(
+    Task<T?> GetTwinAsync<T>(
         string twinId,
         CancellationToken cancellationToken = default)
         where T : notnull;
@@ -53,7 +53,7 @@ public interface IDigitalTwinService
     /// <param name="query">The query string to use for filtering twin IDs.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A list of twin IDs if found; otherwise, null.</returns>
-    Task<List<string>?> GetTwinIds(
+    Task<List<string>?> GetTwinIdsAsync(
         string query,
         CancellationToken cancellationToken = default);
 
@@ -63,7 +63,7 @@ public interface IDigitalTwinService
     /// <param name="query">The query string to use for filtering digital twins.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A list of digital twins if found; otherwise, null.</returns>
-    Task<List<BasicDigitalTwin>?> GetTwins(
+    Task<List<BasicDigitalTwin>?> GetTwinsAsync(
         string query,
         CancellationToken cancellationToken = default);
 
@@ -73,7 +73,7 @@ public interface IDigitalTwinService
     /// <param name="twinId">The ID of the twin to inspect for relationships.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A list of incoming relationships; otherwise, null on failure.</returns>
-    Task<List<IncomingRelationship>?> GetIncomingRelationships(
+    Task<List<IncomingRelationship>?> GetIncomingRelationshipsAsync(
         string twinId,
         CancellationToken cancellationToken = default);
 
@@ -84,7 +84,7 @@ public interface IDigitalTwinService
     /// <param name="relationshipName">The name of the relationship to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The relationship data if found; otherwise, null.</returns>
-    Task<BasicRelationship?> GetRelationship(
+    Task<BasicRelationship?> GetRelationshipAsync(
         string twinId,
         string relationshipName,
         CancellationToken cancellationToken = default);
@@ -96,7 +96,7 @@ public interface IDigitalTwinService
     /// <param name="relationshipName">The name of the relationship to filter by; can be null to retrieve all relationships.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A list of relationships; otherwise, null on failure.</returns>
-    Task<List<BasicRelationship>?> GetRelationships(
+    Task<List<BasicRelationship>?> GetRelationshipsAsync(
         string twinId,
         string? relationshipName = null,
         CancellationToken cancellationToken = default);
@@ -109,7 +109,7 @@ public interface IDigitalTwinService
     /// <param name="twin">The twin to create.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwin<T>(
+    Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwinAsync<T>(
         string twinId,
         T twin,
         CancellationToken cancellationToken = default);
@@ -120,7 +120,7 @@ public interface IDigitalTwinService
     /// <param name="dtdlModels">The DTDL models as a collection of strings.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> CreateModels(
+    Task<(bool Succeeded, string? ErrorMessage)> CreateModelsAsync(
         IEnumerable<string> dtdlModels,
         CancellationToken cancellationToken = default);
 
@@ -133,7 +133,7 @@ public interface IDigitalTwinService
     /// <param name="isActive">Indicates whether the relationship is active.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> CreateRelationship(
+    Task<(bool Succeeded, string? ErrorMessage)> CreateRelationshipAsync(
         string sourceTwinId,
         string targetTwinId,
         string relationshipName,
@@ -149,7 +149,7 @@ public interface IDigitalTwinService
     /// <param name="isActive">Indicates whether the relationship is active.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> CreateOrUpdateRelationship(
+    Task<(bool Succeeded, string? ErrorMessage)> CreateOrUpdateRelationshipAsync(
         string sourceTwinId,
         string targetTwinId,
         string relationshipName,
@@ -162,7 +162,7 @@ public interface IDigitalTwinService
     /// <param name="modelId">The ID of the model to decommission.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> DecommissionModel(
+    Task<(bool Succeeded, string? ErrorMessage)> DecommissionModelAsync(
         string modelId,
         CancellationToken cancellationToken = default);
 
@@ -172,7 +172,7 @@ public interface IDigitalTwinService
     /// <param name="modelId">The ID of the model to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> DeleteModel(
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteModelAsync(
         string modelId,
         CancellationToken cancellationToken = default);
 
@@ -183,7 +183,7 @@ public interface IDigitalTwinService
     /// <param name="relationshipName">The name of the relationship to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> DeleteRelationship(
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteRelationshipAsync(
         string twinId,
         string relationshipName,
         CancellationToken cancellationToken = default);
@@ -194,7 +194,7 @@ public interface IDigitalTwinService
     /// <param name="twinId">The ID of the twin whose relationships are to be deleted.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous delete operation.</returns>
-    Task DeleteRelationships(
+    Task DeleteRelationshipsAsync(
         string twinId,
         CancellationToken cancellationToken = default);
 
@@ -205,7 +205,7 @@ public interface IDigitalTwinService
     /// <param name="ifMatch">Optional ETag to use for optimistic concurrency control.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> DeleteTwin(
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinAsync(
         string twinId,
         ETag? ifMatch = null,
         CancellationToken cancellationToken = default);
@@ -219,7 +219,7 @@ public interface IDigitalTwinService
     /// <param name="ifMatch">Optional ETag to use for optimistic concurrency control.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> UpdateRelationship(
+    Task<(bool Succeeded, string? ErrorMessage)> UpdateRelationshipAsync(
         string twinId,
         string relationshipId,
         JsonPatchDocument jsonPatchDocument,
@@ -234,7 +234,7 @@ public interface IDigitalTwinService
     /// <param name="ifMatch">Optional ETag to use for optimistic concurrency control.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> UpdateTwin(
+    Task<(bool Succeeded, string? ErrorMessage)> UpdateTwinAsync(
         string twinId,
         JsonPatchDocument jsonPatchDocument,
         ETag? ifMatch = null,
@@ -248,7 +248,7 @@ public interface IDigitalTwinService
     /// <param name="filter">An optional filter expression. Defaults to "true" (all events).</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceEventRoute(
+    Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceEventRouteAsync(
         string eventRouteId,
         string endpointName,
         string? filter = null,
@@ -260,7 +260,7 @@ public interface IDigitalTwinService
     /// <param name="eventRouteId">The ID of the event route to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
-    Task<(bool Succeeded, string? ErrorMessage)> DeleteEventRoute(
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteEventRouteAsync(
         string eventRouteId,
         CancellationToken cancellationToken = default);
 
@@ -270,7 +270,7 @@ public interface IDigitalTwinService
     /// <param name="eventRouteId">The ID of the event route to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The event route if found; otherwise, null.</returns>
-    Task<DigitalTwinsEventRoute?> GetEventRoute(
+    Task<DigitalTwinsEventRoute?> GetEventRouteAsync(
         string eventRouteId,
         CancellationToken cancellationToken = default);
 
@@ -279,7 +279,7 @@ public interface IDigitalTwinService
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A list of event routes; otherwise, null on failure.</returns>
-    Task<List<DigitalTwinsEventRoute>?> GetEventRoutes(
+    Task<List<DigitalTwinsEventRoute>?> GetEventRoutesAsync(
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -289,7 +289,7 @@ public interface IDigitalTwinService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <typeparam name="T">The type to which the results will be cast.</typeparam>
     /// <returns>A list of digital twins of the specified type; otherwise, null on failure.</returns>
-    Task<List<T>?> Query<T>(
+    Task<List<T>?> QueryAsync<T>(
         string query,
         CancellationToken cancellationToken = default)
         where T : notnull;
@@ -303,7 +303,7 @@ public interface IDigitalTwinService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <typeparam name="T">The type to which the results will be cast.</typeparam>
     /// <returns>A page of digital twins of the specified type; otherwise, null if no results are found.</returns>
-    Task<Page<T>?> Query<T>(
+    Task<Page<T>?> QueryAsync<T>(
         string query,
         int pageSize,
         string? continuationToken = null,

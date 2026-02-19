@@ -34,7 +34,7 @@ public sealed class TwinCountCommand : AsyncCommand<ConnectionBaseCommandSetting
             settings.TenantId!,
             new Uri(settings.AdtInstanceUrl!));
 
-        var twinList = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS", cancellationToken);
+        var twinList = await digitalTwinService.GetTwinsAsync("SELECT * FROM DIGITALTWINS", cancellationToken);
         if (twinList is null ||
             twinList.Count == 0)
         {

@@ -37,15 +37,15 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         modelsContent.Clear();
     }
 
-    public Task<bool> LoadModelContent(
+    public Task<bool> LoadModelContentAsync(
         DirectoryInfo path,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(path);
-        return LoadModelContentInternal(path, cancellationToken);
+        return LoadModelContentInternalAsync(path, cancellationToken);
     }
 
-    private async Task<bool> LoadModelContentInternal(
+    private async Task<bool> LoadModelContentInternalAsync(
         DirectoryInfo path,
         CancellationToken cancellationToken)
     {
@@ -68,20 +68,20 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         return true;
     }
 
-    public async Task<bool> ValidateModels(
+    public async Task<bool> ValidateModelsAsync(
         DirectoryInfo path,
         CancellationToken cancellationToken = default)
     {
         Clear();
 
-        if (!await LoadModelContent(path, cancellationToken))
+        if (!await LoadModelContentAsync(path, cancellationToken))
         {
             return false;
         }
 
         try
         {
-            var parseSucceeded = await ParseAndStoreModels(modelsContent);
+            var parseSucceeded = await ParseAndStoreModelsAsync(modelsContent);
 
             if (!parseSucceeded)
             {
@@ -114,9 +114,10 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     ///  - Exclude interfaces that were loaded by the resolver.
     /// </remarks>
     /// <param name="modelTexts">The model texts.</param>
-    private async Task<bool> ParseAndStoreModels(IEnumerable<string> modelTexts)
+    private async Task<bool> ParseAndStoreModelsAsync(
+        IEnumerable<string> modelTexts)
     {
-        var (succeeded, interfaceEntities) = await dtdlParser.Parse(modelTexts);
+        var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(modelTexts);
         if (!succeeded)
         {
             return false;

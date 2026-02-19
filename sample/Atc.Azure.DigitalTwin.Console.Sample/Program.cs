@@ -29,14 +29,14 @@ public static class Program
             loggerFactory,
             new DigitalTwinParser(loggerFactory));
 
-        var modelsValid = await modelRepositoryService.ValidateModels(modelsPath);
+        var modelsValid = await modelRepositoryService.ValidateModelsAsync(modelsPath);
         if (!modelsValid)
         {
             logger.LogError("Failed to validate models");
             return;
         }
 
-        var loadedModelContent = await modelRepositoryService.LoadModelContent(modelsPath);
+        var loadedModelContent = await modelRepositoryService.LoadModelContentAsync(modelsPath);
         if (!loadedModelContent)
         {
             logger.LogError($"Failed to load models from {modelsPath.FullName}");
@@ -49,13 +49,13 @@ public static class Program
                 new Uri(digitalTwinOptions.InstanceUrl),
                 digitalTwinOptions.GetTokenCredential()));
 
-        var twinsModelData = await digitalTwinService.GetModel(
+        var twinsModelData = await digitalTwinService.GetModelAsync(
             $"{Names.PressMachineModelId};{Names.PressMachineVersion}",
             cts.Token);
 
         if (twinsModelData is null)
         {
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync(
                 modelRepositoryService.GetModelsContent(),
                 cts.Token);
 
@@ -66,7 +66,7 @@ public static class Program
             }
         }
 
-        var models = await digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cts.Token);
+        var models = await digitalTwinService.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true }, cts.Token);
         if (models is not null)
         {
             foreach (var digitalTwinsModelData in models)
@@ -91,7 +91,7 @@ public static class Program
             MaintenanceSchedule = "Every second day",
         };
 
-        var (createTwinSucceeded, createTwinErrorMessage) = await digitalTwinService.CreateOrReplaceDigitalTwin(
+        var (createTwinSucceeded, createTwinErrorMessage) = await digitalTwinService.CreateOrReplaceDigitalTwinAsync(
             twinId,
             pressMachine,
             cts.Token);
@@ -102,14 +102,14 @@ public static class Program
             return;
         }
 
-        var twinList = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS", cts.Token);
+        var twinList = await digitalTwinService.GetTwinsAsync("SELECT * FROM DIGITALTWINS", cts.Token);
 
         if (twinList is not null)
         {
             LogTwinCounts(logger, twinList);
         }
 
-        var (deleteTwinSucceeded, deleteTwinErrorMessage) = await digitalTwinService.DeleteTwin(
+        var (deleteTwinSucceeded, deleteTwinErrorMessage) = await digitalTwinService.DeleteTwinAsync(
             twinId,
             cancellationToken: cts.Token);
 

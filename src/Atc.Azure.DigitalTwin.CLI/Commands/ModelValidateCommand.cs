@@ -31,7 +31,7 @@ public sealed class ModelValidateCommand : AsyncCommand<ModelPathSettings>
 
         var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
-        if (!await modelRepositoryService.ValidateModels(directoryInfo, cancellationToken))
+        if (!await modelRepositoryService.ValidateModelsAsync(directoryInfo, cancellationToken))
         {
             logger.LogError($"Could not validate models from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;

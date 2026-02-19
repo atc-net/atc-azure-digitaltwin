@@ -38,7 +38,7 @@ public sealed class EventRouteDeleteCommand : AsyncCommand<EventRouteCommandSett
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteEventRoute(
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteEventRouteAsync(
                 eventRouteId,
                 cancellationToken);
 

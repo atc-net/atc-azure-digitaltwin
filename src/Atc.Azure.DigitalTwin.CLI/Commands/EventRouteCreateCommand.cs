@@ -40,7 +40,7 @@ public sealed class EventRouteCreateCommand : AsyncCommand<EventRouteCreateComma
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateOrReplaceEventRoute(
+            var (succeeded, errorMessage) = await digitalTwinService.CreateOrReplaceEventRouteAsync(
                 eventRouteId,
                 endpointName,
                 filter,

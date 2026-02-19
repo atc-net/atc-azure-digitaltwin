@@ -44,7 +44,7 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateOrReplaceDigitalTwin(
+            var (succeeded, errorMessage) = await digitalTwinService.CreateOrReplaceDigitalTwinAsync(
                 twinId,
                 twinData,
                 cancellationToken);

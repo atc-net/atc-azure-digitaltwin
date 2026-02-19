@@ -29,7 +29,7 @@ public sealed class DigitalTwinParserTests
     public async Task Parse_ValidModel_ReturnsSucceededTrue()
     {
         // Act
-        var result = await sut.Parse(new[] { ValidDtdlModel });
+        var result = await sut.ParseAsync(new[] { ValidDtdlModel });
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -41,7 +41,7 @@ public sealed class DigitalTwinParserTests
     public async Task Parse_ValidModel_ReturnsInterfaces()
     {
         // Act
-        var (_, interfaces) = await sut.Parse(new[] { ValidDtdlModel });
+        var (_, interfaces) = await sut.ParseAsync(new[] { ValidDtdlModel });
 
         // Assert
         interfaces.Should().NotBeNullOrEmpty();
@@ -55,7 +55,7 @@ public sealed class DigitalTwinParserTests
         var invalidModel = """{ "invalid": "not a dtdl model" }""";
 
         // Act
-        var (succeeded, interfaces) = await sut.Parse(new[] { invalidModel });
+        var (succeeded, interfaces) = await sut.ParseAsync(new[] { invalidModel });
 
         // Assert
         succeeded.Should().BeFalse();
@@ -69,7 +69,7 @@ public sealed class DigitalTwinParserTests
         var malformedJson = "{ this is not json }";
 
         // Act
-        var (succeeded, interfaces) = await sut.Parse(new[] { malformedJson });
+        var (succeeded, interfaces) = await sut.ParseAsync(new[] { malformedJson });
 
         // Assert
         succeeded.Should().BeFalse();
@@ -80,7 +80,7 @@ public sealed class DigitalTwinParserTests
     public async Task Parse_EmptyCollection_ReturnsSucceededTrue()
     {
         // Act
-        var (succeeded, interfaces) = await sut.Parse(Array.Empty<string>());
+        var (succeeded, interfaces) = await sut.ParseAsync(Array.Empty<string>());
 
         // Assert
         succeeded.Should().BeTrue();
@@ -111,7 +111,7 @@ public sealed class DigitalTwinParserTests
             """;
 
         // Act
-        var (succeeded, interfaces) = await sut.Parse(new[] { model1, model2 });
+        var (succeeded, interfaces) = await sut.ParseAsync(new[] { model1, model2 });
 
         // Assert
         succeeded.Should().BeTrue();
@@ -152,8 +152,8 @@ public sealed class DigitalTwinParserTests
         // Act - Parse with dependent model listed BEFORE its dependency
         // The underlying ModelParser handles resolution internally,
         // but there is no topological sorting in the upload pipeline.
-        var (succeededReverse, interfacesReverse) = await sut.Parse(new[] { dependentModel, baseModel });
-        var (succeededNormal, interfacesNormal) = await sut.Parse(new[] { baseModel, dependentModel });
+        var (succeededReverse, interfacesReverse) = await sut.ParseAsync(new[] { dependentModel, baseModel });
+        var (succeededNormal, interfacesNormal) = await sut.ParseAsync(new[] { baseModel, dependentModel });
 
         // Assert - Both orders parse successfully (parser resolves internally)
         succeededReverse.Should().BeTrue();

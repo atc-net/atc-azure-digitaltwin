@@ -36,7 +36,7 @@ public sealed class EventRouteGetAllCommand : AsyncCommand<ConnectionBaseCommand
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var routes = await digitalTwinService.GetEventRoutes(cancellationToken);
+            var routes = await digitalTwinService.GetEventRoutesAsync(cancellationToken);
             if (routes is null)
             {
                 logger.LogError("Failed to get event routes");

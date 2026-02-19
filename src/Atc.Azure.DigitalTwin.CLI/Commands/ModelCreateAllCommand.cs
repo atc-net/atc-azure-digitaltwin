@@ -32,7 +32,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
 
         var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
-        if (!await modelRepositoryService.LoadModelContent(directoryInfo, cancellationToken))
+        if (!await modelRepositoryService.LoadModelContentAsync(directoryInfo, cancellationToken))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
@@ -45,7 +45,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(modelRepositoryService.GetModelsContent(), cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync(modelRepositoryService.GetModelsContent(), cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to upload models: {errorMessage}");

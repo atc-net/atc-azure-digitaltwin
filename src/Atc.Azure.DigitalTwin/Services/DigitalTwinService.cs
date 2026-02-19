@@ -17,7 +17,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         this.jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
     }
 
-    public async Task<DigitalTwinsModelData?> GetModel(
+    public async Task<DigitalTwinsModelData?> GetModelAsync(
         string modelId,
         CancellationToken cancellationToken = default)
     {
@@ -50,7 +50,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<List<DigitalTwinsModelData>?> GetModels(
+    public async Task<List<DigitalTwinsModelData>?> GetModelsAsync(
         GetModelsOptions? options = null,
         CancellationToken cancellationToken = default)
     {
@@ -83,14 +83,14 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return models;
     }
 
-    public Task<BasicDigitalTwin?> GetTwin(
+    public Task<BasicDigitalTwin?> GetTwinAsync(
         string twinId,
         CancellationToken cancellationToken = default)
-        => GetTwin<BasicDigitalTwin>(
+        => GetTwinAsync<BasicDigitalTwin>(
             twinId,
             cancellationToken);
 
-    public async Task<T?> GetTwin<T>(
+    public async Task<T?> GetTwinAsync<T>(
         string twinId,
         CancellationToken cancellationToken = default)
         where T : notnull
@@ -123,7 +123,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<List<string>?> GetTwinIds(
+    public async Task<List<string>?> GetTwinIdsAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
@@ -153,7 +153,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return twinList;
     }
 
-    public async Task<List<BasicDigitalTwin>?> GetTwins(
+    public async Task<List<BasicDigitalTwin>?> GetTwinsAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
@@ -183,7 +183,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return twinList;
     }
 
-    public async Task<List<IncomingRelationship>?> GetIncomingRelationships(
+    public async Task<List<IncomingRelationship>?> GetIncomingRelationshipsAsync(
         string twinId,
         CancellationToken cancellationToken = default)
     {
@@ -214,7 +214,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return relationships;
     }
 
-    public async Task<BasicRelationship?> GetRelationship(
+    public async Task<BasicRelationship?> GetRelationshipAsync(
         string twinId,
         string relationshipName,
         CancellationToken cancellationToken = default)
@@ -222,7 +222,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         try
         {
             LogRetrievingRelationship(twinId, relationshipName);
-            var response = await GetRelationships(twinId, relationshipName, cancellationToken);
+            var response = await GetRelationshipsAsync(twinId, relationshipName, cancellationToken);
 
             if (response is null)
             {
@@ -252,7 +252,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<List<BasicRelationship>?> GetRelationships(
+    public async Task<List<BasicRelationship>?> GetRelationshipsAsync(
         string twinId,
         string? relationshipName = null,
         CancellationToken cancellationToken = default)
@@ -287,7 +287,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return relationships;
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwin<T>(
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwinAsync<T>(
         string twinId,
         T twin,
         CancellationToken cancellationToken = default)
@@ -318,7 +318,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> CreateModels(
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateModelsAsync(
         IEnumerable<string> dtdlModels,
         CancellationToken cancellationToken = default)
     {
@@ -348,7 +348,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> CreateRelationship(
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateRelationshipAsync(
         string sourceTwinId,
         string targetTwinId,
         string relationshipName,
@@ -390,7 +390,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrUpdateRelationship(
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrUpdateRelationshipAsync(
         string sourceTwinId,
         string targetTwinId,
         string relationshipName,
@@ -409,13 +409,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             };
 
             var relationShipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
-            var existingRelationShip = await FindRelationshipById(sourceTwinId, relationShipId, cancellationToken);
+            var existingRelationShip = await FindRelationshipByIdAsync(sourceTwinId, relationShipId, cancellationToken);
 
             if (existingRelationShip is not null)
             {
                 var patch = new JsonPatchDocument();
                 patch.AppendReplace("/isActive", isActive);
-                await UpdateRelationship(sourceTwinId, existingRelationShip.Id, patch, existingRelationShip.ETag, cancellationToken);
+                await UpdateRelationshipAsync(sourceTwinId, existingRelationShip.Id, patch, existingRelationShip.ETag, cancellationToken);
             }
             else
             {
@@ -437,7 +437,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> DecommissionModel(
+    public async Task<(bool Succeeded, string? ErrorMessage)> DecommissionModelAsync(
         string modelId,
         CancellationToken cancellationToken = default)
     {
@@ -470,7 +470,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteModel(
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteModelAsync(
         string modelId,
         CancellationToken cancellationToken = default)
     {
@@ -503,7 +503,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteRelationship(
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteRelationshipAsync(
         string twinId,
         string relationshipName,
         CancellationToken cancellationToken = default)
@@ -511,7 +511,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         try
         {
             LogRetrievingRelationship(twinId, relationshipName);
-            var getResponse = await GetRelationship(twinId, relationshipName, cancellationToken);
+            var getResponse = await GetRelationshipAsync(twinId, relationshipName, cancellationToken);
             if (getResponse is null)
             {
                 LogRelationshipNotFound(twinId, relationshipName);
@@ -547,15 +547,15 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task DeleteRelationships(
+    public async Task DeleteRelationshipsAsync(
         string twinId,
         CancellationToken cancellationToken = default)
     {
-        await FindAndDeleteOutgoingRelationshipsForTwin(twinId, cancellationToken);
-        await FindAndDeleteIncomingRelationshipsForTwin(twinId, cancellationToken);
+        await FindAndDeleteOutgoingRelationshipsForTwinAsync(twinId, cancellationToken);
+        await FindAndDeleteIncomingRelationshipsForTwinAsync(twinId, cancellationToken);
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwin(
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteTwinAsync(
         string twinId,
         ETag? ifMatch = null,
         CancellationToken cancellationToken = default)
@@ -590,7 +590,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> UpdateRelationship(
+    public async Task<(bool Succeeded, string? ErrorMessage)> UpdateRelationshipAsync(
         string twinId,
         string relationshipId,
         JsonPatchDocument jsonPatchDocument,
@@ -629,7 +629,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> UpdateTwin(
+    public async Task<(bool Succeeded, string? ErrorMessage)> UpdateTwinAsync(
         string twinId,
         JsonPatchDocument jsonPatchDocument,
         ETag? ifMatch = null,
@@ -666,7 +666,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<List<T>?> Query<T>(
+    public async Task<List<T>?> QueryAsync<T>(
         string query,
         CancellationToken cancellationToken = default)
         where T : notnull
@@ -698,7 +698,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return results;
     }
 
-    public async Task<Page<T>?> Query<T>(
+    public async Task<Page<T>?> QueryAsync<T>(
         string query,
         int pageSize,
         string? continuationToken = null,
@@ -733,7 +733,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceEventRoute(
+    public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceEventRouteAsync(
         string eventRouteId,
         string endpointName,
         string? filter = null,
@@ -768,7 +768,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteEventRoute(
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteEventRouteAsync(
         string eventRouteId,
         CancellationToken cancellationToken = default)
     {
@@ -798,7 +798,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<DigitalTwinsEventRoute?> GetEventRoute(
+    public async Task<DigitalTwinsEventRoute?> GetEventRouteAsync(
         string eventRouteId,
         CancellationToken cancellationToken = default)
     {
@@ -827,7 +827,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public async Task<List<DigitalTwinsEventRoute>?> GetEventRoutes(
+    public async Task<List<DigitalTwinsEventRoute>?> GetEventRoutesAsync(
         CancellationToken cancellationToken = default)
     {
         var routes = new List<DigitalTwinsEventRoute>();
@@ -855,7 +855,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return routes;
     }
 
-    private async Task FindAndDeleteOutgoingRelationshipsForTwin(
+    private async Task FindAndDeleteOutgoingRelationshipsForTwinAsync(
         string twinId,
         CancellationToken cancellationToken = default)
     {
@@ -885,7 +885,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    private async Task<BasicRelationship?> FindRelationshipById(
+    private async Task<BasicRelationship?> FindRelationshipByIdAsync(
         string twinId,
         string relationshipId,
         CancellationToken cancellationToken)
@@ -905,7 +905,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    private async Task FindAndDeleteIncomingRelationshipsForTwin(
+    private async Task FindAndDeleteIncomingRelationshipsForTwinAsync(
         string twinId,
         CancellationToken cancellationToken = default)
     {

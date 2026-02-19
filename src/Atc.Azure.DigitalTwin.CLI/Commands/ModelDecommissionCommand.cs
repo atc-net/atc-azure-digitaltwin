@@ -37,7 +37,7 @@ public sealed class ModelDecommissionCommand : AsyncCommand<ModelCommandSettings
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.DecommissionModel(modelId, cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.DecommissionModelAsync(modelId, cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to decommission model '{modelId}': {errorMessage}");

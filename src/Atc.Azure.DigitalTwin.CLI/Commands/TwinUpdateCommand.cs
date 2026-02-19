@@ -46,7 +46,7 @@ public sealed class TwinUpdateCommand : AsyncCommand<TwinUpdateCommandSettings>
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            var (succeeded, errorMessage) = await digitalTwinService.UpdateTwin(
+            var (succeeded, errorMessage) = await digitalTwinService.UpdateTwinAsync(
                 twinId,
                 patchDocument,
                 cancellationToken: cancellationToken);

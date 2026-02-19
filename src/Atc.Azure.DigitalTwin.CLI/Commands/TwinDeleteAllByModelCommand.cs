@@ -36,7 +36,7 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
 
         logger.LogInformation($"Deleting all twins by modelId '{modelId}");
 
-        var twinList = await digitalTwinService.GetTwinIds($"SELECT * FROM DIGITALTWINS WHERE IS_OF_MODEL('{modelId}')", cancellationToken);
+        var twinList = await digitalTwinService.GetTwinIdsAsync($"SELECT * FROM DIGITALTWINS WHERE IS_OF_MODEL('{modelId}')", cancellationToken);
         if (twinList is null)
         {
             return ConsoleExitStatusCodes.Failure;
@@ -44,12 +44,12 @@ public sealed class TwinDeleteAllByModelCommand : AsyncCommand<ModelCommandSetti
 
         foreach (var twinId in twinList)
         {
-            await digitalTwinService.DeleteRelationships(twinId, cancellationToken);
+            await digitalTwinService.DeleteRelationshipsAsync(twinId, cancellationToken);
         }
 
         foreach (var twinId in twinList)
         {
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId, cancellationToken: cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwinAsync(twinId, cancellationToken: cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");
