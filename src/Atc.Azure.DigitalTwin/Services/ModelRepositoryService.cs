@@ -72,6 +72,8 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         DirectoryInfo path,
         CancellationToken cancellationToken = default)
     {
+        Clear();
+
         if (!await LoadModelContent(path, cancellationToken))
         {
             return false;
@@ -80,7 +82,6 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         try
         {
             var parseSucceeded = await ParseAndStoreModels(modelsContent);
-            Clear();
 
             if (!parseSucceeded)
             {
