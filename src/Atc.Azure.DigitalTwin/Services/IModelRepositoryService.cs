@@ -21,6 +21,13 @@ public interface IModelRepositoryService
     IEnumerable<string> GetModelsContent();
 
     /// <summary>
+    /// Retrieves the content of all models ordered by their dependencies (extends relationships).
+    /// Models with no dependencies are returned first.
+    /// </summary>
+    /// <returns>A list of strings representing the content of each model, ordered by dependency.</returns>
+    IEnumerable<string> GetModelsContentInDependencyOrder();
+
+    /// <summary>
     /// Retrieves all models.
     /// </summary>
     /// <returns>A dictionary where each key is a DTMI and the value is the associated digital twin interface information.</returns>

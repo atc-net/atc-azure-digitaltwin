@@ -31,4 +31,10 @@ public sealed partial class ModelRepositoryService
         Level = LogLevel.Error,
         Message = "Parse error: {ParseError}")]
     private partial void LogParseError(string parseError);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ModelRepositoryService.DependencyOrderingFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to order models by dependency, falling back to original order")]
+    private partial void LogDependencyOrderingFailed();
 }
