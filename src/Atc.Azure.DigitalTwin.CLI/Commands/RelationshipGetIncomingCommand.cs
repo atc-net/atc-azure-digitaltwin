@@ -39,14 +39,14 @@ public sealed class RelationshipGetIncomingCommand : AsyncCommand<TwinCommandSet
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var response = digitalTwinService.GetIncomingRelationships(twinId, cancellationToken);
-            if (response is null)
+            var relationships = await digitalTwinService.GetIncomingRelationships(twinId, cancellationToken);
+            if (relationships is null)
             {
                 logger.LogError($"Failed to fetch incoming relationships for twin with id '{twinId}'");
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            await foreach (var relationship in response)
+            foreach (var relationship in relationships)
             {
                 logger.LogInformation($"Relationship: {relationship.RelationshipName} from {relationship.SourceId} | {relationship.RelationshipId}");
                 logger.LogInformation(JsonSerializer.Serialize(relationship, jsonSerializerOptions));

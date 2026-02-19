@@ -16,17 +16,12 @@ public interface IDigitalTwinService
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Retrieves a pageable list of all models.
+    /// Retrieves all models.
     /// </summary>
-    /// <remarks>
-    /// This method returns an <see cref="AsyncPageable{T}"/> that performs network calls during iteration.
-    /// Callers must handle <see cref="RequestFailedException"/> and other exceptions around their
-    /// <c>await foreach</c> loop, as errors during pagination are not caught by this method.
-    /// </remarks>
     /// <param name="options">The options to apply to the models' retrieval.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>An async pageable of digital twins model data; otherwise, null.</returns>
-    AsyncPageable<DigitalTwinsModelData>? GetModels(
+    /// <returns>A list of digital twins model data; otherwise, null on failure.</returns>
+    Task<List<DigitalTwinsModelData>?> GetModels(
         GetModelsOptions? options = null,
         CancellationToken cancellationToken = default);
 
@@ -73,17 +68,12 @@ public interface IDigitalTwinService
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Retrieves a pageable list of incoming relationships for a specified digital twin.
+    /// Retrieves all incoming relationships for a specified digital twin.
     /// </summary>
-    /// <remarks>
-    /// This method returns an <see cref="AsyncPageable{T}"/> that performs network calls during iteration.
-    /// Callers must handle <see cref="RequestFailedException"/> and other exceptions around their
-    /// <c>await foreach</c> loop, as errors during pagination are not caught by this method.
-    /// </remarks>
     /// <param name="twinId">The ID of the twin to inspect for relationships.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>An async pageable of incoming relationships; otherwise, null.</returns>
-    AsyncPageable<IncomingRelationship>? GetIncomingRelationships(
+    /// <returns>A list of incoming relationships; otherwise, null on failure.</returns>
+    Task<List<IncomingRelationship>?> GetIncomingRelationships(
         string twinId,
         CancellationToken cancellationToken = default);
 
@@ -100,18 +90,13 @@ public interface IDigitalTwinService
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Retrieves a pageable list of relationships for a specified digital twin.
+    /// Retrieves all relationships for a specified digital twin.
     /// </summary>
-    /// <remarks>
-    /// This method returns an <see cref="AsyncPageable{T}"/> that performs network calls during iteration.
-    /// Callers must handle <see cref="RequestFailedException"/> and other exceptions around their
-    /// <c>await foreach</c> loop, as errors during pagination are not caught by this method.
-    /// </remarks>
     /// <param name="twinId">The ID of the twin to inspect for relationships.</param>
     /// <param name="relationshipName">The name of the relationship to filter by; can be null to retrieve all relationships.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>An async pageable of relationships; otherwise, null.</returns>
-    AsyncPageable<BasicRelationship>? GetRelationships(
+    /// <returns>A list of relationships; otherwise, null on failure.</returns>
+    Task<List<BasicRelationship>?> GetRelationships(
         string twinId,
         string? relationshipName = null,
         CancellationToken cancellationToken = default);
@@ -292,29 +277,19 @@ public interface IDigitalTwinService
     /// <summary>
     /// Retrieves all event routes.
     /// </summary>
-    /// <remarks>
-    /// This method returns an <see cref="AsyncPageable{T}"/> that performs network calls during iteration.
-    /// Callers must handle <see cref="RequestFailedException"/> and other exceptions around their
-    /// <c>await foreach</c> loop, as errors during pagination are not caught by this method.
-    /// </remarks>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>An async pageable of event routes; otherwise, null.</returns>
-    AsyncPageable<DigitalTwinsEventRoute>? GetEventRoutes(
+    /// <returns>A list of event routes; otherwise, null on failure.</returns>
+    Task<List<DigitalTwinsEventRoute>?> GetEventRoutes(
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Queries digital twins using a specified query string and returns a pageable set of results of a specific type.
+    /// Queries digital twins using a specified query string and returns all results of a specific type.
     /// </summary>
-    /// <remarks>
-    /// This method returns an <see cref="AsyncPageable{T}"/> that performs network calls during iteration.
-    /// Callers must handle <see cref="RequestFailedException"/> and other exceptions around their
-    /// <c>await foreach</c> loop, as errors during pagination are not caught by this method.
-    /// </remarks>
     /// <param name="query">The query string used to filter and retrieve digital twins.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <typeparam name="T">The type to which the results will be cast.</typeparam>
-    /// <returns>An async pageable of digital twins of the specified type; otherwise, null if no results are found.</returns>
-    AsyncPageable<T>? Query<T>(
+    /// <returns>A list of digital twins of the specified type; otherwise, null on failure.</returns>
+    Task<List<T>?> Query<T>(
         string query,
         CancellationToken cancellationToken = default)
         where T : notnull;

@@ -32,7 +32,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             if (response is null)
             {
                 LogNotFound("model", modelId);
-                return default;
+                return null;
             }
 
             LogRetrieved("model", modelId);
@@ -44,21 +44,23 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
     }
 
-    public AsyncPageable<DigitalTwinsModelData>? GetModels(
+    public async Task<List<DigitalTwinsModelData>?> GetModels(
         GetModelsOptions? options = null,
         CancellationToken cancellationToken = default)
     {
+        var models = new List<DigitalTwinsModelData>();
+
         try
         {
             LogRetrievingModels();
@@ -66,14 +68,10 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 options,
                 cancellationToken);
 
-            if (response is null)
+            await foreach (var model in response)
             {
-                LogModelsNotFound();
-                return default;
+                models.Add(model);
             }
-
-            LogRetrievedModels();
-            return response;
         }
         catch (RequestFailedException ex)
         {
@@ -81,15 +79,18 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
+
+        LogRetrievedModels();
+        return models;
     }
 
     public Task<BasicDigitalTwin?> GetTwin(
@@ -207,23 +208,21 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         return twinList;
     }
 
-    public AsyncPageable<IncomingRelationship>? GetIncomingRelationships(
+    public async Task<List<IncomingRelationship>?> GetIncomingRelationships(
         string twinId,
         CancellationToken cancellationToken = default)
     {
+        var relationships = new List<IncomingRelationship>();
+
         try
         {
             LogRetrieving("incoming-relationships", twinId);
             var response = client.GetIncomingRelationshipsAsync(twinId, cancellationToken);
 
-            if (response is null)
+            await foreach (var relationship in response)
             {
-                LogNotFound("incoming-relationships", twinId);
-                return default;
+                relationships.Add(relationship);
             }
-
-            LogRetrieved("incoming-relationships", twinId);
-            return response;
         }
         catch (RequestFailedException ex)
         {
@@ -231,15 +230,18 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
+
+        LogRetrieved("incoming-relationships", twinId);
+        return relationships;
     }
 
     public async Task<BasicRelationship?> GetRelationship(
@@ -250,7 +252,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         try
         {
             LogRetrievingRelationship(twinId, relationshipName);
-            var response = GetRelationships(twinId, relationshipName, cancellationToken);
+            var response = await GetRelationships(twinId, relationshipName, cancellationToken);
 
             if (response is null)
             {
@@ -258,7 +260,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 return null;
             }
 
-            var relationship = await response.SingleOrDefaultAsync(cancellationToken);
+            var relationship = response.SingleOrDefault();
             if (relationship is null)
             {
                 LogRelationshipNotFound(twinId, relationshipName);
@@ -274,22 +276,24 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
     }
 
-    public AsyncPageable<BasicRelationship>? GetRelationships(
+    public async Task<List<BasicRelationship>?> GetRelationships(
         string twinId,
         string? relationshipName = null,
         CancellationToken cancellationToken = default)
     {
+        var relationships = new List<BasicRelationship>();
+
         try
         {
             LogRetrievingRelationships(twinId);
@@ -298,14 +302,10 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 relationshipName,
                 cancellationToken);
 
-            if (response is null)
+            await foreach (var relationship in response)
             {
-                LogRelationshipsNotFound(twinId);
-                return default;
+                relationships.Add(relationship);
             }
-
-            LogRetrievedRelationships(twinId);
-            return response;
         }
         catch (RequestFailedException ex)
         {
@@ -313,15 +313,18 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
+
+        LogRetrievedRelationships(twinId);
+        return relationships;
     }
 
     public async Task<(bool Succeeded, string? ErrorMessage)> CreateOrReplaceDigitalTwin<T>(
@@ -467,33 +470,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             };
 
             var relationShipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
-
-            BasicRelationship? existingRelationShip = null;
-            try
-            {
-                var lookupResponse = await client.GetRelationshipAsync<BasicRelationship>(
-                    sourceTwinId,
-                    relationShipId,
-                    cancellationToken);
-                existingRelationShip = lookupResponse?.Value;
-            }
-            catch (RequestFailedException ex) when (ex.Status == 404)
-            {
-                // Relationship does not exist yet; will create below
-            }
+            var existingRelationShip = await FindRelationshipById(sourceTwinId, relationShipId, cancellationToken);
 
             if (existingRelationShip is not null)
             {
                 var patch = new JsonPatchDocument();
-                if (existingRelationShip.Properties.Any(p => p.Key == "isActive"))
-                {
-                    patch.AppendReplace("/isActive", isActive);
-                }
-                else
-                {
-                    patch.AppendAdd("/isActive", isActive);
-                }
-
+                patch.AppendReplace("/isActive", isActive);
                 await UpdateRelationship(sourceTwinId, existingRelationShip.Id, patch, existingRelationShip.ETag, cancellationToken);
             }
             else
@@ -794,23 +776,22 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
-    public AsyncPageable<T>? Query<T>(
+    public async Task<List<T>?> Query<T>(
         string query,
         CancellationToken cancellationToken = default)
         where T : notnull
     {
+        var results = new List<T>();
+
         try
         {
             LogQuerying(query);
             var response = client.QueryAsync<T>(query, cancellationToken);
-            if (response is null)
-            {
-                LogQueryingFailed(query);
-                return default;
-            }
 
-            LogQueried(query);
-            return response;
+            await foreach (var item in response)
+            {
+                results.Add(item);
+            }
         }
         catch (RequestFailedException ex)
         {
@@ -818,15 +799,18 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
+
+        LogQueried(query);
+        return results;
     }
 
     public async Task<Page<T>?> Query<T>(
@@ -846,7 +830,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             if (result is null)
             {
                 LogQueryingFailed(query);
-                return default;
+                return null;
             }
 
             LogQueried(query);
@@ -858,14 +842,14 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 ex.Status,
                 ex.ErrorCode,
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
     }
 
@@ -950,7 +934,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
             if (response is null)
             {
-                return default;
+                return null;
             }
 
             return response.Value;
@@ -958,33 +942,41 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         catch (RequestFailedException ex)
         {
             LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(ex.GetType().ToString(), ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
     }
 
-    public AsyncPageable<DigitalTwinsEventRoute>? GetEventRoutes(
+    public async Task<List<DigitalTwinsEventRoute>?> GetEventRoutes(
         CancellationToken cancellationToken = default)
     {
+        var routes = new List<DigitalTwinsEventRoute>();
+
         try
         {
             var response = client.GetEventRoutesAsync(cancellationToken);
-            return response;
+
+            await foreach (var route in response)
+            {
+                routes.Add(route);
+            }
         }
         catch (RequestFailedException ex)
         {
             LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
         catch (Exception ex)
         {
             LogFailure(ex.GetType().ToString(), ex.GetLastInnerMessage());
-            return default;
+            return null;
         }
+
+        return routes;
     }
 
     private async Task FindAndDeleteOutgoingRelationshipsForTwin(
@@ -1016,6 +1008,26 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             LogFailure(
                 ex.GetType().ToString(),
                 ex.GetLastInnerMessage());
+        }
+    }
+
+    private async Task<BasicRelationship?> FindRelationshipById(
+        string twinId,
+        string relationshipId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await client.GetRelationshipAsync<BasicRelationship>(
+                twinId,
+                relationshipId,
+                cancellationToken);
+
+            return response?.Value;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
         }
     }
 

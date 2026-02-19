@@ -66,10 +66,10 @@ public static class Program
             }
         }
 
-        var modelsResponse = digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cts.Token);
-        if (modelsResponse is not null)
+        var models = await digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cts.Token);
+        if (models is not null)
         {
-            await foreach (var digitalTwinsModelData in modelsResponse)
+            foreach (var digitalTwinsModelData in models)
             {
                 if (digitalTwinsModelData.DtdlModel is null)
                 {
