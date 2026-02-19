@@ -27,7 +27,7 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { DtdlModel1 });
+        var result = await parser.ParseAsync([DtdlModel1]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
 
         // Act & Assert
@@ -40,8 +40,8 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result1 = await parser.ParseAsync(new[] { DtdlModel1 });
-        var result2 = await parser.ParseAsync(new[] { DtdlModel1 });
+        var result1 = await parser.ParseAsync([DtdlModel1]);
+        var result2 = await parser.ParseAsync([DtdlModel1]);
         var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
         var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
 
@@ -55,8 +55,8 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result1 = await parser.ParseAsync(new[] { DtdlModel1 });
-        var result2 = await parser.ParseAsync(new[] { DtdlModel2 });
+        var result1 = await parser.ParseAsync([DtdlModel1]);
+        var result2 = await parser.ParseAsync([DtdlModel2]);
         var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
         var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
 
@@ -78,7 +78,7 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { DtdlModel1 });
+        var result = await parser.ParseAsync([DtdlModel1]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
 
         // Act & Assert
@@ -91,7 +91,7 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { DtdlModel1 });
+        var result = await parser.ParseAsync([DtdlModel1]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
 
         // Act & Assert
@@ -104,8 +104,8 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result1 = await parser.ParseAsync(new[] { DtdlModel1 });
-        var result2 = await parser.ParseAsync(new[] { DtdlModel1 });
+        var result1 = await parser.ParseAsync([DtdlModel1]);
+        var result2 = await parser.ParseAsync([DtdlModel1]);
         var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
         var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
 
@@ -119,8 +119,8 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result1 = await parser.ParseAsync(new[] { DtdlModel1 });
-        var result2 = await parser.ParseAsync(new[] { DtdlModel2 });
+        var result1 = await parser.ParseAsync([DtdlModel1]);
+        var result2 = await parser.ParseAsync([DtdlModel2]);
         var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
         var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
 
@@ -144,8 +144,8 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result1 = await parser.ParseAsync(new[] { DtdlModel1 });
-        var result2 = await parser.ParseAsync(new[] { DtdlModel1 });
+        var result1 = await parser.ParseAsync([DtdlModel1]);
+        var result2 = await parser.ParseAsync([DtdlModel1]);
         var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
         var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
 

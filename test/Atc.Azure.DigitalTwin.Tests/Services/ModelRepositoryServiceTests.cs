@@ -24,7 +24,7 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { ValidDtdlModel });
+        var result = await parser.ParseAsync([ValidDtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
         var dtmi = new Dtmi("dtmi:com:example:Thermostat;1");
 
@@ -55,7 +55,7 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { ValidDtdlModel });
+        var result = await parser.ParseAsync([ValidDtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
         var dtmi = new Dtmi("dtmi:com:example:Thermostat;1");
         sut.AddModel(dtmi, interfaceInfo);
@@ -82,8 +82,8 @@ public sealed class ModelRepositoryServiceTests
             """;
 
         var parser = new ModelParser();
-        var result1 = await parser.ParseAsync(new[] { ValidDtdlModel });
-        var result2 = await parser.ParseAsync(new[] { model2 });
+        var result1 = await parser.ParseAsync([ValidDtdlModel]);
+        var result2 = await parser.ParseAsync([model2]);
         var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
         var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
 
@@ -105,7 +105,7 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { ValidDtdlModel });
+        var result = await parser.ParseAsync([ValidDtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
         var dtmi = new Dtmi("dtmi:com:example:Thermostat;1");
 

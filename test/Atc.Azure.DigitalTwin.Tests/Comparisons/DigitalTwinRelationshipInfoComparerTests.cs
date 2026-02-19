@@ -207,7 +207,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         string sourceInterfaceName)
     {
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { dtdlModel });
+        var result = await parser.ParseAsync([dtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>()
             .First(i => i.Id.AbsoluteUri.Contains(sourceInterfaceName, StringComparison.Ordinal));
         return interfaceInfo.Contents.Values.OfType<DTRelationshipInfo>().First();
@@ -216,7 +216,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
     private static async Task<List<DTRelationshipInfo>> GetRelationships()
     {
         var parser = new ModelParser();
-        var result = await parser.ParseAsync(new[] { DtdlModelWithRelationships });
+        var result = await parser.ParseAsync([DtdlModelWithRelationships]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>()
             .First(i => i.Id.AbsoluteUri.Contains("Room", StringComparison.Ordinal));
         return [.. interfaceInfo.Contents.Values.OfType<DTRelationshipInfo>()];
