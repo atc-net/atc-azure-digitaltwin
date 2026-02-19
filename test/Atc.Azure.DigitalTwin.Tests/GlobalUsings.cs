@@ -1,10 +1,13 @@
+global using Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 global using Atc.Azure.DigitalTwin.Comparisons;
 global using Atc.Azure.DigitalTwin.Extensions;
 global using Atc.Azure.DigitalTwin.Options;
 global using Atc.Azure.DigitalTwin.Parsers;
 global using Atc.Azure.DigitalTwin.Services;
+global using Azure;
 global using Azure.DigitalTwins.Core;
 global using Azure.Identity;
 global using Microsoft.Azure.DigitalTwins.Parser;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
+global using NSubstitute.ExceptionExtensions;
