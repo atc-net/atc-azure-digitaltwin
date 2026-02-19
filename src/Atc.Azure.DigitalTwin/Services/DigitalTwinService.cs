@@ -40,17 +40,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
     }
@@ -75,17 +70,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -123,17 +113,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return default;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return default;
         }
     }
@@ -155,17 +140,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -190,17 +170,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -226,17 +201,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -272,17 +242,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
     }
@@ -309,17 +274,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -348,20 +308,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -385,20 +338,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -434,20 +380,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -488,20 +427,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -528,20 +460,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -568,20 +493,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -619,20 +537,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -669,20 +580,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -715,20 +619,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -759,20 +656,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(
-                ex.GetType().ToString(),
-                errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -795,17 +685,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -838,17 +723,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(
-                ex.Status,
-                ex.ErrorCode,
-                ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
     }
@@ -878,15 +758,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(ex.Status, ex.ErrorCode, errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(ex.GetType().ToString(), errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -910,15 +788,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogRequestFailed(ex.Status, ex.ErrorCode, errorMessage);
-            return (false, errorMessage);
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
         }
         catch (Exception ex)
         {
-            var errorMessage = ex.GetLastInnerMessage();
-            LogFailure(ex.GetType().ToString(), errorMessage);
-            return (false, errorMessage);
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
         }
     }
 
@@ -941,12 +817,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(ex.GetType().ToString(), ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
     }
@@ -967,12 +843,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
             return null;
         }
         catch (Exception ex)
         {
-            LogFailure(ex.GetType().ToString(), ex.GetLastInnerMessage());
+            LogFailure(ex);
             return null;
         }
 
@@ -1001,13 +877,11 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
         }
     }
 
@@ -1053,13 +927,11 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
         catch (RequestFailedException ex)
         {
-            LogRequestFailed(ex.Status, ex.ErrorCode, ex.GetLastInnerMessage());
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
         }
         catch (Exception ex)
         {
-            LogFailure(
-                ex.GetType().ToString(),
-                ex.GetLastInnerMessage());
+            LogFailure(ex);
         }
     }
 }

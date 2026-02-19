@@ -23,7 +23,7 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
         }
         catch (ParsingException ex)
         {
-            LogParseFailed(ex.GetLastInnerMessage());
+            LogParseFailed(ex);
             foreach (var error in ex.Errors)
             {
                 LogParseError($"Message: {error.Message}, PrimaryID: {error.PrimaryID}, SecondaryID: {error.SecondaryID}, Property: {error.Property}");
@@ -33,7 +33,7 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
         }
         catch (Exception ex) when (ex is not OutOfMemoryException and not StackOverflowException)
         {
-            LogParseFailed(ex.GetLastInnerMessage());
+            LogParseFailed(ex);
             return (false, null);
         }
     }

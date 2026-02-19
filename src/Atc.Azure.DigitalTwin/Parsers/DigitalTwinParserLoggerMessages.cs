@@ -11,18 +11,12 @@ public sealed partial class DigitalTwinParser
     [LoggerMessage(
         EventId = LoggingEventIdConstants.DigitalTwinParser.ParseFailed,
         Level = LogLevel.Error,
-        Message = "{callerMethodName}({callerLineNumber}) - Failed to parse models: {errorMessage}")]
-    private partial void LogParseFailed(
-        string errorMessage,
-        [CallerMemberName] string callerMethodName = "",
-        [CallerLineNumber] int callerLineNumber = 0);
+        Message = "Failed to parse models")]
+    private partial void LogParseFailed(Exception exception);
 
     [LoggerMessage(
         EventId = LoggingEventIdConstants.DigitalTwinParser.ParseError,
         Level = LogLevel.Error,
-        Message = "{callerMethodName}({callerLineNumber}) - Parse-Error: {parseError}")]
-    private partial void LogParseError(
-        string parseError,
-        [CallerMemberName] string callerMethodName = "",
-        [CallerLineNumber] int callerLineNumber = 0);
-}
+        Message = "Parse error: {ParseError}")]
+    private partial void LogParseError(string parseError);
+}
