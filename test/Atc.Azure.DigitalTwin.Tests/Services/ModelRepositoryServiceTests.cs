@@ -319,4 +319,246 @@ public sealed class ModelRepositoryServiceTests
         // Assert
         result.Should().BeFalse();
     }
+
+    [Fact]
+    public void GetModelsContentInDependencyOrder_EmptyContent_ReturnsEmpty()
+    {
+        // Act
+        var result = sut.GetModelsContentInDependencyOrder();
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_SingleModel_ReturnsSameModel()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "model.json"),
+                ValidDtdlModel,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(1);
+            result[0].Should().Be(ValidDtdlModel);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_IndependentModels_ReturnsAll()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        const string modelA = """
+            {
+                "@id": "dtmi:com:example:ModelA;1",
+                "@type": "Interface",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        const string modelB = """
+            {
+                "@id": "dtmi:com:example:ModelB;1",
+                "@type": "Interface",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "modelA.json"),
+                modelA,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "modelB.json"),
+                modelB,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(2);
+            result.Should().Contain(modelA);
+            result.Should().Contain(modelB);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_DependentModels_ReturnsBaseFirst()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        const string baseModel = """
+            {"@id": "dtmi:com:example:Base;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        const string derivedModel = """
+            {"@id": "dtmi:com:example:Derived;1", "@type": "Interface", "extends": "dtmi:com:example:Base;1", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        try
+        {
+            // Write derived first to ensure ordering is not just file-order
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "a_derived.json"),
+                derivedModel,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "b_base.json"),
+                baseModel,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(2);
+
+            var baseIndex = result.FindIndex(m => m.Contains("dtmi:com:example:Base;1", StringComparison.Ordinal));
+            var derivedIndex = result.FindIndex(m => m.Contains("dtmi:com:example:Derived;1", StringComparison.Ordinal));
+
+            baseIndex.Should().BeLessThan(derivedIndex, "base model should appear before derived model");
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_ThreeLevelChain_ReturnsCorrectOrder()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        const string equipment = """
+            {"@id": "dtmi:com:example:Equipment;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        const string machinery = """
+            {"@id": "dtmi:com:example:Machinery;1", "@type": "Interface", "extends": "dtmi:com:example:Equipment;1", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        const string pressMachine = """
+            {"@id": "dtmi:com:example:PressMachine;1", "@type": "Interface", "extends": "dtmi:com:example:Machinery;1", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        try
+        {
+            // Write in reverse dependency order to ensure sorting is applied
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "a_press.json"),
+                pressMachine,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "b_machinery.json"),
+                machinery,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "c_equipment.json"),
+                equipment,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(3);
+
+            var equipmentIndex = result.FindIndex(m => m.Contains("dtmi:com:example:Equipment;1", StringComparison.Ordinal));
+            var machineryIndex = result.FindIndex(m => m.Contains("dtmi:com:example:Machinery;1", StringComparison.Ordinal));
+            var pressIndex = result.FindIndex(m => m.Contains("dtmi:com:example:PressMachine;1", StringComparison.Ordinal));
+
+            equipmentIndex.Should().BeLessThan(machineryIndex, "Equipment should appear before Machinery");
+            machineryIndex.Should().BeLessThan(pressIndex, "Machinery should appear before PressMachine");
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_ExtendsArray_HandlesCorrectly()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        const string modelA = """
+            {"@id": "dtmi:com:example:A;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        const string modelB = """
+            {"@id": "dtmi:com:example:B;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        const string modelC = """
+            {"@id": "dtmi:com:example:C;1", "@type": "Interface", "extends": ["dtmi:com:example:A;1", "dtmi:com:example:B;1"], "@context": "dtmi:dtdl:context;2"}
+            """;
+
+        try
+        {
+            // Write child first to ensure sorting is needed
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "a_child.json"),
+                modelC,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "b_parentA.json"),
+                modelA,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "c_parentB.json"),
+                modelB,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(3);
+
+            var indexA = result.FindIndex(m => m.Contains("dtmi:com:example:A;1", StringComparison.Ordinal));
+            var indexB = result.FindIndex(m => m.Contains("dtmi:com:example:B;1", StringComparison.Ordinal));
+            var indexC = result.FindIndex(m => m.Contains("dtmi:com:example:C;1", StringComparison.Ordinal));
+
+            indexA.Should().BeLessThan(indexC, "parent A should appear before child C");
+            indexB.Should().BeLessThan(indexC, "parent B should appear before child C");
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }
