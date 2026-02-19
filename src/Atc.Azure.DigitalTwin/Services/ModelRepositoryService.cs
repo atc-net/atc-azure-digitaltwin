@@ -28,6 +28,24 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     public IEnumerable<string> GetModelsContent()
         => modelsContent;
 
+    public IEnumerable<string> GetModelsContentInDependencyOrder()
+    {
+        if (modelsContent.Count <= 1)
+        {
+            return modelsContent;
+        }
+
+        try
+        {
+            return TopologicalSortByExtends(modelsContent);
+        }
+        catch (InvalidOperationException)
+        {
+            LogDependencyOrderingFailed();
+            return modelsContent;
+        }
+    }
+
     public IDictionary<Dtmi, DTInterfaceInfo> GetModels()
         => Models;
 
@@ -133,5 +151,171 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         }
 
         return true;
+    }
+
+    private static List<string> TopologicalSortByExtends(List<string> models)
+    {
+        var dependencies = new Dictionary<int, List<int>>();
+        var inDegree = new int[models.Count];
+
+        var (modelIndex, unparseable) = BuildModelIndex(models, dependencies);
+        BuildDependencyEdges(models, modelIndex, unparseable, dependencies, inDegree);
+
+        return ExecuteKahnSort(models, dependencies, inDegree, unparseable);
+    }
+
+    private static (Dictionary<string, int> ModelIndex, List<int> Unparseable) BuildModelIndex(
+        List<string> models,
+        Dictionary<int, List<int>> dependencies)
+    {
+        var modelIndex = new Dictionary<string, int>(StringComparer.Ordinal);
+        var unparseable = new List<int>();
+
+        for (var i = 0; i < models.Count; i++)
+        {
+            dependencies[i] = [];
+
+            try
+            {
+                using var doc = JsonDocument.Parse(models[i]);
+                if (doc.RootElement.TryGetProperty("@id", out var idProp))
+                {
+                    var id = idProp.GetString();
+                    if (id is not null)
+                    {
+                        modelIndex[id] = i;
+                    }
+                    else
+                    {
+                        unparseable.Add(i);
+                    }
+                }
+                else
+                {
+                    unparseable.Add(i);
+                }
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                unparseable.Add(i);
+            }
+        }
+
+        return (modelIndex, unparseable);
+    }
+
+    private static void BuildDependencyEdges(
+        List<string> models,
+        Dictionary<string, int> modelIndex,
+        List<int> unparseable,
+        Dictionary<int, List<int>> dependencies,
+        int[] inDegree)
+    {
+        for (var i = 0; i < models.Count; i++)
+        {
+            if (unparseable.Contains(i))
+            {
+                continue;
+            }
+
+            try
+            {
+                using var doc = JsonDocument.Parse(models[i]);
+                if (!doc.RootElement.TryGetProperty("extends", out var extendsProp))
+                {
+                    continue;
+                }
+
+                var extendIds = ParseExtendsProperty(extendsProp);
+
+                foreach (var extendId in extendIds)
+                {
+                    if (modelIndex.TryGetValue(extendId, out var depIdx))
+                    {
+                        dependencies[depIdx].Add(i);
+                        inDegree[i]++;
+                    }
+                }
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                // Already in unparseable if this fails, skip
+            }
+        }
+    }
+
+    private static List<string> ParseExtendsProperty(JsonElement extendsProp)
+    {
+        var extendIds = new List<string>();
+
+        if (extendsProp.ValueKind == JsonValueKind.String)
+        {
+            var val = extendsProp.GetString();
+            if (val is not null)
+            {
+                extendIds.Add(val);
+            }
+        }
+        else if (extendsProp.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var element in extendsProp.EnumerateArray())
+            {
+                var val = element.GetString();
+                if (val is not null)
+                {
+                    extendIds.Add(val);
+                }
+            }
+        }
+
+        return extendIds;
+    }
+
+    private static List<string> ExecuteKahnSort(
+        List<string> models,
+        Dictionary<int, List<int>> dependencies,
+        int[] inDegree,
+        List<int> unparseable)
+    {
+        var queue = new Queue<int>();
+        for (var i = 0; i < models.Count; i++)
+        {
+            if (!unparseable.Contains(i) && inDegree[i] == 0)
+            {
+                queue.Enqueue(i);
+            }
+        }
+
+        var sorted = new List<string>();
+        var visited = 0;
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            sorted.Add(models[current]);
+            visited++;
+
+            foreach (var dependent in dependencies[current])
+            {
+                inDegree[dependent]--;
+                if (inDegree[dependent] == 0)
+                {
+                    queue.Enqueue(dependent);
+                }
+            }
+        }
+
+        var parsedCount = models.Count - unparseable.Count;
+        if (visited != parsedCount)
+        {
+            throw new InvalidOperationException("Circular dependency detected among DTDL models.");
+        }
+
+        foreach (var idx in unparseable)
+        {
+            sorted.Add(models[idx]);
+        }
+
+        return sorted;
     }
 }

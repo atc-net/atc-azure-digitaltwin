@@ -45,7 +45,7 @@ public sealed class ModelCreateAllCommand : AsyncCommand<ModelUploadMultipleSett
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync(modelRepositoryService.GetModelsContent(), cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync(modelRepositoryService.GetModelsContentInDependencyOrder(), cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to upload models: {errorMessage}");
