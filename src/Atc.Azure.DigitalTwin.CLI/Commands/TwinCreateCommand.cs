@@ -121,7 +121,35 @@ public sealed class TwinCreateCommand : AsyncCommand<TwinCreateCommandSettings>
             JsonValueKind.String => element.GetString(),
             JsonValueKind.Number => element.GetDouble(),
             JsonValueKind.True or JsonValueKind.False => element.GetBoolean(),
-            JsonValueKind.Object or JsonValueKind.Array => element.GetRawText(),
+            JsonValueKind.Object => JsonElementToExpandoObject(element),
+            JsonValueKind.Array => JsonElementToList(element),
             _ => null,
         };
+
+    private static ExpandoObject JsonElementToExpandoObject(JsonElement element)
+    {
+        var expando = new ExpandoObject();
+        IDictionary<string, object?> dict = expando;
+        foreach (var property in element.EnumerateObject())
+        {
+            var value = JsonElementToObject(property.Value);
+            if (value is not null)
+            {
+                dict[property.Name] = value;
+            }
+        }
+
+        return expando;
+    }
+
+    private static List<object?> JsonElementToList(JsonElement element)
+    {
+        var list = new List<object?>();
+        foreach (var item in element.EnumerateArray())
+        {
+            list.Add(JsonElementToObject(item));
+        }
+
+        return list;
+    }
 }
