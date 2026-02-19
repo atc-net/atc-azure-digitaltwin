@@ -35,7 +35,7 @@ public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRe
         // Get hash code for the Name field if it is not null.
         var hashPIName = obj.Name is null
             ? 0 :
-            obj.Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
+            obj.Name.GetHashCode(StringComparison.Ordinal);
 
         // Get hash code for the Code field.
         if (obj.Target == null)
