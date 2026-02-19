@@ -120,7 +120,7 @@ public sealed class ModelRepositoryServiceTests
 
     [Fact]
     public Task LoadModelContent_NullPath_ThrowsArgumentNullException()
-        => Assert.ThrowsAsync<ArgumentNullException>(() => sut.LoadModelContent(null!, TestContext.Current.CancellationToken));
+        => Assert.ThrowsAsync<ArgumentNullException>(() => sut.LoadModelContentAsync(null!, TestContext.Current.CancellationToken));
 
     [Fact]
     public async Task LoadModelContent_NonExistentDirectory_ReturnsFalse()
@@ -129,7 +129,7 @@ public sealed class ModelRepositoryServiceTests
         var path = new DirectoryInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
 
         // Act
-        var result = await sut.LoadModelContent(path, TestContext.Current.CancellationToken);
+        var result = await sut.LoadModelContentAsync(path, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeFalse();
@@ -144,7 +144,7 @@ public sealed class ModelRepositoryServiceTests
         try
         {
             // Act
-            var result = await sut.LoadModelContent(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+            var result = await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
             // Assert
             result.Should().BeTrue();
@@ -167,7 +167,7 @@ public sealed class ModelRepositoryServiceTests
         try
         {
             // Act
-            var result = await sut.LoadModelContent(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+            var result = await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
             // Assert
             result.Should().BeTrue();
@@ -212,8 +212,8 @@ public sealed class ModelRepositoryServiceTests
         try
         {
             // Act
-            await sut.LoadModelContent(new DirectoryInfo(tempDir1.FullName), cancellationToken);
-            await sut.LoadModelContent(new DirectoryInfo(tempDir2.FullName), cancellationToken);
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir1.FullName), cancellationToken);
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir2.FullName), cancellationToken);
 
             // Assert - Content accumulates across calls
             sut.GetModelsContent().Should().HaveCount(2);
@@ -238,7 +238,7 @@ public sealed class ModelRepositoryServiceTests
         try
         {
             // Act
-            var result = await sut.LoadModelContent(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+            var result = await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
             // Assert
             result.Should().BeTrue();
@@ -267,7 +267,7 @@ public sealed class ModelRepositoryServiceTests
         try
         {
             // Act
-            var result = await serviceWithRealParser.ValidateModels(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+            var result = await serviceWithRealParser.ValidateModelsAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
             // Assert - Validation succeeds and models are available
             result.Should().BeTrue();
@@ -296,7 +296,7 @@ public sealed class ModelRepositoryServiceTests
         try
         {
             // Act
-            var result = await serviceWithRealParser.ValidateModels(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+            var result = await serviceWithRealParser.ValidateModelsAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
 
             // Assert - Invalid DTDL correctly fails validation
             result.Should().BeFalse();
@@ -314,7 +314,7 @@ public sealed class ModelRepositoryServiceTests
         var path = new DirectoryInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
 
         // Act
-        var result = await sut.ValidateModels(path, TestContext.Current.CancellationToken);
+        var result = await sut.ValidateModelsAsync(path, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeFalse();

@@ -39,7 +39,7 @@ public sealed class RelationshipDeleteCommand : AsyncCommand<RelationshipCommand
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteRelationship(
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteRelationshipAsync(
                 twinId,
                 relationshipId,
                 cancellationToken);

@@ -32,7 +32,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
         var modelRepositoryService = ModelRepositoryServiceFactory.Create(loggerFactory);
 
-        if (!await modelRepositoryService.LoadModelContent(directoryInfo, cancellationToken))
+        if (!await modelRepositoryService.LoadModelContentAsync(directoryInfo, cancellationToken))
         {
             logger.LogError($"Could not load model from the specified folder '{directoryPath}'");
             return ConsoleExitStatusCodes.Failure;
@@ -59,7 +59,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
 
             var models = new[] { model };
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateModels(models, cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.CreateModelsAsync(models, cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to upload model: {errorMessage}");

@@ -40,7 +40,7 @@ public sealed class RelationshipCreateCommand : AsyncCommand<RelationshipCreateC
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.CreateRelationship(
+            var (succeeded, errorMessage) = await digitalTwinService.CreateRelationshipAsync(
                 sourceTwinId,
                 targetTwinId,
                 relationshipName,

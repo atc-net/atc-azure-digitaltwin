@@ -40,7 +40,7 @@ public sealed class EventRouteGetSingleCommand : AsyncCommand<EventRouteCommandS
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var eventRoute = await digitalTwinService.GetEventRoute(eventRouteId, cancellationToken);
+            var eventRoute = await digitalTwinService.GetEventRouteAsync(eventRouteId, cancellationToken);
             if (eventRoute is null)
             {
                 logger.LogError($"Failed to fetch event route '{eventRouteId}'");

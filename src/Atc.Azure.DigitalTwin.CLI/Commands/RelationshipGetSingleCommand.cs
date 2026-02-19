@@ -41,7 +41,7 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipComm
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var result = await digitalTwinService.GetRelationship(twinId, relationshipId, cancellationToken);
+            var result = await digitalTwinService.GetRelationshipAsync(twinId, relationshipId, cancellationToken);
             if (result is null)
             {
                 logger.LogError($"Failed to retrieve relationship for twin '{twinId} and relationship id '{relationshipId}''");

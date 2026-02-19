@@ -39,7 +39,7 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
 
             var dtdlParser = DigitalTwinParserFactory.Create(loggerFactory);
 
-            var (succeeded, interfaceEntities) = await dtdlParser.Parse(jsonModels);
+            var (succeeded, interfaceEntities) = await dtdlParser.ParseAsync(jsonModels);
             if (!succeeded)
             {
                 return ConsoleExitStatusCodes.Failure;
@@ -61,7 +61,7 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
 
                     try
                     {
-                        await digitalTwinService.DeleteModel(del.Id.ToString(), cancellationToken);
+                        await digitalTwinService.DeleteModelAsync(del.Id.ToString(), cancellationToken);
                         logger.LogInformation($"Successfully deleted model {del.Id}");
                     }
                     catch (RequestFailedException ex)
@@ -91,7 +91,7 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
     {
         var jsonModelTexts = new List<string>();
 
-        var models = await digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
+        var models = await digitalTwinService.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
         if (models is null)
         {
             return jsonModelTexts;

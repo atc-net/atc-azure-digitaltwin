@@ -38,7 +38,7 @@ public sealed class ModelDeleteSingleCommand : AsyncCommand<ModelCommandSettings
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteModel(modelId, cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteModelAsync(modelId, cancellationToken);
 
             if (!succeeded)
             {

@@ -35,7 +35,7 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
         logger.LogInformation("Deleting all twins.");
         logger.LogInformation("Step 1: Find all twins.");
 
-        var twinList = await digitalTwinService.GetTwinIds("SELECT * FROM DIGITALTWINS", cancellationToken);
+        var twinList = await digitalTwinService.GetTwinIdsAsync("SELECT * FROM DIGITALTWINS", cancellationToken);
         if (twinList is null)
         {
             return ConsoleExitStatusCodes.Failure;
@@ -44,13 +44,13 @@ public sealed class TwinDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSet
         logger.LogInformation("Step 2: Find and remove relationships for each twin.");
         foreach (var twinId in twinList)
         {
-            await digitalTwinService.DeleteRelationships(twinId, cancellationToken);
+            await digitalTwinService.DeleteRelationshipsAsync(twinId, cancellationToken);
         }
 
         logger.LogInformation("Step 3: Delete all twins");
         foreach (var twinId in twinList)
         {
-            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwin(twinId, cancellationToken: cancellationToken);
+            var (succeeded, errorMessage) = await digitalTwinService.DeleteTwinAsync(twinId, cancellationToken: cancellationToken);
             if (!succeeded)
             {
                 logger.LogError($"Failed to delete twin '{twinId}': {errorMessage}");

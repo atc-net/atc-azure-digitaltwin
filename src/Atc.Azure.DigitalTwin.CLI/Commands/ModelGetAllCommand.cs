@@ -36,7 +36,7 @@ public sealed class ModelGetAllCommand : AsyncCommand<ConnectionBaseCommandSetti
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var models = await digitalTwinService.GetModels(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
+            var models = await digitalTwinService.GetModelsAsync(new GetModelsOptions { IncludeModelDefinition = true }, cancellationToken);
             if (models is null)
             {
                 logger.LogError("Failed to get models");
