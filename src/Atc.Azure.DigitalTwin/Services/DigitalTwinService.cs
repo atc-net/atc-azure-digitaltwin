@@ -468,7 +468,20 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
             var relationShipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
 
-            var existingRelationShip = await GetRelationship(sourceTwinId, relationShipId, cancellationToken);
+            BasicRelationship? existingRelationShip = null;
+            try
+            {
+                var lookupResponse = await client.GetRelationshipAsync<BasicRelationship>(
+                    sourceTwinId,
+                    relationShipId,
+                    cancellationToken);
+                existingRelationShip = lookupResponse?.Value;
+            }
+            catch (RequestFailedException ex) when (ex.Status == 404)
+            {
+                // Relationship does not exist yet; will create below
+            }
+
             if (existingRelationShip is not null)
             {
                 var patch = new JsonPatchDocument();
