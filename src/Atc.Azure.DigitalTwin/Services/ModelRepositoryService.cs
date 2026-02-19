@@ -79,8 +79,14 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
 
         try
         {
-            await ParseAndStoreModels(modelsContent);
+            var parseSucceeded = await ParseAndStoreModels(modelsContent);
             Clear();
+
+            if (!parseSucceeded)
+            {
+                LogParseFailed("Model parsing failed");
+                return false;
+            }
         }
         catch (ParsingException pe)
         {
@@ -107,12 +113,12 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     ///  - Exclude interfaces that were loaded by the resolver.
     /// </remarks>
     /// <param name="modelTexts">The model texts.</param>
-    private async Task ParseAndStoreModels(IEnumerable<string> modelTexts)
+    private async Task<bool> ParseAndStoreModels(IEnumerable<string> modelTexts)
     {
         var (succeeded, interfaceEntities) = await dtdlParser.Parse(modelTexts);
         if (!succeeded)
         {
-            return;
+            return false;
         }
 
         var interfaces = from entity in interfaceEntities!.Values
@@ -123,5 +129,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         {
             AddModel(@interface.Id, @interface);
         }
+
+        return true;
     }
 }
