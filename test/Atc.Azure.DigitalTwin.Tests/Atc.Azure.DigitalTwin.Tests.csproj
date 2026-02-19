@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Atc.Azure.DigitalTwin\Atc.Azure.DigitalTwin.csproj" />
+    <ProjectReference Include="..\..\src\Atc.Azure.DigitalTwin.CLI\Atc.Azure.DigitalTwin.CLI.csproj" />
   </ItemGroup>
 
 </Project>
