@@ -166,7 +166,12 @@ public sealed class ModelDeleteAllCommand : AsyncCommand<ConnectionBaseCommandSe
     private static List<DTInterfaceInfo> GetInterfacesToDelete(
         IReadOnlyDictionary<Dtmi, DTEntityInfo>? interfaceEntities)
     {
-        var interfaces = from entity in interfaceEntities!.Values
+        if (interfaceEntities is null)
+        {
+            return [];
+        }
+
+        var interfaces = from entity in interfaceEntities.Values
             where entity.EntityKind == DTEntityKind.Interface
             select entity as DTInterfaceInfo;
 
