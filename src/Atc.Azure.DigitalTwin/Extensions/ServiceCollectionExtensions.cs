@@ -17,8 +17,8 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<IDigitalTwinParser, DigitalTwinParser>();
-        services.AddSingleton<Services.IModelRepositoryService, Services.ModelRepositoryService>();
-        services.AddSingleton<Services.IDigitalTwinService, Services.DigitalTwinService>();
+        services.AddSingleton<IModelRepositoryService, ModelRepositoryService>();
+        services.AddSingleton<IDigitalTwinService, DigitalTwinService>();
 
         return services;
     }
