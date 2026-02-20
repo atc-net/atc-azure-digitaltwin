@@ -342,6 +342,132 @@ public sealed partial class DigitalTwinService
     private partial void LogUpdatedTwin(string twinId);
 
     [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.ImportingGraph,
+        Level = LogLevel.Trace,
+        Message = "Importing graph for job '{JobId}'")]
+    private partial void LogImportingGraph(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.ImportedGraph,
+        Level = LogLevel.Trace,
+        Message = "Imported graph for job '{JobId}'")]
+    private partial void LogImportedGraph(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.ImportGraphFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to import graph for job '{JobId}'")]
+    private partial void LogImportGraphFailed(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.RetrievingImportJob,
+        Level = LogLevel.Trace,
+        Message = "Retrieving import job '{JobId}'")]
+    private partial void LogRetrievingImportJob(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.RetrievedImportJob,
+        Level = LogLevel.Trace,
+        Message = "Retrieved import job '{JobId}'")]
+    private partial void LogRetrievedImportJob(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.RetrievingImportJobs,
+        Level = LogLevel.Trace,
+        Message = "Retrieving import jobs")]
+    private partial void LogRetrievingImportJobs();
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.RetrievedImportJobs,
+        Level = LogLevel.Trace,
+        Message = "Retrieved import jobs")]
+    private partial void LogRetrievedImportJobs();
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.DeletingImportJob,
+        Level = LogLevel.Trace,
+        Message = "Deleting import job '{JobId}'")]
+    private partial void LogDeletingImportJob(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.DeletedImportJob,
+        Level = LogLevel.Trace,
+        Message = "Deleted import job '{JobId}'")]
+    private partial void LogDeletedImportJob(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.DeleteImportJobFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to delete import job '{JobId}'")]
+    private partial void LogDeleteImportJobFailed(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.CancellingImportJob,
+        Level = LogLevel.Trace,
+        Message = "Cancelling import job '{JobId}'")]
+    private partial void LogCancellingImportJob(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.CancelledImportJob,
+        Level = LogLevel.Trace,
+        Message = "Cancelled import job '{JobId}'")]
+    private partial void LogCancelledImportJob(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.ImportJobs.CancelImportJobFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to cancel import job '{JobId}'")]
+    private partial void LogCancelImportJobFailed(string jobId);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Component.RetrievingComponent,
+        Level = LogLevel.Trace,
+        Message = "Retrieving component '{ComponentName}' for twin '{TwinId}'")]
+    private partial void LogRetrievingComponent(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Component.RetrievedComponent,
+        Level = LogLevel.Trace,
+        Message = "Retrieved component '{ComponentName}' for twin '{TwinId}'")]
+    private partial void LogRetrievedComponent(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Component.ComponentNotFound,
+        Level = LogLevel.Warning,
+        Message = "Could not retrieve component '{ComponentName}' for twin '{TwinId}'")]
+    private partial void LogComponentNotFound(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Component.UpdatingComponent,
+        Level = LogLevel.Trace,
+        Message = "Updating component '{ComponentName}' for twin '{TwinId}'")]
+    private partial void LogUpdatingComponent(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Component.UpdatedComponent,
+        Level = LogLevel.Trace,
+        Message = "Updated component '{ComponentName}' for twin '{TwinId}'")]
+    private partial void LogUpdatedComponent(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
+        EventId = LoggingEventIdConstants.Component.UpdateComponentFailed,
+        Level = LogLevel.Warning,
+        Message = "Failed to update component '{ComponentName}' for twin '{TwinId}'")]
+    private partial void LogUpdateComponentFailed(
+        string twinId,
+        string componentName);
+
+    [LoggerMessage(
         EventId = LoggingEventIdConstants.Telemetry.PublishingTelemetry,
         Level = LogLevel.Trace,
         Message = "Publishing telemetry for twin '{TwinId}'")]

@@ -311,6 +311,88 @@ public interface IDigitalTwinService
         where T : notnull;
 
     /// <summary>
+    /// Submits a bulk import job to import models, twins, and relationships from a blob.
+    /// </summary>
+    /// <param name="jobId">A unique identifier for the import job.</param>
+    /// <param name="inputBlobUri">The URI of the input blob containing NDJSON import data.</param>
+    /// <param name="outputBlobUri">The URI of the output blob for import job logs.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>The created import job if successful; otherwise, null.</returns>
+    Task<ImportJob?> ImportGraphAsync(
+        string jobId,
+        Uri inputBlobUri,
+        Uri outputBlobUri,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves an import job by its ID.
+    /// </summary>
+    /// <param name="jobId">The ID of the import job to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>The import job if found; otherwise, null.</returns>
+    Task<ImportJob?> GetImportJobAsync(
+        string jobId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves all import jobs.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A list of import jobs; otherwise, null on failure.</returns>
+    Task<List<ImportJob>?> GetImportJobsAsync(
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes an import job by its ID.
+    /// </summary>
+    /// <param name="jobId">The ID of the import job to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> DeleteImportJobAsync(
+        string jobId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Cancels a running import job.
+    /// </summary>
+    /// <param name="jobId">The ID of the import job to cancel.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>The cancelled import job if successful; otherwise, null.</returns>
+    Task<ImportJob?> CancelImportJobAsync(
+        string jobId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a specific component of a digital twin.
+    /// </summary>
+    /// <param name="twinId">The ID of the twin.</param>
+    /// <param name="componentName">The name of the component to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <typeparam name="T">The type to which the component data will be cast.</typeparam>
+    /// <returns>The component data if found; otherwise, null.</returns>
+    Task<T?> GetComponentAsync<T>(
+        string twinId,
+        string componentName,
+        CancellationToken cancellationToken = default)
+        where T : notnull;
+
+    /// <summary>
+    /// Updates a specific component of a digital twin using a JSON patch document.
+    /// </summary>
+    /// <param name="twinId">The ID of the twin whose component is to be updated.</param>
+    /// <param name="componentName">The name of the component to update.</param>
+    /// <param name="jsonPatchDocument">The JSON patch document containing updates to the component.</param>
+    /// <param name="ifMatch">Optional ETag to use for optimistic concurrency control.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A tuple containing a boolean indicating success and an error message if applicable.</returns>
+    Task<(bool Succeeded, string? ErrorMessage)> UpdateComponentAsync(
+        string twinId,
+        string componentName,
+        JsonPatchDocument jsonPatchDocument,
+        ETag? ifMatch = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Publishes telemetry data for a digital twin.
     /// </summary>
     /// <param name="twinId">The ID of the twin to publish telemetry for.</param>

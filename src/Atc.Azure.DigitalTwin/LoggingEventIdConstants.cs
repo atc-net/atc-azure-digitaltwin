@@ -68,6 +68,33 @@ internal static class LoggingEventIdConstants
         public const int PublishComponentTelemetryFailed = 10_505;
     }
 
+    internal static class ImportJobs
+    {
+        public const int ImportingGraph = 10_600;
+        public const int ImportedGraph = 10_601;
+        public const int ImportGraphFailed = 10_602;
+        public const int RetrievingImportJob = 10_603;
+        public const int RetrievedImportJob = 10_604;
+        public const int RetrievingImportJobs = 10_605;
+        public const int RetrievedImportJobs = 10_606;
+        public const int DeletingImportJob = 10_607;
+        public const int DeletedImportJob = 10_608;
+        public const int DeleteImportJobFailed = 10_609;
+        public const int CancellingImportJob = 10_610;
+        public const int CancelledImportJob = 10_611;
+        public const int CancelImportJobFailed = 10_612;
+    }
+
+    internal static class Component
+    {
+        public const int RetrievingComponent = 10_700;
+        public const int RetrievedComponent = 10_701;
+        public const int ComponentNotFound = 10_702;
+        public const int UpdatingComponent = 10_703;
+        public const int UpdatedComponent = 10_704;
+        public const int UpdateComponentFailed = 10_705;
+    }
+
     internal static class ModelRepositoryService
     {
         public const int UnknownDirectoryPath = 11_000;

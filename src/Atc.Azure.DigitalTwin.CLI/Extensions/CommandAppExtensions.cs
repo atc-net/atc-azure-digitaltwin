@@ -16,6 +16,7 @@ public static class CommandAppExtensions
                 .WithDescription("Query digital twins.")
                 .WithExample("query --tenantId <tenantId> -a <adt-instance-url> -q \"SELECT * FROM DIGITALTWINS\"");
             config.AddBranch("telemetry", ConfigureTelemetryCommands());
+            config.AddBranch("import", ConfigureImportCommands());
         });
     }
 
@@ -139,6 +140,7 @@ public static class CommandAppExtensions
                 .WithExample("twin update --tenantId -a <adt-instance-url> -t <twin-id> --jsonPatch <json-patch>");
 
             node.AddBranch("relationship", ConfigureRelationshipCommands());
+            node.AddBranch("component", ConfigureComponentCommands());
         };
 
     private static void ConfigureTwinDeleteCommands(
@@ -203,5 +205,54 @@ public static class CommandAppExtensions
             node.AddCommand<TelemetryPublishCommand>("publish")
                 .WithDescription("Publish telemetry for a twin.")
                 .WithExample("telemetry publish --tenantId <tenantId> -a <adt-instance-url> -t <twin-id> -p <json-payload>");
+        };
+
+    private static Action<IConfigurator<CommandSettings>> ConfigureImportCommands()
+        => node =>
+        {
+            node.SetDescription("Operations related to bulk import jobs.");
+
+            node.AddCommand<ImportJobCreateCommand>("create")
+                .WithDescription("Create a bulk import job.")
+                .WithExample("import create --tenantId <tenantId> -a <adt-instance-url> --jobId <job-id> --inputBlobUri <input-uri> --outputBlobUri <output-uri>");
+
+            ConfigureImportGetCommands(node);
+
+            node.AddCommand<ImportJobDeleteCommand>("delete")
+                .WithDescription("Delete an import job.")
+                .WithExample("import delete --tenantId <tenantId> -a <adt-instance-url> --jobId <job-id>");
+
+            node.AddCommand<ImportJobCancelCommand>("cancel")
+                .WithDescription("Cancel a running import job.")
+                .WithExample("import cancel --tenantId <tenantId> -a <adt-instance-url> --jobId <job-id>");
+        };
+
+    private static void ConfigureImportGetCommands(
+        IConfigurator<CommandSettings> node)
+        => node.AddBranch("get", get =>
+        {
+            get.SetDescription("Operations related to reading import jobs.");
+
+            get.AddCommand<ImportJobGetCommand>("single")
+                .WithDescription("Get single import job.")
+                .WithExample("import get single --tenantId <tenantId> -a <adt-instance-url> --jobId <job-id>");
+
+            get.AddCommand<ImportJobGetAllCommand>("all")
+                .WithDescription("Get all import jobs.")
+                .WithExample("import get all --tenantId <tenantId> -a <adt-instance-url>");
+        });
+
+    private static Action<IConfigurator<CommandSettings>> ConfigureComponentCommands()
+        => node =>
+        {
+            node.SetDescription("Operations related to twin components.");
+
+            node.AddCommand<ComponentGetCommand>("get")
+                .WithDescription("Get a component of a twin.")
+                .WithExample("twin component get --tenantId <tenantId> -a <adt-instance-url> -t <twin-id> -c <component-name>");
+
+            node.AddCommand<ComponentUpdateCommand>("update")
+                .WithDescription("Update a component of a twin.")
+                .WithExample("twin component update --tenantId <tenantId> -a <adt-instance-url> -t <twin-id> -c <component-name> --jsonPatch <json-patch>");
         };
 }

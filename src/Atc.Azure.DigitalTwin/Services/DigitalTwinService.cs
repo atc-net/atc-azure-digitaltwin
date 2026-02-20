@@ -938,6 +938,242 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
         }
     }
 
+    public async Task<ImportJob?> ImportGraphAsync(
+        string jobId,
+        Uri inputBlobUri,
+        Uri outputBlobUri,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogImportingGraph(jobId);
+            var importJob = new ImportJob(inputBlobUri, outputBlobUri);
+            var response = await client.ImportGraphAsync(
+                jobId,
+                importJob,
+                cancellationToken);
+
+            if (response is null)
+            {
+                LogImportGraphFailed(jobId);
+                return null;
+            }
+
+            LogImportedGraph(jobId);
+            return response.Value;
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return null;
+        }
+    }
+
+    public async Task<ImportJob?> GetImportJobAsync(
+        string jobId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogRetrievingImportJob(jobId);
+            var response = await client.GetImportJobAsync(
+                jobId,
+                cancellationToken);
+
+            if (response is null)
+            {
+                return null;
+            }
+
+            LogRetrievedImportJob(jobId);
+            return response.Value;
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return null;
+        }
+    }
+
+    public async Task<List<ImportJob>?> GetImportJobsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var jobs = new List<ImportJob>();
+
+        try
+        {
+            LogRetrievingImportJobs();
+            var response = client.GetImportJobsAsync(cancellationToken);
+
+            await foreach (var job in response)
+            {
+                jobs.Add(job);
+            }
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return null;
+        }
+
+        LogRetrievedImportJobs();
+        return jobs;
+    }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> DeleteImportJobAsync(
+        string jobId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogDeletingImportJob(jobId);
+            var response = await client.DeleteImportJobAsync(
+                jobId,
+                cancellationToken);
+
+            if (response is null ||
+                response.IsError)
+            {
+                LogDeleteImportJobFailed(jobId);
+                return (false, $"Failed to delete import job '{jobId}'");
+            }
+
+            LogDeletedImportJob(jobId);
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
+        }
+    }
+
+    public async Task<ImportJob?> CancelImportJobAsync(
+        string jobId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogCancellingImportJob(jobId);
+            var response = await client.CancelImportJobAsync(
+                jobId,
+                cancellationToken);
+
+            if (response is null)
+            {
+                LogCancelImportJobFailed(jobId);
+                return null;
+            }
+
+            LogCancelledImportJob(jobId);
+            return response.Value;
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return null;
+        }
+    }
+
+    public async Task<T?> GetComponentAsync<T>(
+        string twinId,
+        string componentName,
+        CancellationToken cancellationToken = default)
+        where T : notnull
+    {
+        try
+        {
+            LogRetrievingComponent(twinId, componentName);
+            var response = await client.GetComponentAsync<T>(
+                twinId,
+                componentName,
+                cancellationToken);
+
+            if (response is null)
+            {
+                LogComponentNotFound(twinId, componentName);
+                return default;
+            }
+
+            LogRetrievedComponent(twinId, componentName);
+            return response.Value;
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return default;
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return default;
+        }
+    }
+
+    public async Task<(bool Succeeded, string? ErrorMessage)> UpdateComponentAsync(
+        string twinId,
+        string componentName,
+        JsonPatchDocument jsonPatchDocument,
+        ETag? ifMatch = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            LogUpdatingComponent(twinId, componentName);
+            var response = await client.UpdateComponentAsync(
+                twinId,
+                componentName,
+                jsonPatchDocument,
+                ifMatch,
+                cancellationToken);
+
+            if (response is null ||
+                response.IsError)
+            {
+                LogUpdateComponentFailed(twinId, componentName);
+                return (false, "Failed to update component");
+            }
+
+            LogUpdatedComponent(twinId, componentName);
+            return (true, null);
+        }
+        catch (RequestFailedException ex)
+        {
+            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
+            return (false, ex.GetLastInnerMessage());
+        }
+        catch (Exception ex)
+        {
+            LogFailure(ex);
+            return (false, ex.GetLastInnerMessage());
+        }
+    }
+
     public async Task<(bool Succeeded, string? ErrorMessage)> PublishTelemetryAsync(
         string twinId,
         string payload,
