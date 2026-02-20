@@ -27,6 +27,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
             items,
             continuationToken: null,
             Substitute.For<Response>());
+
         return AsyncPageable<T>.FromPages([page]);
     }
 
@@ -56,7 +57,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .GetModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         // Act
         var result = await sut.GetModelAsync("dtmi:test:Model;1", TestContext.Current.CancellationToken);
@@ -86,7 +87,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .GetModelsAsync(Arg.Any<GetModelsOptions?>(), Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Internal error", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Internal error", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetModelsAsync(cancellationToken: TestContext.Current.CancellationToken);
@@ -101,6 +102,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         var modelDataArray = Array.Empty<DigitalTwinsModelData>();
         var mockResponse = TrackResponse(Substitute.For<Response>());
+
         mockClient
             .CreateModelsAsync(Arg.Any<IEnumerable<string>>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Response.FromValue(modelDataArray, mockResponse)));
@@ -121,7 +123,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .CreateModelsAsync(Arg.Any<IEnumerable<string>>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(409, "Model already exists", "Conflict", null));
+            .ThrowsAsync(new RequestFailedException(409, "Model already exists", "Conflict", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.CreateModelsAsync(
@@ -138,6 +140,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var successResponse = CreateSuccessResponse();
+
         mockClient
             .DecommissionModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(successResponse));
@@ -157,6 +160,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var errorResponse = CreateErrorResponse();
+
         mockClient
             .DecommissionModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(errorResponse));
@@ -177,7 +181,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .DecommissionModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.DecommissionModelAsync(
@@ -194,6 +198,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var successResponse = CreateSuccessResponse();
+
         mockClient
             .DeleteModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(successResponse));
@@ -214,7 +219,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .DeleteModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.DeleteModelAsync(
@@ -231,6 +236,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var errorResponse = CreateErrorResponse();
+
         mockClient
             .DeleteModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(errorResponse));
@@ -251,7 +257,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .GetDigitalTwinAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
 
         // Act
         var result = await sut.GetTwinAsync("twin-1", TestContext.Current.CancellationToken);
@@ -269,7 +275,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var mockResponse = TrackResponse(Substitute.For<Response>());
+
         mockClient
             .GetDigitalTwinAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Response.FromValue(twin, mockResponse)));
@@ -291,12 +299,15 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var twin2 = new BasicDigitalTwin
         {
             Id = "twin-2",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var pageable = CreateAsyncPageable(twin1, twin2);
+
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(pageable);
@@ -317,7 +328,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Query failed", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Query failed", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetTwinIdsAsync("SELECT * FROM digitaltwins", TestContext.Current.CancellationToken);
@@ -335,7 +346,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var pageable = CreateAsyncPageable(twin1);
+
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(pageable);
@@ -355,7 +368,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Query failed", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Query failed", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetTwinsAsync("SELECT * FROM digitaltwins", TestContext.Current.CancellationToken);
@@ -373,7 +386,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var mockResponse = TrackResponse(Substitute.For<Response>());
+
         mockClient
             .CreateOrReplaceDigitalTwinAsync(
                 Arg.Any<string>(),
@@ -402,13 +417,14 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         mockClient
             .CreateOrReplaceDigitalTwinAsync(
                 Arg.Any<string>(),
                 Arg.Any<BasicDigitalTwin>(),
                 Arg.Any<ETag?>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(409, "Twin already exists", "Conflict", null));
+            .ThrowsAsync(new RequestFailedException(409, "Twin already exists", "Conflict", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.CreateOrReplaceDigitalTwinAsync(
@@ -426,6 +442,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var successResponse = CreateSuccessResponse();
+
         mockClient
             .DeleteDigitalTwinAsync(Arg.Any<string>(), Arg.Any<ETag?>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(successResponse));
@@ -445,6 +462,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var errorResponse = CreateErrorResponse();
+
         mockClient
             .DeleteDigitalTwinAsync(Arg.Any<string>(), Arg.Any<ETag?>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(errorResponse));
@@ -465,7 +483,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .DeleteDigitalTwinAsync(Arg.Any<string>(), Arg.Any<ETag?>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.DeleteTwinAsync(
@@ -482,6 +500,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var successResponse = CreateSuccessResponse();
+
         mockClient
             .UpdateDigitalTwinAsync(
                 Arg.Any<string>(),
@@ -514,7 +533,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<JsonPatchDocument>(),
                 Arg.Any<ETag?>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
 
         var patch = new JsonPatchDocument();
         patch.AppendReplace("/property", "value");
@@ -535,6 +554,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var errorResponse = CreateErrorResponse();
+
         mockClient
             .UpdateDigitalTwinAsync(
                 Arg.Any<string>(),
@@ -568,7 +588,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             TargetId = "twin-2",
             Name = "contains",
         };
+
         var pageable = CreateAsyncPageable(relationship);
+
         mockClient
             .GetRelationshipsAsync<BasicRelationship>(
                 Arg.Any<string>(),
@@ -594,7 +616,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<string?>(),
                 Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Error", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Error", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetRelationshipsAsync("twin-1", cancellationToken: TestContext.Current.CancellationToken);
@@ -609,7 +631,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .GetIncomingRelationshipsAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Error", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Error", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetIncomingRelationshipsAsync("twin-1", TestContext.Current.CancellationToken);
@@ -629,7 +651,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             TargetId = "twin-2",
             Name = "contains",
         };
+
         var mockResponse = TrackResponse(Substitute.For<Response>());
+
         mockClient
             .CreateOrReplaceRelationshipAsync(
                 Arg.Any<string>(),
@@ -662,7 +686,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<BasicRelationship>(),
                 Arg.Any<ETag?>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(409, "Conflict", "Conflict", null));
+            .ThrowsAsync(new RequestFailedException(409, "Conflict", "Conflict", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.CreateRelationshipAsync(
@@ -710,6 +734,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var successResponse = CreateSuccessResponse();
+
         mockClient
             .UpdateRelationshipAsync(
                 Arg.Any<string>(),
@@ -745,7 +770,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<JsonPatchDocument>(),
                 Arg.Any<ETag?>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         var patch = new JsonPatchDocument();
         patch.AppendReplace("/isActive", true);
@@ -767,6 +792,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var errorResponse = CreateErrorResponse();
+
         mockClient
             .UpdateRelationshipAsync(
                 Arg.Any<string>(),
@@ -800,7 +826,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var pageable = CreateAsyncPageable(twin);
+
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(pageable);
@@ -822,7 +850,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Query failed", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Query failed", "InternalError", innerException: null));
 
         // Act
         var result = await sut.QueryAsync<BasicDigitalTwin>(
@@ -842,7 +870,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Id = "twin-1",
             Metadata = new DigitalTwinMetadata { ModelId = "dtmi:test:Model;1" },
         };
+
         var pageable = CreateAsyncPageable(twin);
+
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(pageable);
@@ -865,7 +895,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .QueryAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Query failed", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Query failed", "InternalError", innerException: null));
 
         // Act
         var result = await sut.QueryAsync<BasicDigitalTwin>(
@@ -909,7 +939,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<DigitalTwinsEventRoute>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(400, "Bad request", "BadRequest", null));
+            .ThrowsAsync(new RequestFailedException(400, "Bad request", "BadRequest", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.CreateOrReplaceEventRouteAsync(
@@ -970,7 +1000,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .DeleteEventRouteAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.DeleteEventRouteAsync(
@@ -1007,7 +1037,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .GetEventRouteAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         // Act
         var result = await sut.GetEventRouteAsync("route-1", TestContext.Current.CancellationToken);
@@ -1059,7 +1089,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Arrange
         mockClient
             .GetEventRoutesAsync(Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Error", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Error", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetEventRoutesAsync(TestContext.Current.CancellationToken);
@@ -1104,7 +1134,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<DateTimeOffset?>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.PublishTelemetryAsync(
@@ -1181,7 +1211,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<DateTimeOffset?>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.PublishComponentTelemetryAsync(
@@ -1258,7 +1288,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<string?>(),
                 Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Error", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Error", "InternalError", innerException: null));
 
         // Act
         var result = await sut.GetRelationshipAsync("twin-1", "contains", TestContext.Current.CancellationToken);
@@ -1309,6 +1339,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var pageable = CreateAsyncPageable<BasicRelationship>();
+
         mockClient
             .GetRelationshipsAsync<BasicRelationship>(
                 Arg.Any<string>(),
@@ -1328,6 +1359,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
     {
         // Arrange
         var pageable = CreateAsyncPageable<BasicRelationship>();
+
         mockClient
             .GetRelationshipsAsync<BasicRelationship>(
                 Arg.Any<string>(),
@@ -1358,7 +1390,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             Name = "contains",
             ETag = new ETag("etag-1"),
         };
+
         var pageable = CreateAsyncPageable(relationship);
+
         mockClient
             .GetRelationshipsAsync<BasicRelationship>(
                 Arg.Any<string>(),
@@ -1395,7 +1429,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<string?>(),
                 Arg.Any<CancellationToken>())
-            .Throws(new RequestFailedException(500, "Error", "InternalError", null));
+            .Throws(new RequestFailedException(500, "Error", "InternalError", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.DeleteRelationshipAsync(
@@ -1417,7 +1451,7 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", null));
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         var relationship = new BasicRelationship
         {
@@ -1426,7 +1460,9 @@ public sealed class DigitalTwinServiceTests : IDisposable
             TargetId = "twin-2",
             Name = "contains",
         };
+
         var mockResponse = TrackResponse(Substitute.For<Response>());
+
         mockClient
             .CreateOrReplaceRelationshipAsync(
                 Arg.Any<string>(),
@@ -1457,13 +1493,388 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(500, "Internal error", "InternalError", null));
+            .ThrowsAsync(new RequestFailedException(500, "Internal error", "InternalError", innerException: null));
 
         // Act
         var (succeeded, errorMessage) = await sut.CreateOrUpdateRelationshipAsync(
             "twin-1",
             "twin-2",
             "contains",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeFalse();
+        errorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ImportGraphAsync_Success_ReturnsImportJob()
+    {
+        // Arrange
+        var inputUri = new Uri("https://storage.blob.core.windows.net/container/input.ndjson");
+        var outputUri = new Uri("https://storage.blob.core.windows.net/container/output.ndjson");
+        var importJob = DigitalTwinsModelFactory.ImportJob(
+            "job-1",
+            inputUri,
+            outputUri);
+
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+
+        mockClient
+            .ImportGraphAsync(
+                Arg.Any<string>(),
+                Arg.Any<ImportJob>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Response.FromValue(importJob, mockResponse)));
+
+        // Act
+        var result = await sut.ImportGraphAsync(
+            "job-1",
+            inputUri,
+            outputUri,
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.InputBlobUri.Should().Be(inputUri);
+    }
+
+    [Fact]
+    public async Task ImportGraphAsync_RequestFailedException_ReturnsNull()
+    {
+        // Arrange
+        mockClient
+            .ImportGraphAsync(
+                Arg.Any<string>(),
+                Arg.Any<ImportJob>(),
+                Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(400, "Bad request", "ValidationFailed", innerException: null));
+
+        // Act
+        var result = await sut.ImportGraphAsync(
+            "job-1",
+            new Uri("https://storage.blob.core.windows.net/c/in.ndjson"),
+            new Uri("https://storage.blob.core.windows.net/c/out.ndjson"),
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetImportJobAsync_Success_ReturnsImportJob()
+    {
+        // Arrange
+        var importJob = DigitalTwinsModelFactory.ImportJob(
+            "job-1",
+            new Uri("https://storage.blob.core.windows.net/c/in.ndjson"),
+            new Uri("https://storage.blob.core.windows.net/c/out.ndjson"));
+
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+
+        mockClient
+            .GetImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Response.FromValue(importJob, mockResponse)));
+
+        // Act
+        var result = await sut.GetImportJobAsync("job-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task GetImportJobAsync_RequestFailedException_ReturnsNull()
+    {
+        // Arrange
+        mockClient
+            .GetImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "ImportJobNotFound", innerException: null));
+
+        // Act
+        var result = await sut.GetImportJobAsync("job-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetImportJobsAsync_Success_ReturnsList()
+    {
+        // Arrange
+        var importJob = DigitalTwinsModelFactory.ImportJob(
+            "job-1",
+            new Uri("https://storage.blob.core.windows.net/c/in.ndjson"),
+            new Uri("https://storage.blob.core.windows.net/c/out.ndjson"));
+
+        var pageable = CreateAsyncPageable(importJob);
+
+        mockClient
+            .GetImportJobsAsync(Arg.Any<CancellationToken>())
+            .Returns(pageable);
+
+        // Act
+        var result = await sut.GetImportJobsAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task GetImportJobsAsync_RequestFailedException_ReturnsNull()
+    {
+        // Arrange
+        mockClient
+            .GetImportJobsAsync(Arg.Any<CancellationToken>())
+            .Throws(new RequestFailedException(500, "Error", "InternalError", innerException: null));
+
+        // Act
+        var result = await sut.GetImportJobsAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteImportJobAsync_Success_ReturnsSucceeded()
+    {
+        // Arrange
+        var successResponse = CreateSuccessResponse();
+
+        mockClient
+            .DeleteImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(successResponse));
+
+        // Act
+        var (succeeded, errorMessage) = await sut.DeleteImportJobAsync(
+            "job-1",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeTrue();
+        errorMessage.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteImportJobAsync_ErrorResponse_ReturnsFailed()
+    {
+        // Arrange
+        var errorResponse = CreateErrorResponse();
+
+        mockClient
+            .DeleteImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(errorResponse));
+
+        // Act
+        var (succeeded, errorMessage) = await sut.DeleteImportJobAsync(
+            "job-1",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeFalse();
+        errorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task DeleteImportJobAsync_RequestFailedException_ReturnsFailed()
+    {
+        // Arrange
+        mockClient
+            .DeleteImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(400, "Bad request", "ValidationFailed", innerException: null));
+
+        // Act
+        var (succeeded, errorMessage) = await sut.DeleteImportJobAsync(
+            "job-1",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeFalse();
+        errorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task CancelImportJobAsync_Success_ReturnsImportJob()
+    {
+        // Arrange
+        var importJob = DigitalTwinsModelFactory.ImportJob(
+            "job-1",
+            new Uri("https://storage.blob.core.windows.net/c/in.ndjson"),
+            new Uri("https://storage.blob.core.windows.net/c/out.ndjson"),
+            ImportJobStatus.Cancelled);
+
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+
+        mockClient
+            .CancelImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Response.FromValue(importJob, mockResponse)));
+
+        // Act
+        var result = await sut.CancelImportJobAsync("job-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task CancelImportJobAsync_RequestFailedException_ReturnsNull()
+    {
+        // Arrange
+        mockClient
+            .CancelImportJobAsync(
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(400, "Bad request", "ValidationFailed", innerException: null));
+
+        // Act
+        var result = await sut.CancelImportJobAsync("job-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetComponentAsync_Success_ReturnsComponent()
+    {
+        // Arrange
+        const string componentJson = """{ "temperature": 25.0 }""";
+        var component = JsonDocument.Parse(componentJson).RootElement;
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+
+        mockClient
+            .GetComponentAsync<JsonElement>(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Response.FromValue(component, mockResponse)));
+
+        // Act
+        var result = await sut.GetComponentAsync<JsonElement>(
+            "twin-1",
+            "thermostat",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        result.ValueKind.Should().Be(JsonValueKind.Object);
+    }
+
+    [Fact]
+    public async Task GetComponentAsync_RequestFailedException_ReturnsDefault()
+    {
+        // Arrange
+        mockClient
+            .GetComponentAsync<JsonElement>(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
+
+        // Act
+        var result = await sut.GetComponentAsync<JsonElement>(
+            "twin-1",
+            "thermostat",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        result.ValueKind.Should().Be(JsonValueKind.Undefined);
+    }
+
+    [Fact]
+    public async Task UpdateComponentAsync_Success_ReturnsSucceeded()
+    {
+        // Arrange
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+
+        mockResponse.IsError.Returns(false);
+
+        mockClient
+            .UpdateComponentAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<JsonPatchDocument>(),
+                Arg.Any<ETag?>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(mockResponse));
+
+        var patchDocument = new JsonPatchDocument();
+        patchDocument.AppendReplace("/temperature", 30.0);
+
+        // Act
+        var (succeeded, errorMessage) = await sut.UpdateComponentAsync(
+            "twin-1",
+            "thermostat",
+            patchDocument,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeTrue();
+        errorMessage.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateComponentAsync_RequestFailedException_ReturnsFailed()
+    {
+        // Arrange
+        mockClient
+            .UpdateComponentAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<JsonPatchDocument>(),
+                Arg.Any<ETag?>(),
+                Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
+
+        var patchDocument = new JsonPatchDocument();
+        patchDocument.AppendReplace("/temperature", 30.0);
+
+        // Act
+        var (succeeded, errorMessage) = await sut.UpdateComponentAsync(
+            "twin-1",
+            "thermostat",
+            patchDocument,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeFalse();
+        errorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateComponentAsync_ErrorResponse_ReturnsFailed()
+    {
+        // Arrange
+        var errorResponse = CreateErrorResponse();
+
+        mockClient
+            .UpdateComponentAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<JsonPatchDocument>(),
+                Arg.Any<ETag?>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(errorResponse));
+
+        var patchDocument = new JsonPatchDocument();
+        patchDocument.AppendReplace("/temperature", 30.0);
+
+        // Act
+        var (succeeded, errorMessage) = await sut.UpdateComponentAsync(
+            "twin-1",
+            "thermostat",
+            patchDocument,
             cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert

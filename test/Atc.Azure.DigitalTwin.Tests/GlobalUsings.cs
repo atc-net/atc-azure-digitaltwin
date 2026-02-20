@@ -1,3 +1,4 @@
+global using System.Text.Json;
 global using Atc.Azure.DigitalTwin.CLI.Commands.Settings;
 global using Atc.Azure.DigitalTwin.Comparisons;
 global using Atc.Azure.DigitalTwin.Extensions;
