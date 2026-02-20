@@ -87,7 +87,7 @@ public sealed class ModelCreateSingleCommand : AsyncCommand<ModelUploadSingleSet
         {
             try
             {
-                var doc = JsonDocument.Parse(x);
+                using var doc = JsonDocument.Parse(x);
                 return doc.RootElement.TryGetProperty("@id", out var idProp) &&
                        string.Equals(idProp.GetString(), modelId, StringComparison.Ordinal);
             }

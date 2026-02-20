@@ -82,7 +82,8 @@ public sealed class ComponentUpdateCommand : AsyncCommand<ComponentUpdateCommand
         string jsonPatch)
     {
         var patchDocument = new JsonPatchDocument();
-        var patchArray = JsonDocument.Parse(jsonPatch).RootElement;
+        using var patchDoc = JsonDocument.Parse(jsonPatch);
+        var patchArray = patchDoc.RootElement;
 
         foreach (var operation in patchArray.EnumerateArray())
         {

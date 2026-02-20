@@ -159,92 +159,92 @@ The CLI is organized into command groups:
 atc-azure-digitaltwin model validate -d <directory-path>
 
 # Create all models (dependency-ordered)
-atc-azure-digitaltwin model create all --tenantId -a <adt-instance-url> -d <directory-path>
+atc-azure-digitaltwin model create all --tenantId <tenant-id> -a <adt-instance-url> -d <directory-path>
 
 # Create single model
-atc-azure-digitaltwin model create single --tenantId -a <adt-instance-url> -d <directory-path> -m <model-id>
+atc-azure-digitaltwin model create single --tenantId <tenant-id> -a <adt-instance-url> -d <directory-path> -m <model-id>
 
 # Get all models
-atc-azure-digitaltwin model get all --tenantId -a <adt-instance-url>
+atc-azure-digitaltwin model get all --tenantId <tenant-id> -a <adt-instance-url>
 
 # Decommission a model
-atc-azure-digitaltwin model decommission --tenantId -a <adt-instance-url> -m <model-id>
+atc-azure-digitaltwin model decommission --tenantId <tenant-id> -a <adt-instance-url> -m <model-id>
 
 # Delete all models
-atc-azure-digitaltwin model delete all --tenantId -a <adt-instance-url>
+atc-azure-digitaltwin model delete all --tenantId <tenant-id> -a <adt-instance-url>
 ```
 
 #### Twin Commands
 
 ```bash
 # Count twins by model
-atc-azure-digitaltwin twin count --tenantId -a <adt-instance-url>
+atc-azure-digitaltwin twin count --tenantId <tenant-id> -a <adt-instance-url>
 
 # Create a twin
-atc-azure-digitaltwin twin create --tenantId -a <adt-instance-url> -t <twin-id> -m <model-id> -modelVersion <version> --jsonPayload <json>
+atc-azure-digitaltwin twin create --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id> -m <model-id> -modelVersion <version> --jsonPayload <json>
 
 # Get a twin
-atc-azure-digitaltwin twin get --tenantId -a <adt-instance-url> -t <twin-id>
+atc-azure-digitaltwin twin get --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id>
 
 # Update a twin with JSON Patch
-atc-azure-digitaltwin twin update --tenantId -a <adt-instance-url> -t <twin-id> --jsonPatch <json-patch>
+atc-azure-digitaltwin twin update --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id> --jsonPatch <json-patch>
 
 # Delete all twins
-atc-azure-digitaltwin twin delete all --tenantId -a <adt-instance-url>
+atc-azure-digitaltwin twin delete all --tenantId <tenant-id> -a <adt-instance-url>
 
 # Manage relationships
-atc-azure-digitaltwin twin relationship create --tenantId -a <adt-instance-url> --source-twinId <src> --target-twinId <tgt> --relationshipName <name>
-atc-azure-digitaltwin twin relationship get all --tenantId -a <adt-instance-url> -t <twin-id>
+atc-azure-digitaltwin twin relationship create --tenantId <tenant-id> -a <adt-instance-url> --source-twinId <src> --target-twinId <tgt> --relationshipName <name>
+atc-azure-digitaltwin twin relationship get all --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id>
 
 # Get/update twin components
-atc-azure-digitaltwin twin component get --tenantId -a <adt-instance-url> -t <twin-id> -c <component-name>
-atc-azure-digitaltwin twin component update --tenantId -a <adt-instance-url> -t <twin-id> -c <component-name> --jsonPatch <json-patch>
+atc-azure-digitaltwin twin component get --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id> -c <component-name>
+atc-azure-digitaltwin twin component update --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id> -c <component-name> --jsonPatch <json-patch>
 ```
 
 #### Event Route Commands
 
 ```bash
 # Create an event route
-atc-azure-digitaltwin route create --tenantId -a <adt-instance-url> -e <route-id> --endpointName <endpoint>
+atc-azure-digitaltwin route create --tenantId <tenant-id> -a <adt-instance-url> -e <route-id> --endpointName <endpoint>
 
 # Get all event routes
-atc-azure-digitaltwin route get all --tenantId -a <adt-instance-url>
+atc-azure-digitaltwin route get all --tenantId <tenant-id> -a <adt-instance-url>
 
 # Delete an event route
-atc-azure-digitaltwin route delete --tenantId -a <adt-instance-url> -e <route-id>
+atc-azure-digitaltwin route delete --tenantId <tenant-id> -a <adt-instance-url> -e <route-id>
 ```
 
 #### Query Command
 
 ```bash
 # Run an ADT query
-atc-azure-digitaltwin query --tenantId -a <adt-instance-url> -q "SELECT * FROM DIGITALTWINS"
+atc-azure-digitaltwin query --tenantId <tenant-id> -a <adt-instance-url> -q "SELECT * FROM DIGITALTWINS"
 ```
 
 #### Telemetry Command
 
 ```bash
 # Publish telemetry for a twin
-atc-azure-digitaltwin telemetry publish --tenantId -a <adt-instance-url> -t <twin-id> -p '{"temperature": 25.0}'
+atc-azure-digitaltwin telemetry publish --tenantId <tenant-id> -a <adt-instance-url> -t <twin-id> -p '{"temperature": 25.0}'
 ```
 
 #### Import Commands
 
 ```bash
 # Create a bulk import job
-atc-azure-digitaltwin import create --tenantId -a <adt-instance-url> --jobId <job-id> --inputBlobUri <input-uri> --outputBlobUri <output-uri>
+atc-azure-digitaltwin import create --tenantId <tenant-id> -a <adt-instance-url> --jobId <job-id> --inputBlobUri <input-uri> --outputBlobUri <output-uri>
 
 # Get import job status
-atc-azure-digitaltwin import get single --tenantId -a <adt-instance-url> --jobId <job-id>
+atc-azure-digitaltwin import get single --tenantId <tenant-id> -a <adt-instance-url> --jobId <job-id>
 
 # List all import jobs
-atc-azure-digitaltwin import get all --tenantId -a <adt-instance-url>
+atc-azure-digitaltwin import get all --tenantId <tenant-id> -a <adt-instance-url>
 
 # Cancel a running import job
-atc-azure-digitaltwin import cancel --tenantId -a <adt-instance-url> --jobId <job-id>
+atc-azure-digitaltwin import cancel --tenantId <tenant-id> -a <adt-instance-url> --jobId <job-id>
 
 # Delete an import job
-atc-azure-digitaltwin import delete --tenantId -a <adt-instance-url> --jobId <job-id>
+atc-azure-digitaltwin import delete --tenantId <tenant-id> -a <adt-instance-url> --jobId <job-id>
 ```
 
 Use `--help` on any command for detailed options:
