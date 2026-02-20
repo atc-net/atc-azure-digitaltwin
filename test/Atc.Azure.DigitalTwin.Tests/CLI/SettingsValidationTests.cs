@@ -432,4 +432,264 @@ public sealed class SettingsValidationTests
         // Assert
         result.Successful.Should().BeTrue();
     }
+
+    [Fact]
+    public void ModelPathSettings_MissingDirectoryPath_ReturnsError()
+    {
+        // Arrange
+        var settings = new ModelPathSettings();
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ModelPathSettings_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ModelPathSettings
+        {
+            DirectoryPath = "/tmp/models",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ModelUploadSingleSettings_MissingDirectoryPath_ReturnsError()
+    {
+        // Arrange
+        var settings = new ModelUploadSingleSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            ModelId = "dtmi:com:example:Thermostat;1",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ModelUploadSingleSettings_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ModelUploadSingleSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            ModelId = "dtmi:com:example:Thermostat;1",
+            DirectoryPath = "/tmp/models",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ModelUploadMultipleSettings_MissingDirectoryPath_ReturnsError()
+    {
+        // Arrange
+        var settings = new ModelUploadMultipleSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ModelUploadMultipleSettings_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ModelUploadMultipleSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            DirectoryPath = "/tmp/models",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void TwinCreateCommand_MissingModelId_ReturnsError()
+    {
+        // Arrange
+        var settings = new TwinCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ModelVersion = 1,
+            JsonPayload = "{}",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void TwinCreateCommand_InvalidModelVersion_ReturnsError()
+    {
+        // Arrange
+        var settings = new TwinCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ModelId = "dtmi:com:example:Thermostat;1",
+            ModelVersion = 0,
+            JsonPayload = "{}",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void TwinCreateCommand_MissingJsonPayload_ReturnsError()
+    {
+        // Arrange
+        var settings = new TwinCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ModelId = "dtmi:com:example:Thermostat;1",
+            ModelVersion = 1,
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void TwinCreateCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new TwinCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ModelId = "dtmi:com:example:Thermostat;1",
+            ModelVersion = 1,
+            JsonPayload = """{"temperature": 25.0}""",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void RelationshipCreateCommand_MissingSourceTwinId_ReturnsError()
+    {
+        // Arrange
+        var settings = new RelationshipCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TargetTwinId = "twin-002",
+            RelationshipName = "relatesTo",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void RelationshipCreateCommand_MissingTargetTwinId_ReturnsError()
+    {
+        // Arrange
+        var settings = new RelationshipCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            SourceTwinId = "twin-001",
+            RelationshipName = "relatesTo",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void RelationshipCreateCommand_MissingRelationshipName_ReturnsError()
+    {
+        // Arrange
+        var settings = new RelationshipCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            SourceTwinId = "twin-001",
+            TargetTwinId = "twin-002",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void RelationshipCreateCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new RelationshipCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            SourceTwinId = "twin-001",
+            TargetTwinId = "twin-002",
+            RelationshipName = "relatesTo",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
 }
