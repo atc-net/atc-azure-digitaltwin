@@ -72,12 +72,6 @@ public sealed partial class DigitalTwinService
     private partial void LogRetrievingModels();
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.DigitalTwinService.ModelsNotFound,
-        Level = LogLevel.Warning,
-        Message = "Could not retrieve models")]
-    private partial void LogModelsNotFound();
-
-    [LoggerMessage(
         EventId = LoggingEventIdConstants.DigitalTwinService.RetrievedModels,
         Level = LogLevel.Trace,
         Message = "Retrieved models")]
