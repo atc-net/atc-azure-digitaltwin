@@ -255,24 +255,6 @@ public sealed class DigitalTwinServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteModelAsync_RequestFailedException_ReturnsFailed()
-    {
-        // Arrange
-        mockClient
-            .DeleteModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
-
-        // Act
-        var (succeeded, errorMessage) = await sut.DeleteModelAsync(
-            "dtmi:test:Model;1",
-            TestContext.Current.CancellationToken);
-
-        // Assert
-        succeeded.Should().BeFalse();
-        errorMessage.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task DeleteModelAsync_ErrorResponse_ReturnsFailed()
     {
         // Arrange
@@ -293,18 +275,21 @@ public sealed class DigitalTwinServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetTwinAsync_RequestFailedException_ReturnsNull()
+    public async Task DeleteModelAsync_RequestFailedException_ReturnsFailed()
     {
         // Arrange
         mockClient
-            .GetDigitalTwinAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
+            .DeleteModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
 
         // Act
-        var result = await sut.GetTwinAsync("twin-1", TestContext.Current.CancellationToken);
+        var (succeeded, errorMessage) = await sut.DeleteModelAsync(
+            "dtmi:test:Model;1",
+            TestContext.Current.CancellationToken);
 
         // Assert
-        result.Should().BeNull();
+        succeeded.Should().BeFalse();
+        errorMessage.Should().NotBeNull();
     }
 
     [Fact]
@@ -329,6 +314,21 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be("twin-1");
+    }
+
+    [Fact]
+    public async Task GetTwinAsync_RequestFailedException_ReturnsNull()
+    {
+        // Arrange
+        mockClient
+            .GetDigitalTwinAsync<BasicDigitalTwin>(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(404, "Twin not found", "NotFound", innerException: null));
+
+        // Act
+        var result = await sut.GetTwinAsync("twin-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -1096,21 +1096,6 @@ public sealed class DigitalTwinServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetEventRouteAsync_RequestFailedException_ReturnsNull()
-    {
-        // Arrange
-        mockClient
-            .GetEventRouteAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
-
-        // Act
-        var result = await sut.GetEventRouteAsync("route-1", TestContext.Current.CancellationToken);
-
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
     public async Task GetEventRouteAsync_Success_ReturnsEventRoute()
     {
         // Arrange
@@ -1126,6 +1111,21 @@ public sealed class DigitalTwinServiceTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result!.EndpointName.Should().Be("endpoint-1");
+    }
+
+    [Fact]
+    public async Task GetEventRouteAsync_RequestFailedException_ReturnsNull()
+    {
+        // Arrange
+        mockClient
+            .GetEventRouteAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new RequestFailedException(404, "Not found", "NotFound", innerException: null));
+
+        // Act
+        var result = await sut.GetEventRouteAsync("route-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Fact]

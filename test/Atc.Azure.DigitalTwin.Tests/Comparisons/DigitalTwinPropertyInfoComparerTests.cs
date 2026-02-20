@@ -92,6 +92,18 @@ public sealed class DigitalTwinPropertyInfoComparerTests
     }
 
     [Fact]
+    public async Task Equals_IsSymmetric()
+    {
+        // Arrange
+        var property1 = await GetFirstProperty();
+        var property2 = await GetFirstProperty();
+
+        // Act & Assert
+        sut.Equals(property1, property2)
+            .Should().Be(sut.Equals(property2, property1));
+    }
+
+    [Fact]
     public void GetHashCode_NullObj_ReturnsZero()
     {
         // Act & Assert
@@ -122,18 +134,6 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         // Act & Assert
         sut.GetHashCode(temperature)
             .Should().NotBe(sut.GetHashCode(humidity));
-    }
-
-    [Fact]
-    public async Task Equals_IsSymmetric()
-    {
-        // Arrange
-        var property1 = await GetFirstProperty();
-        var property2 = await GetFirstProperty();
-
-        // Act & Assert
-        sut.Equals(property1, property2)
-            .Should().Be(sut.Equals(property2, property1));
     }
 
     [Fact]
