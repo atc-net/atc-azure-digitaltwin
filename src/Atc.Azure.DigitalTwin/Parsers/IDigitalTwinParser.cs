@@ -3,6 +3,9 @@ namespace Atc.Azure.DigitalTwin.Parsers;
 /// <summary>
 /// Defines a parser that handles the transformation of JSON models into digital twin interface definitions.
 /// </summary>
+/// <remarks>
+/// Implementations create a new ModelParser per call to ParseAsync, making them safe for concurrent use.
+/// </remarks>
 public interface IDigitalTwinParser
 {
     /// <summary>
