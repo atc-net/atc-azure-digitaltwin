@@ -68,4 +68,4 @@ public sealed class ServiceCollectionExtensionsTests
         // which throws when DigitalTwinOptions is not registered.
         act.Should().Throw<InvalidOperationException>();
     }
-}
+}

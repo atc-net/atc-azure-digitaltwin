@@ -153,4 +153,4 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
         // Assert
         act.Should().Throw<ArgumentNullException>();
     }
-}
+}

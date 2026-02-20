@@ -38,8 +38,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var relationship = await GetFirstRelationship();
 
         // Act & Assert
-        sut.Equals(relationship, relationship)
-            .Should().BeTrue();
+        sut.Equals(relationship, relationship).Should().BeTrue();
     }
 
     [Fact]
@@ -50,8 +49,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var relationship2 = await GetFirstRelationship();
 
         // Act & Assert
-        sut.Equals(relationship1, relationship2)
-            .Should().BeTrue();
+        sut.Equals(relationship1, relationship2).Should().BeTrue();
     }
 
     [Fact]
@@ -63,16 +61,14 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var second = relationships[1];
 
         // Act & Assert
-        sut.Equals(first, second)
-            .Should().BeFalse();
+        sut.Equals(first, second).Should().BeFalse();
     }
 
     [Fact]
     public void Equals_BothNull_ReturnsTrue()
     {
         // Act & Assert
-        sut.Equals(null, null)
-            .Should().BeTrue();
+        sut.Equals(null, null).Should().BeTrue();
     }
 
     [Fact]
@@ -82,8 +78,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var relationship = await GetFirstRelationship();
 
         // Act & Assert
-        sut.Equals(null, relationship)
-            .Should().BeFalse();
+        sut.Equals(null, relationship).Should().BeFalse();
     }
 
     [Fact]
@@ -93,8 +88,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var relationship = await GetFirstRelationship();
 
         // Act & Assert
-        sut.Equals(relationship, null)
-            .Should().BeFalse();
+        sut.Equals(relationship, null).Should().BeFalse();
     }
 
     [Fact]
@@ -105,16 +99,14 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var relationship2 = await GetFirstRelationship();
 
         // Act & Assert
-        sut.Equals(relationship1, relationship2)
-            .Should().Be(sut.Equals(relationship2, relationship1));
+        sut.Equals(relationship1, relationship2).Should().Be(sut.Equals(relationship2, relationship1));
     }
 
     [Fact]
     public void GetHashCode_NullObj_ReturnsZero()
     {
         // Act & Assert
-        sut.GetHashCode(null)
-            .Should().Be(0);
+        sut.GetHashCode(null).Should().Be(0);
     }
 
     [Fact]
@@ -125,8 +117,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var relationship2 = await GetFirstRelationship();
 
         // Act & Assert
-        sut.GetHashCode(relationship1)
-            .Should().Be(sut.GetHashCode(relationship2));
+        sut.GetHashCode(relationship1).Should().Be(sut.GetHashCode(relationship2));
     }
 
     [Fact]
@@ -210,6 +201,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var result = await parser.ParseAsync([dtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>()
             .First(i => i.Id.AbsoluteUri.Contains(sourceInterfaceName, StringComparison.Ordinal));
+
         return interfaceInfo.Contents.Values.OfType<DTRelationshipInfo>().First();
     }
 
@@ -219,6 +211,7 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         var result = await parser.ParseAsync([DtdlModelWithRelationships]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>()
             .First(i => i.Id.AbsoluteUri.Contains("Room", StringComparison.Ordinal));
+
         return [.. interfaceInfo.Contents.Values.OfType<DTRelationshipInfo>()];
     }
-}
+}

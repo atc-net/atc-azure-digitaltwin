@@ -32,8 +32,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var property = await GetFirstProperty();
 
         // Act & Assert
-        sut.Equals(property, property)
-            .Should().BeTrue();
+        sut.Equals(property, property).Should().BeTrue();
     }
 
     [Fact]
@@ -44,8 +43,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var property2 = await GetFirstProperty();
 
         // Act & Assert
-        sut.Equals(property1, property2)
-            .Should().BeTrue();
+        sut.Equals(property1, property2).Should().BeTrue();
     }
 
     [Fact]
@@ -57,16 +55,14 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var humidity = properties.First(p => p.Name == "humidity");
 
         // Act & Assert
-        sut.Equals(temperature, humidity)
-            .Should().BeFalse();
+        sut.Equals(temperature, humidity).Should().BeFalse();
     }
 
     [Fact]
     public void Equals_BothNull_ReturnsTrue()
     {
         // Act & Assert
-        sut.Equals(null, null)
-            .Should().BeTrue();
+        sut.Equals(null, null).Should().BeTrue();
     }
 
     [Fact]
@@ -76,8 +72,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var property = await GetFirstProperty();
 
         // Act & Assert
-        sut.Equals(null, property)
-            .Should().BeFalse();
+        sut.Equals(null, property).Should().BeFalse();
     }
 
     [Fact]
@@ -87,8 +82,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var property = await GetFirstProperty();
 
         // Act & Assert
-        sut.Equals(property, null)
-            .Should().BeFalse();
+        sut.Equals(property, null).Should().BeFalse();
     }
 
     [Fact]
@@ -99,16 +93,14 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var property2 = await GetFirstProperty();
 
         // Act & Assert
-        sut.Equals(property1, property2)
-            .Should().Be(sut.Equals(property2, property1));
+        sut.Equals(property1, property2).Should().Be(sut.Equals(property2, property1));
     }
 
     [Fact]
     public void GetHashCode_NullObj_ReturnsZero()
     {
         // Act & Assert
-        sut.GetHashCode(null)
-            .Should().Be(0);
+        sut.GetHashCode(null).Should().Be(0);
     }
 
     [Fact]
@@ -119,8 +111,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var property2 = await GetFirstProperty();
 
         // Act & Assert
-        sut.GetHashCode(property1)
-            .Should().Be(sut.GetHashCode(property2));
+        sut.GetHashCode(property1).Should().Be(sut.GetHashCode(property2));
     }
 
     [Fact]
@@ -132,8 +123,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var humidity = properties.First(p => p.Name == "humidity");
 
         // Act & Assert
-        sut.GetHashCode(temperature)
-            .Should().NotBe(sut.GetHashCode(humidity));
+        sut.GetHashCode(temperature).Should().NotBe(sut.GetHashCode(humidity));
     }
 
     [Fact]
@@ -182,6 +172,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var parser = new ModelParser();
         var result = await parser.ParseAsync([dtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
+
         return interfaceInfo.Contents.Values.OfType<DTPropertyInfo>().First();
     }
 
@@ -190,6 +181,7 @@ public sealed class DigitalTwinPropertyInfoComparerTests
         var parser = new ModelParser();
         var result = await parser.ParseAsync([DtdlModelWithProperties]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
+
         return [.. interfaceInfo.Contents.Values.OfType<DTPropertyInfo>()];
     }
-}
+}

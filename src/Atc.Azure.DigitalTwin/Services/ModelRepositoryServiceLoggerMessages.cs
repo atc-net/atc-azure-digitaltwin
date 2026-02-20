@@ -37,4 +37,4 @@ public sealed partial class ModelRepositoryService
         Level = LogLevel.Warning,
         Message = "Failed to order models by dependency, falling back to original order")]
     private partial void LogDependencyOrderingFailed();
-}
+}

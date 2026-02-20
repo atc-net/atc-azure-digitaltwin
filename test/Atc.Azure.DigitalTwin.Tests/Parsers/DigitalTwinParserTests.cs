@@ -161,4 +161,4 @@ public sealed class DigitalTwinParserTests
         succeededNormal.Should().BeTrue();
         interfacesNormal.Should().NotBeNull();
     }
-}
+}

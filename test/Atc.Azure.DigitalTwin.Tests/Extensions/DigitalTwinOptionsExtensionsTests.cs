@@ -68,4 +68,4 @@ public sealed class DigitalTwinOptionsExtensionsTests
         // Assert
         result.Should().BeOfType<DefaultAzureCredential>();
     }
-}
+}
