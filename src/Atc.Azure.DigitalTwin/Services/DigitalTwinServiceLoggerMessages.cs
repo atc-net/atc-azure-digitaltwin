@@ -336,85 +336,85 @@ public sealed partial class DigitalTwinService
     private partial void LogUpdatedTwin(string twinId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.ImportingGraph,
+        EventId = LoggingEventIdConstants.DigitalTwinService.ImportingGraph,
         Level = LogLevel.Trace,
         Message = "Importing graph for job '{JobId}'")]
     private partial void LogImportingGraph(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.ImportedGraph,
+        EventId = LoggingEventIdConstants.DigitalTwinService.ImportedGraph,
         Level = LogLevel.Trace,
         Message = "Imported graph for job '{JobId}'")]
     private partial void LogImportedGraph(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.ImportGraphFailed,
+        EventId = LoggingEventIdConstants.DigitalTwinService.ImportGraphFailed,
         Level = LogLevel.Warning,
         Message = "Failed to import graph for job '{JobId}'")]
     private partial void LogImportGraphFailed(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.RetrievingImportJob,
+        EventId = LoggingEventIdConstants.DigitalTwinService.RetrievingImportJob,
         Level = LogLevel.Trace,
         Message = "Retrieving import job '{JobId}'")]
     private partial void LogRetrievingImportJob(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.RetrievedImportJob,
+        EventId = LoggingEventIdConstants.DigitalTwinService.RetrievedImportJob,
         Level = LogLevel.Trace,
         Message = "Retrieved import job '{JobId}'")]
     private partial void LogRetrievedImportJob(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.RetrievingImportJobs,
+        EventId = LoggingEventIdConstants.DigitalTwinService.RetrievingImportJobs,
         Level = LogLevel.Trace,
         Message = "Retrieving import jobs")]
     private partial void LogRetrievingImportJobs();
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.RetrievedImportJobs,
+        EventId = LoggingEventIdConstants.DigitalTwinService.RetrievedImportJobs,
         Level = LogLevel.Trace,
         Message = "Retrieved import jobs")]
     private partial void LogRetrievedImportJobs();
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.DeletingImportJob,
+        EventId = LoggingEventIdConstants.DigitalTwinService.DeletingImportJob,
         Level = LogLevel.Trace,
         Message = "Deleting import job '{JobId}'")]
     private partial void LogDeletingImportJob(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.DeletedImportJob,
+        EventId = LoggingEventIdConstants.DigitalTwinService.DeletedImportJob,
         Level = LogLevel.Trace,
         Message = "Deleted import job '{JobId}'")]
     private partial void LogDeletedImportJob(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.DeleteImportJobFailed,
+        EventId = LoggingEventIdConstants.DigitalTwinService.DeleteImportJobFailed,
         Level = LogLevel.Warning,
         Message = "Failed to delete import job '{JobId}'")]
     private partial void LogDeleteImportJobFailed(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.CancellingImportJob,
+        EventId = LoggingEventIdConstants.DigitalTwinService.CancellingImportJob,
         Level = LogLevel.Trace,
         Message = "Cancelling import job '{JobId}'")]
     private partial void LogCancellingImportJob(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.CancelledImportJob,
+        EventId = LoggingEventIdConstants.DigitalTwinService.CancelledImportJob,
         Level = LogLevel.Trace,
         Message = "Cancelled import job '{JobId}'")]
     private partial void LogCancelledImportJob(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.ImportJobs.CancelImportJobFailed,
+        EventId = LoggingEventIdConstants.DigitalTwinService.CancelImportJobFailed,
         Level = LogLevel.Warning,
         Message = "Failed to cancel import job '{JobId}'")]
     private partial void LogCancelImportJobFailed(string jobId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Component.RetrievingComponent,
+        EventId = LoggingEventIdConstants.DigitalTwinService.RetrievingComponent,
         Level = LogLevel.Trace,
         Message = "Retrieving component '{ComponentName}' for twin '{TwinId}'")]
     private partial void LogRetrievingComponent(
@@ -422,7 +422,7 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Component.RetrievedComponent,
+        EventId = LoggingEventIdConstants.DigitalTwinService.RetrievedComponent,
         Level = LogLevel.Trace,
         Message = "Retrieved component '{ComponentName}' for twin '{TwinId}'")]
     private partial void LogRetrievedComponent(
@@ -430,7 +430,7 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Component.ComponentNotFound,
+        EventId = LoggingEventIdConstants.DigitalTwinService.ComponentNotFound,
         Level = LogLevel.Warning,
         Message = "Could not retrieve component '{ComponentName}' for twin '{TwinId}'")]
     private partial void LogComponentNotFound(
@@ -438,7 +438,7 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Component.UpdatingComponent,
+        EventId = LoggingEventIdConstants.DigitalTwinService.UpdatingComponent,
         Level = LogLevel.Trace,
         Message = "Updating component '{ComponentName}' for twin '{TwinId}'")]
     private partial void LogUpdatingComponent(
@@ -446,7 +446,7 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Component.UpdatedComponent,
+        EventId = LoggingEventIdConstants.DigitalTwinService.UpdatedComponent,
         Level = LogLevel.Trace,
         Message = "Updated component '{ComponentName}' for twin '{TwinId}'")]
     private partial void LogUpdatedComponent(
@@ -454,7 +454,7 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Component.UpdateComponentFailed,
+        EventId = LoggingEventIdConstants.DigitalTwinService.UpdateComponentFailed,
         Level = LogLevel.Warning,
         Message = "Failed to update component '{ComponentName}' for twin '{TwinId}'")]
     private partial void LogUpdateComponentFailed(
@@ -462,25 +462,25 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Telemetry.PublishingTelemetry,
+        EventId = LoggingEventIdConstants.DigitalTwinService.PublishingTelemetry,
         Level = LogLevel.Trace,
         Message = "Publishing telemetry for twin '{TwinId}'")]
     private partial void LogPublishingTelemetry(string twinId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Telemetry.PublishedTelemetry,
+        EventId = LoggingEventIdConstants.DigitalTwinService.PublishedTelemetry,
         Level = LogLevel.Trace,
         Message = "Published telemetry for twin '{TwinId}'")]
     private partial void LogPublishedTelemetry(string twinId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Telemetry.PublishTelemetryFailed,
+        EventId = LoggingEventIdConstants.DigitalTwinService.PublishTelemetryFailed,
         Level = LogLevel.Warning,
         Message = "Failed to publish telemetry for twin '{TwinId}'")]
     private partial void LogPublishTelemetryFailed(string twinId);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Telemetry.PublishingComponentTelemetry,
+        EventId = LoggingEventIdConstants.DigitalTwinService.PublishingComponentTelemetry,
         Level = LogLevel.Trace,
         Message = "Publishing component telemetry for twin '{TwinId}' component '{ComponentName}'")]
     private partial void LogPublishingComponentTelemetry(
@@ -488,7 +488,7 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Telemetry.PublishedComponentTelemetry,
+        EventId = LoggingEventIdConstants.DigitalTwinService.PublishedComponentTelemetry,
         Level = LogLevel.Trace,
         Message = "Published component telemetry for twin '{TwinId}' component '{ComponentName}'")]
     private partial void LogPublishedComponentTelemetry(
@@ -496,10 +496,10 @@ public sealed partial class DigitalTwinService
         string componentName);
 
     [LoggerMessage(
-        EventId = LoggingEventIdConstants.Telemetry.PublishComponentTelemetryFailed,
+        EventId = LoggingEventIdConstants.DigitalTwinService.PublishComponentTelemetryFailed,
         Level = LogLevel.Warning,
         Message = "Failed to publish component telemetry for twin '{TwinId}' component '{ComponentName}'")]
     private partial void LogPublishComponentTelemetryFailed(
         string twinId,
         string componentName);
-}
+}

@@ -5,7 +5,7 @@ internal static class LoggingEventIdConstants
     internal static class DigitalTwinService
     {
         public const int RequestFailed = 10_000;
-        public const int Failure = 10_010;
+        public const int Failure = 10_001;
 
         public const int Retrieving = 10_100;
         public const int NotFound = 10_101;
@@ -15,16 +15,16 @@ internal static class LoggingEventIdConstants
         public const int Queried = 10_105;
 
         public const int RetrievingModels = 10_200;
-        public const int RetrievedModels = 10_202;
-        public const int CreatingModels = 10_203;
-        public const int CreateModelsFailed = 10_204;
-        public const int CreatedModels = 10_205;
-        public const int DecommissioningModel = 10_206;
-        public const int DecommissionModelFailed = 10_207;
-        public const int DecommissionedModel = 10_208;
-        public const int DeletingModel = 10_209;
-        public const int DeleteModelFailed = 10_210;
-        public const int DeletedModel = 10_211;
+        public const int RetrievedModels = 10_201;
+        public const int CreatingModels = 10_202;
+        public const int CreateModelsFailed = 10_203;
+        public const int CreatedModels = 10_204;
+        public const int DecommissioningModel = 10_205;
+        public const int DecommissionModelFailed = 10_206;
+        public const int DecommissionedModel = 10_207;
+        public const int DeletingModel = 10_208;
+        public const int DeleteModelFailed = 10_209;
+        public const int DeletedModel = 10_210;
 
         public const int CreatingOrReplacingTwin = 10_300;
         public const int CreateOrReplaceTwinFailed = 10_301;
@@ -55,20 +55,14 @@ internal static class LoggingEventIdConstants
         public const int UpdatingRelationship = 10_412;
         public const int UpdateRelationshipFailed = 10_413;
         public const int UpdatedRelationship = 10_414;
-    }
 
-    internal static class Telemetry
-    {
         public const int PublishingTelemetry = 10_500;
         public const int PublishedTelemetry = 10_501;
         public const int PublishTelemetryFailed = 10_502;
         public const int PublishingComponentTelemetry = 10_503;
         public const int PublishedComponentTelemetry = 10_504;
         public const int PublishComponentTelemetryFailed = 10_505;
-    }
 
-    internal static class ImportJobs
-    {
         public const int ImportingGraph = 10_600;
         public const int ImportedGraph = 10_601;
         public const int ImportGraphFailed = 10_602;
@@ -82,10 +76,7 @@ internal static class LoggingEventIdConstants
         public const int CancellingImportJob = 10_610;
         public const int CancelledImportJob = 10_611;
         public const int CancelImportJobFailed = 10_612;
-    }
 
-    internal static class Component
-    {
         public const int RetrievingComponent = 10_700;
         public const int RetrievedComponent = 10_701;
         public const int ComponentNotFound = 10_702;
