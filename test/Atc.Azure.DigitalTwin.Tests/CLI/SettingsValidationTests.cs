@@ -208,6 +208,175 @@ public sealed class SettingsValidationTests
     }
 
     [Fact]
+    public void ImportJobCommand_MissingJobId_ReturnsError()
+    {
+        // Arrange
+        var settings = new ImportJobCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ImportJobCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ImportJobCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            JobId = "job-001",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ImportJobCreateCommand_MissingInputBlobUri_ReturnsError()
+    {
+        // Arrange
+        var settings = new ImportJobCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            JobId = "job-001",
+            OutputBlobUri = "https://storage.blob.core.windows.net/c/out.ndjson",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ImportJobCreateCommand_MissingOutputBlobUri_ReturnsError()
+    {
+        // Arrange
+        var settings = new ImportJobCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            JobId = "job-001",
+            InputBlobUri = "https://storage.blob.core.windows.net/c/in.ndjson",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ImportJobCreateCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ImportJobCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            JobId = "job-001",
+            InputBlobUri = "https://storage.blob.core.windows.net/c/in.ndjson",
+            OutputBlobUri = "https://storage.blob.core.windows.net/c/out.ndjson",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ComponentCommand_MissingComponentName_ReturnsError()
+    {
+        // Arrange
+        var settings = new ComponentCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ComponentCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ComponentCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ComponentName = "thermostat",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ComponentUpdateCommand_MissingJsonPatch_ReturnsError()
+    {
+        // Arrange
+        var settings = new ComponentUpdateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ComponentName = "thermostat",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ComponentUpdateCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new ComponentUpdateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            ComponentName = "thermostat",
+            JsonPatch = """[{"op": "replace", "path": "/temperature", "value": 30}]""",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
     public void TelemetryPublishCommand_MissingPayload_ReturnsError()
     {
         // Arrange
