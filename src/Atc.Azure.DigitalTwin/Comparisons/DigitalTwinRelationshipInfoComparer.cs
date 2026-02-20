@@ -2,7 +2,7 @@ namespace Atc.Azure.DigitalTwin.Comparisons;
 
 public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRelationshipInfo?>
 {
-    // Products are equal if their names and product numbers are equal.
+    // Relationships are equal if their names and targets are equal.
     public bool Equals(
         DTRelationshipInfo? x,
         DTRelationshipInfo? y)
@@ -19,7 +19,6 @@ public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRe
             return false;
         }
 
-        // Check whether the products' properties are equal.
         return x.Name == y.Name && x.Target == y.Target;
     }
 
@@ -34,10 +33,9 @@ public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRe
 
         // Get hash code for the Name field if it is not null.
         var hashPIName = obj.Name is null
-            ? 0 :
-            obj.Name.GetHashCode(StringComparison.Ordinal);
+            ? 0
+            : obj.Name.GetHashCode(StringComparison.Ordinal);
 
-        // Get hash code for the Code field.
         if (obj.Target == null)
         {
             return hashPIName;
@@ -45,7 +43,6 @@ public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRe
 
         var hashPITarget = obj.Target.GetHashCode();
 
-        // Calculate the hash code for the product.
         return hashPIName ^ hashPITarget;
     }
 }

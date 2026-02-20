@@ -240,11 +240,6 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             LogRetrievedRelationship(twinId, relationshipName);
             return relationship;
         }
-        catch (RequestFailedException ex)
-        {
-            LogRequestFailed(ex, ex.Status, ex.ErrorCode);
-            return null;
-        }
         catch (Exception ex)
         {
             LogFailure(ex);
@@ -294,16 +289,17 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
     {
         try
         {
-            LogCreatingOrReplacingTwin(twinId, JsonSerializer.Serialize(twin, jsonSerializerOptions));
+            var serializedTwin = JsonSerializer.Serialize(twin, jsonSerializerOptions);
+            LogCreatingOrReplacingTwin(twinId, serializedTwin);
             var response = await client.CreateOrReplaceDigitalTwinAsync(twinId, twin, cancellationToken: cancellationToken);
 
             if (response is null)
             {
-                LogCreateOrReplaceTwinFailed(twinId, JsonSerializer.Serialize(twin, jsonSerializerOptions));
+                LogCreateOrReplaceTwinFailed(twinId, serializedTwin);
                 return (false, "Failed to create twin");
             }
 
-            LogCreatedOrReplacedTwin(twinId, JsonSerializer.Serialize(twin, jsonSerializerOptions));
+            LogCreatedOrReplacedTwin(twinId, serializedTwin);
             return (true, null);
         }
         catch (RequestFailedException ex)
@@ -424,7 +420,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             }
             else
             {
-                await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationshipId, relationship, cancellationToken: cancellationToken);
+                var response = await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationshipId, relationship, cancellationToken: cancellationToken);
+                if (response?.Value is null)
+                {
+                    LogCreateOrUpdateRelationshipFailed(sourceTwinId, targetTwinId, relationshipName);
+                    return (false, "Failed to create relationship");
+                }
             }
 
             LogCreatedOrUpdatedRelationship(sourceTwinId, targetTwinId, relationshipName);
@@ -520,7 +521,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             if (getResponse is null)
             {
                 LogRelationshipNotFound(twinId, relationshipName);
-                return (false, "RelationShip not found");
+                return (false, "Relationship not found");
             }
 
             LogDeletingRelationship(twinId, relationshipName);
