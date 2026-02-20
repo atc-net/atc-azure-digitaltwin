@@ -2,6 +2,7 @@ global using System.Diagnostics.CodeAnalysis;
 global using System.Text.Json;
 global using Atc.Azure.DigitalTwin.Options;
 global using Atc.Azure.DigitalTwin.Parsers;
+global using Atc.Azure.DigitalTwin.Services;
 global using Atc.Serialization;
 global using Azure;
 global using Azure.Core;

@@ -8,9 +8,7 @@ public sealed partial class DigitalTwinParser : IDigitalTwinParser
     private readonly ModelParser parser = new();
 
     public DigitalTwinParser(ILoggerFactory loggerFactory)
-    {
-        logger = loggerFactory.CreateLogger<DigitalTwinParser>();
-    }
+        => logger = loggerFactory.CreateLogger<DigitalTwinParser>();
 
     public async Task<(bool Succeeded, IReadOnlyDictionary<Dtmi, DTEntityInfo>? Interfaces)> ParseAsync(
         IEnumerable<string> jsonModels)
