@@ -415,7 +415,12 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             {
                 var patch = new JsonPatchDocument();
                 patch.AppendReplace("/isActive", isActive);
-                await UpdateRelationshipAsync(sourceTwinId, existingRelationShip.Id, patch, existingRelationShip.ETag, cancellationToken);
+                var (succeeded, errorMessage) = await UpdateRelationshipAsync(sourceTwinId, existingRelationShip.Id, patch, existingRelationShip.ETag, cancellationToken);
+                if (!succeeded)
+                {
+                    LogCreateOrUpdateRelationshipFailed(sourceTwinId, targetTwinId, relationshipName);
+                    return (false, errorMessage);
+                }
             }
             else
             {
