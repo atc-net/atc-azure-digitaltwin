@@ -15,7 +15,6 @@ internal static class LoggingEventIdConstants
         public const int Queried = 10_105;
 
         public const int RetrievingModels = 10_200;
-        public const int ModelsNotFound = 10_201;
         public const int RetrievedModels = 10_202;
         public const int CreatingModels = 10_203;
         public const int CreateModelsFailed = 10_204;
