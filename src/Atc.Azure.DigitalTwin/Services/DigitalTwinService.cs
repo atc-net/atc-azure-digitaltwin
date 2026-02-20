@@ -366,13 +366,13 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 TargetId = targetTwinId,
             };
 
-            var relationShipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
-            var response = await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationShipId, relationship, cancellationToken: cancellationToken);
+            var relationshipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
+            var response = await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationshipId, relationship, cancellationToken: cancellationToken);
 
             if (response is null)
             {
                 LogCreateOrUpdateRelationshipFailed(sourceTwinId, targetTwinId, relationshipName);
-                return (false, $"Failed to create Relationship '{relationShipId}' on twin '{sourceTwinId}'");
+                return (false, $"Failed to create Relationship '{relationshipId}' on twin '{sourceTwinId}'");
             }
 
             LogCreatedOrUpdatedRelationship(sourceTwinId, targetTwinId, relationshipName);
@@ -408,14 +408,14 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 TargetId = targetTwinId,
             };
 
-            var relationShipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
-            var existingRelationShip = await FindRelationshipByIdAsync(sourceTwinId, relationShipId, cancellationToken);
+            var relationshipId = $"{sourceTwinId}-{relationshipName}->{targetTwinId}";
+            var existingRelationship = await FindRelationshipByIdAsync(sourceTwinId, relationshipId, cancellationToken);
 
-            if (existingRelationShip is not null)
+            if (existingRelationship is not null)
             {
                 var patch = new JsonPatchDocument();
                 patch.AppendReplace("/isActive", isActive);
-                var (succeeded, errorMessage) = await UpdateRelationshipAsync(sourceTwinId, existingRelationShip.Id, patch, existingRelationShip.ETag, cancellationToken);
+                var (succeeded, errorMessage) = await UpdateRelationshipAsync(sourceTwinId, existingRelationship.Id, patch, existingRelationship.ETag, cancellationToken);
                 if (!succeeded)
                 {
                     LogCreateOrUpdateRelationshipFailed(sourceTwinId, targetTwinId, relationshipName);
@@ -424,7 +424,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
             }
             else
             {
-                await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationShipId, relationship, cancellationToken: cancellationToken);
+                await client.CreateOrReplaceRelationshipAsync(sourceTwinId, relationshipId, relationship, cancellationToken: cancellationToken);
             }
 
             LogCreatedOrUpdatedRelationship(sourceTwinId, targetTwinId, relationshipName);
@@ -872,12 +872,11 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
             await foreach (var relationship in relationships)
             {
+                LogDeletingRelationship(twinId, relationship.Id);
                 await client.DeleteRelationshipAsync(
                     twinId,
                     relationship.Id,
                     cancellationToken: cancellationToken);
-
-                LogDeletingRelationship(twinId, relationship.Id);
             }
         }
         catch (RequestFailedException ex)
@@ -922,12 +921,11 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
 
             await foreach (var incomingRelationship in incomingRelationships)
             {
+                LogDeletingRelationship(twinId, incomingRelationship.RelationshipId);
                 await client.DeleteRelationshipAsync(
                     incomingRelationship.SourceId,
                     incomingRelationship.RelationshipId,
                     cancellationToken: cancellationToken);
-
-                LogDeletingRelationship(twinId, incomingRelationship.RelationshipId);
             }
         }
         catch (RequestFailedException ex)
