@@ -7,9 +7,9 @@ public sealed class RelationshipCommandSettings : ConnectionBaseCommandSettings
     [Description("The id of the digital twin")]
     public string TwinId { get; set; } = string.Empty;
 
-    [CommandOption("-r|--relationshipId <RELATIONSHIPID>")]
-    [Description("The id of the relationship")]
-    public string RelationshipId { get; set; } = string.Empty;
+    [CommandOption("-r|--relationshipName <RELATIONSHIPNAME>")]
+    [Description("The name of the relationship")]
+    public string RelationshipName { get; set; } = string.Empty;
 
     public override ValidationResult Validate()
     {
@@ -24,9 +24,9 @@ public sealed class RelationshipCommandSettings : ConnectionBaseCommandSettings
             return ValidationResult.Error($"{nameof(TwinId)} is missing.");
         }
 
-        if (string.IsNullOrEmpty(RelationshipId))
+        if (string.IsNullOrEmpty(RelationshipName))
         {
-            return ValidationResult.Error($"{nameof(RelationshipId)} is missing.");
+            return ValidationResult.Error($"{nameof(RelationshipName)} is missing.");
         }
 
         return ValidationResult.Success();

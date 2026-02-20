@@ -28,9 +28,9 @@ public sealed class RelationshipDeleteCommand : AsyncCommand<RelationshipCommand
         ConsoleHelper.WriteHeader();
 
         var twinId = settings.TwinId;
-        var relationshipId = settings.RelationshipId;
+        var relationshipName = settings.RelationshipName;
 
-        logger.LogInformation($"Deleting relationship '{relationshipId}' from twin '{twinId}'");
+        logger.LogInformation($"Deleting relationship '{relationshipName}' from twin '{twinId}'");
 
         try
         {
@@ -41,16 +41,16 @@ public sealed class RelationshipDeleteCommand : AsyncCommand<RelationshipCommand
 
             var (succeeded, errorMessage) = await digitalTwinService.DeleteRelationshipAsync(
                 twinId,
-                relationshipId,
+                relationshipName,
                 cancellationToken);
 
             if (!succeeded)
             {
-                logger.LogError($"Failed to delete relationship '{relationshipId}' from twin '{twinId}': {errorMessage}");
+                logger.LogError($"Failed to delete relationship '{relationshipName}' from twin '{twinId}': {errorMessage}");
                 return ConsoleExitStatusCodes.Failure;
             }
 
-            logger.LogInformation($"Deleted relationship '{relationshipId}' from twin '{twinId}'");
+            logger.LogInformation($"Deleted relationship '{relationshipName}' from twin '{twinId}'");
             return ConsoleExitStatusCodes.Success;
         }
         catch (RequestFailedException ex)
