@@ -30,9 +30,9 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipComm
         ConsoleHelper.WriteHeader();
 
         var twinId = settings.TwinId;
-        var relationshipId = settings.RelationshipId;
+        var relationshipName = settings.RelationshipName;
 
-        logger.LogInformation($"Getting relationship for twin '{twinId}' and relationship id '{relationshipId}'.");
+        logger.LogInformation($"Getting relationship for twin '{twinId}' and relationship name '{relationshipName}'.");
 
         try
         {
@@ -41,10 +41,10 @@ public sealed class RelationshipGetSingleCommand : AsyncCommand<RelationshipComm
                 settings.TenantId!,
                 new Uri(settings.AdtInstanceUrl!));
 
-            var result = await digitalTwinService.GetRelationshipAsync(twinId, relationshipId, cancellationToken);
+            var result = await digitalTwinService.GetRelationshipAsync(twinId, relationshipName, cancellationToken);
             if (result is null)
             {
-                logger.LogError($"Failed to retrieve relationship for twin '{twinId} and relationship id '{relationshipId}''");
+                logger.LogError($"Failed to retrieve relationship for twin '{twinId}' and relationship name '{relationshipName}'");
                 return ConsoleExitStatusCodes.Failure;
             }
 

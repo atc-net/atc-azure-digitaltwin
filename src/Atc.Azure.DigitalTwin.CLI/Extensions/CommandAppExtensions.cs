@@ -171,7 +171,7 @@ public static class CommandAppExtensions
 
             node.AddCommand<RelationshipDeleteCommand>("delete")
                 .WithDescription("Delete relationship.")
-                .WithExample("twin relationship delete --tenantId -a <adt-instance-url> -t <twin-id> --relationshipId <relationship-id>");
+                .WithExample("twin relationship delete --tenantId -a <adt-instance-url> -t <twin-id> --relationshipName <relationship-name>");
 
             ConfigureRelationshipGetCommands(node);
         };
@@ -184,7 +184,7 @@ public static class CommandAppExtensions
 
             get.AddCommand<RelationshipGetSingleCommand>("single")
                 .WithDescription("Get single relationship for twin.")
-                .WithExample("twin relationship get single --tenantId -a <adt-instance-url> -t <twin-id> -r <relationship-id>");
+                .WithExample("twin relationship get single --tenantId -a <adt-instance-url> -t <twin-id> -r <relationship-name>");
 
             get.AddCommand<RelationshipGetAllCommand>("all")
                 .WithDescription("Get all relationships for twin.")
