@@ -98,6 +98,18 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
     }
 
     [Fact]
+    public async Task Equals_IsSymmetric()
+    {
+        // Arrange
+        var relationship1 = await GetFirstRelationship();
+        var relationship2 = await GetFirstRelationship();
+
+        // Act & Assert
+        sut.Equals(relationship1, relationship2)
+            .Should().Be(sut.Equals(relationship2, relationship1));
+    }
+
+    [Fact]
     public void GetHashCode_NullObj_ReturnsZero()
     {
         // Act & Assert
@@ -128,18 +140,6 @@ public sealed class DigitalTwinRelationshipInfoComparerTests
         // Act & Assert
         sut.GetHashCode(first)
             .Should().NotBe(sut.GetHashCode(second));
-    }
-
-    [Fact]
-    public async Task Equals_IsSymmetric()
-    {
-        // Arrange
-        var relationship1 = await GetFirstRelationship();
-        var relationship2 = await GetFirstRelationship();
-
-        // Act & Assert
-        sut.Equals(relationship1, relationship2)
-            .Should().Be(sut.Equals(relationship2, relationship1));
     }
 
     [Fact]

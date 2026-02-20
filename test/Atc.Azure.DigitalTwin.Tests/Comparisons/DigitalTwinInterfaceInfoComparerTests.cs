@@ -100,6 +100,21 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
     }
 
     [Fact]
+    public async Task Equals_IsSymmetric()
+    {
+        // Arrange
+        var parser = new ModelParser();
+        var result1 = await parser.ParseAsync([DtdlModel1]);
+        var result2 = await parser.ParseAsync([DtdlModel1]);
+        var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
+        var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
+
+        // Act & Assert
+        sut.Equals(interface1, interface2)
+            .Should().Be(sut.Equals(interface2, interface1));
+    }
+
+    [Fact]
     public async Task GetHashCode_SameId_ReturnsSameHashCode()
     {
         // Arrange
@@ -137,20 +152,5 @@ public sealed class DigitalTwinInterfaceInfoComparerTests
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public async Task Equals_IsSymmetric()
-    {
-        // Arrange
-        var parser = new ModelParser();
-        var result1 = await parser.ParseAsync([DtdlModel1]);
-        var result2 = await parser.ParseAsync([DtdlModel1]);
-        var interface1 = result1.Values.OfType<DTInterfaceInfo>().First();
-        var interface2 = result2.Values.OfType<DTInterfaceInfo>().First();
-
-        // Act & Assert
-        sut.Equals(interface1, interface2)
-            .Should().Be(sut.Equals(interface2, interface1));
     }
 }
