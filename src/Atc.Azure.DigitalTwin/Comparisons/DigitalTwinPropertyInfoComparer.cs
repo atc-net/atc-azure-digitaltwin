@@ -2,7 +2,7 @@ namespace Atc.Azure.DigitalTwin.Comparisons;
 
 public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTPropertyInfo?>
 {
-    // Products are equal if their names and product numbers are equal.
+    // Properties are equal if their names and schemas are equal.
     public bool Equals(
         DTPropertyInfo? x,
         DTPropertyInfo? y)
@@ -19,7 +19,6 @@ public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTProper
             return false;
         }
 
-        // Check whether the products' properties are equal.
         return x.Name == y.Name && x.Schema == y.Schema;
     }
 
@@ -37,10 +36,8 @@ public sealed class DigitalTwinPropertyInfoComparer : IEqualityComparer<DTProper
             ? 0
             : obj.Name.GetHashCode(StringComparison.Ordinal);
 
-        // Get hash code for the Code field.
         var hashPISchema = obj.Schema.GetHashCode();
 
-        // Calculate the hash code for the product.
         return hashPIName ^ hashPISchema;
     }
 }
