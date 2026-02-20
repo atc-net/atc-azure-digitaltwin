@@ -36,7 +36,7 @@ public sealed class DigitalTwinRelationshipInfoComparer : IEqualityComparer<DTRe
             ? 0
             : obj.Name.GetHashCode(StringComparison.Ordinal);
 
-        if (obj.Target == null)
+        if (obj.Target is null)
         {
             return hashPIName;
         }
