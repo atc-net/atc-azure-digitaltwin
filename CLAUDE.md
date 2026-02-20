@@ -12,8 +12,8 @@ Azure Digital Twin library providing services for Azure Digital Twins management
 # Build
 dotnet build -c Release
 
-# Run unit tests (excludes integration tests)
-dotnet test -c Release --filter "Category!=Integration"
+# Run unit tests (xUnit v3 — uses dotnet run, not dotnet test)
+dotnet run --project test/Atc.Azure.DigitalTwin.Tests -c Release
 
 # Clean and restore
 dotnet clean -c Release && dotnet nuget locals all --clear
@@ -27,7 +27,7 @@ dotnet run --project src/Atc.Azure.DigitalTwin.CLI -- --help
 
 - **`src/Atc.Azure.DigitalTwin/`** — Core library (NuGet package)
 - **`src/Atc.Azure.DigitalTwin.CLI/`** — .NET global tool, packable via `PackAsTool`, assembly name `atc-azure-digitaltwin`
-- **`test/Atc.Azure.DigitalTwin.Tests/`** — Unit tests (xUnit, AutoFixture, NSubstitute)
+- **`test/Atc.Azure.DigitalTwin.Tests/`** — Unit tests (xUnit v3, AutoFixture, NSubstitute)
 - **`sample/Atc.Azure.DigitalTwin.Console.Sample/`** — Example console app with DTDL models in `sample/models/`
 
 Solution uses `.slnx` format (not `.sln`).
@@ -36,15 +36,19 @@ Solution uses `.slnx` format (not `.sln`).
 
 ### Core Service Interfaces
 
-- **`IDigitalTwinService`** — CRUD for models, twins, relationships, and event routes; query execution with pagination; JSON Patch updates. Implementation uses `DigitalTwinsClient` from the Azure SDK.
-- **`IModelRepositoryService`** — Local DTDL model storage, loading from directories, validation, and cache management. Maintains internal model content list and dictionary.
-- **`IDigitalTwinParser`** — Wraps `Microsoft.Azure.DigitalTwins.Parser.ModelParser` for JSON-to-DTDL conversion and validation.
+- **`IDigitalTwinService`** — CRUD for models, twins, relationships, event routes; query execution with pagination; JSON Patch updates; telemetry publishing; component operations; bulk import jobs. Implementation uses `DigitalTwinsClient` from the Azure SDK.
+- **`IModelRepositoryService`** — Local DTDL model storage, loading from directories, validation, dependency-aware ordering (topological sort by `extends`), and cache management. **Not thread-safe** — registered as transient.
+- **`IDigitalTwinParser`** — Wraps `Microsoft.Azure.DigitalTwins.Parser.ModelParser` for JSON-to-DTDL conversion and validation. Creates a new `ModelParser` per call for thread safety.
 
 All service implementations are `sealed partial` classes that use a companion `*LoggerMessages` partial class for source-generated logging.
 
 ### DI Registration
 
-`ServiceCollectionExtensions.ConfigureDigitalTwinsClient()` registers services with `DigitalTwinOptions` (TenantId, InstanceUrl).
+`ServiceCollectionExtensions.ConfigureDigitalTwinsClient()` registers:
+- `DigitalTwinsClient` — Singleton (thread-safe Azure SDK client)
+- `IDigitalTwinService` — Singleton (stateless, thread-safe)
+- `IDigitalTwinParser` — Transient (creates ModelParser per call)
+- `IModelRepositoryService` — Transient (mutable internal state, not thread-safe)
 
 ### Factory Classes
 
@@ -57,8 +61,12 @@ Built on Spectre.Console.Cli with `AsyncCommand<TSettings>` pattern. All command
 - `route` — create, delete, get (single/all)
 - `twin` — count, create, delete (single/all/allbymodel), get, update
   - `twin relationship` — create, delete, get (single/all/incoming)
+  - `twin component` — get, update
+- `query` — execute ADT queries
+- `telemetry` — publish
+- `import` — create, get (single/all), delete, cancel
 
-Settings inherit from `ConnectionBaseCommandSettings` (TenantId, AdtInstanceUrl) with domain-specific subclasses.
+Settings inherit from `ConnectionBaseCommandSettings` (TenantId, AdtInstanceUrl) with domain-specific subclasses. All settings call `base.Validate()` to propagate validation up the hierarchy.
 
 ### Comparers
 
@@ -67,7 +75,7 @@ Settings inherit from `ConnectionBaseCommandSettings` (TenantId, AdtInstanceUrl)
 ## Build Configuration
 
 - **Target:** net10.0, C# 14.0, nullable enabled, implicit usings
-- **Version:** 1.1.0 managed via release-please markers in `Directory.Build.props`; also uses Nerdbank.GitVersioning (`version.json`) for CI package versioning
+- **Version:** 2.0.0 managed via release-please markers in `Directory.Build.props`
 - **Release builds:** warnings as errors
 - **Analyzers** (all in root `Directory.Build.props`): Atc.Analyzer, AsyncFixer, Asyncify, Meziantou, SecurityCodeScan, StyleCop, SonarAnalyzer
 - **Analysis level:** `latest-All` with `EnforceCodeStyleInBuild`
@@ -83,6 +91,10 @@ Enforced via `.editorconfig` and analyzers:
 - Pattern matching and switch expressions preferred
 - `CA2007` (ConfigureAwait) disabled
 - `CA1860` (Avoid Enumerable.Any()) disabled
+- All async methods use `Async` suffix
+- Tuple elements use PascalCase (e.g., `Succeeded`, `ErrorMessage`)
+- No per-file using directives — use `GlobalUsings.cs`
+- Methods must not exceed 60 lines (MA0051) — split into smaller helpers
 
 ## Branch Strategy & CI
 
