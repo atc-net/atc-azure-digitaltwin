@@ -3,6 +3,9 @@ namespace Atc.Azure.DigitalTwin.Services;
 /// <summary>
 /// Defines a service for managing digital twin models locally.
 /// </summary>
+/// <remarks>
+/// This service is NOT thread-safe and should be registered as transient or scoped in dependency injection.
+/// </remarks>
 public interface IModelRepositoryService
 {
     /// <summary>
