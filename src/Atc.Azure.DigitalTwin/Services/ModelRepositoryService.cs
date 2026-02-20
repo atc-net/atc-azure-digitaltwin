@@ -183,6 +183,12 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
                 using var doc = JsonDocument.Parse(models[i]);
                 var root = doc.RootElement;
 
+                if (root.ValueKind != JsonValueKind.Object)
+                {
+                    unparseable.Add(i);
+                    continue;
+                }
+
                 if (root.TryGetProperty("@id", out var idProp))
                 {
                     var id = idProp.GetString();
@@ -316,7 +322,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
             throw new InvalidOperationException("Circular dependency detected among DTDL models.");
         }
 
-        foreach (var idx in unparseable)
+        foreach (var idx in unparseable.OrderBy(x => x))
         {
             sorted.Add(models[idx]);
         }
