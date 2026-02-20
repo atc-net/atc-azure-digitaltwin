@@ -52,6 +52,26 @@ public sealed class DigitalTwinServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetModelAsync_Success_ReturnsModelData()
+    {
+        // Arrange
+        var modelData = DigitalTwinsModelFactory.DigitalTwinsModelData(
+            id: "dtmi:test:Model;1");
+
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+        mockClient
+            .GetModelAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Response.FromValue(modelData, mockResponse)));
+
+        // Act
+        var result = await sut.GetModelAsync("dtmi:test:Model;1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be("dtmi:test:Model;1");
+    }
+
+    [Fact]
     public async Task GetModelAsync_RequestFailedException_ReturnsNull()
     {
         // Arrange
@@ -79,6 +99,27 @@ public sealed class DigitalTwinServiceTests : IDisposable
 
         // Assert
         result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetModelsAsync_Success_ReturnsList()
+    {
+        // Arrange
+        var modelData = DigitalTwinsModelFactory.DigitalTwinsModelData(
+            id: "dtmi:test:Model;1");
+
+        var pageable = CreateAsyncPageable(modelData);
+
+        mockClient
+            .GetModelsAsync(Arg.Any<GetModelsOptions?>(), Arg.Any<CancellationToken>())
+            .Returns(pageable);
+
+        // Act
+        var result = await sut.GetModelsAsync(cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
     }
 
     [Fact]
@@ -623,6 +664,29 @@ public sealed class DigitalTwinServiceTests : IDisposable
 
         // Assert
         result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetIncomingRelationshipsAsync_Success_ReturnsList()
+    {
+        // Arrange
+        var incomingRelationship = DigitalTwinsModelFactory.IncomingRelationship(
+            "rel-1",
+            "source-twin",
+            "contains",
+            "/properties/isActive");
+        var pageable = CreateAsyncPageable(incomingRelationship);
+
+        mockClient
+            .GetIncomingRelationshipsAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(pageable);
+
+        // Act
+        var result = await sut.GetIncomingRelationshipsAsync("twin-1", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
     }
 
     [Fact]
@@ -1471,6 +1535,50 @@ public sealed class DigitalTwinServiceTests : IDisposable
                 Arg.Any<ETag?>(),
                 Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Response.FromValue(relationship, mockResponse)));
+
+        // Act
+        var (succeeded, errorMessage) = await sut.CreateOrUpdateRelationshipAsync(
+            "twin-1",
+            "twin-2",
+            "contains",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        succeeded.Should().BeTrue();
+        errorMessage.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateOrUpdateRelationshipAsync_ExistingRelationship_UpdatesSuccessfully()
+    {
+        // Arrange - FindRelationshipByIdAsync returns an existing relationship
+        var existingRelationship = new BasicRelationship
+        {
+            Id = "twin-1-contains->twin-2",
+            SourceId = "twin-1",
+            TargetId = "twin-2",
+            Name = "contains",
+            ETag = new ETag("etag-1"),
+        };
+
+        var mockResponse = TrackResponse(Substitute.For<Response>());
+        mockClient
+            .GetRelationshipAsync<BasicRelationship>(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Response.FromValue(existingRelationship, mockResponse)));
+
+        // UpdateRelationshipAsync returns success
+        var successResponse = CreateSuccessResponse();
+        mockClient
+            .UpdateRelationshipAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<JsonPatchDocument>(),
+                Arg.Any<ETag?>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(successResponse));
 
         // Act
         var (succeeded, errorMessage) = await sut.CreateOrUpdateRelationshipAsync(

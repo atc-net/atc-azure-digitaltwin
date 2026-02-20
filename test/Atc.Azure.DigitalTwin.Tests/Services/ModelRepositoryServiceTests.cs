@@ -606,4 +606,93 @@ public sealed class ModelRepositoryServiceTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_CircularDependencies_FallsBackToOriginalOrder()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        const string modelA = """
+            {
+                "@id": "dtmi:com:example:CycleA;1",
+                "@type": "Interface",
+                "extends": "dtmi:com:example:CycleB;1",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        const string modelB = """
+            {
+                "@id": "dtmi:com:example:CycleB;1",
+                "@type": "Interface",
+                "extends": "dtmi:com:example:CycleA;1",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "a.json"),
+                modelA,
+                TestContext.Current.CancellationToken);
+
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "b.json"),
+                modelB,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act - should not throw, falls back to original order
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(2);
+            result.Should().Contain(modelA);
+            result.Should().Contain(modelB);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task GetModelsContentInDependencyOrder_ExternalModelReference_IgnoredCorrectly()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
+        const string model = """
+            {
+                "@id": "dtmi:com:example:Child;1",
+                "@type": "Interface",
+                "extends": "dtmi:external:Unknown;1",
+                "@context": "dtmi:dtdl:context;2"
+            }
+            """;
+
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(tempDir.FullName, "model.json"),
+                model,
+                TestContext.Current.CancellationToken);
+
+            await sut.LoadModelContentAsync(new DirectoryInfo(tempDir.FullName), TestContext.Current.CancellationToken);
+
+            // Act - external reference should be ignored, not cause errors
+            var result = new List<string>(sut.GetModelsContentInDependencyOrder());
+
+            // Assert
+            result.Should().HaveCount(1);
+            result[0].Should().Be(model);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }
