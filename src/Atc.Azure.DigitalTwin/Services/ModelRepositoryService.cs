@@ -167,12 +167,12 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         return ExecuteKahnSort(models, dependencies, inDegree, unparseable);
     }
 
-    private static (Dictionary<string, int> ModelIndex, List<int> Unparseable) BuildModelIndex(
+    private static (Dictionary<string, int> ModelIndex, HashSet<int> Unparseable) BuildModelIndex(
         List<string> models,
         Dictionary<int, List<int>> dependencies)
     {
         var modelIndex = new Dictionary<string, int>(StringComparer.Ordinal);
-        var unparseable = new List<int>();
+        var unparseable = new HashSet<int>();
 
         for (var i = 0; i < models.Count; i++)
         {
@@ -181,7 +181,9 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
             try
             {
                 using var doc = JsonDocument.Parse(models[i]);
-                if (doc.RootElement.TryGetProperty("@id", out var idProp))
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("@id", out var idProp))
                 {
                     var id = idProp.GetString();
                     if (id is not null)
@@ -210,7 +212,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
     private static void BuildDependencyEdges(
         List<string> models,
         Dictionary<string, int> modelIndex,
-        List<int> unparseable,
+        HashSet<int> unparseable,
         Dictionary<int, List<int>> dependencies,
         int[] inDegree)
     {
@@ -242,7 +244,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
             }
             catch (System.Text.Json.JsonException)
             {
-                // Already in unparseable if this fails, skip
+                // Defensive: cannot happen for strings that passed JSON parsing in BuildModelIndex
             }
         }
     }
@@ -278,7 +280,7 @@ public sealed partial class ModelRepositoryService : IModelRepositoryService
         List<string> models,
         Dictionary<int, List<int>> dependencies,
         int[] inDegree,
-        List<int> unparseable)
+        HashSet<int> unparseable)
     {
         var queue = new Queue<int>();
         for (var i = 0; i < models.Count; i++)
