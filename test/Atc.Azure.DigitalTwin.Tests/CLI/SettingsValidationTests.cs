@@ -692,4 +692,133 @@ public sealed class SettingsValidationTests
         // Assert
         result.Successful.Should().BeTrue();
     }
+
+    [Fact]
+    public void TwinUpdateCommand_MissingJsonPatch_ReturnsError()
+    {
+        // Arrange
+        var settings = new TwinUpdateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void TwinUpdateCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new TwinUpdateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            JsonPatch = """[{"op": "replace", "path": "/temperature", "value": 30}]""",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void EventRouteCreateCommand_MissingEndpointName_ReturnsError()
+    {
+        // Arrange
+        var settings = new EventRouteCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            EventRouteId = "route-001",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void EventRouteCreateCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new EventRouteCreateCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            EventRouteId = "route-001",
+            EndpointName = "my-endpoint",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void RelationshipCommand_MissingTwinId_ReturnsError()
+    {
+        // Arrange
+        var settings = new RelationshipCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            RelationshipName = "relatesTo",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void RelationshipCommand_MissingRelationshipName_ReturnsError()
+    {
+        // Arrange
+        var settings = new RelationshipCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+    }
+
+    [Fact]
+    public void RelationshipCommand_AllFieldsPresent_ReturnsSuccess()
+    {
+        // Arrange
+        var settings = new RelationshipCommandSettings
+        {
+            TenantId = "00000000-0000-0000-0000-000000000001",
+            AdtInstanceUrl = "https://test.api.eus.digitaltwins.azure.net",
+            TwinId = "twin-001",
+            RelationshipName = "relatesTo",
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
 }
