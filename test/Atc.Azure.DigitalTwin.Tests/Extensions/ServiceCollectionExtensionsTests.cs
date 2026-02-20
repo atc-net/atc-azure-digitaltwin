@@ -40,9 +40,17 @@ public sealed class ServiceCollectionExtensionsTests
         services.ConfigureDigitalTwinsClient();
 
         // Assert - All higher-level services are registered
-        services.Should().Contain(d => d.ServiceType == typeof(IDigitalTwinService));
-        services.Should().Contain(d => d.ServiceType == typeof(IModelRepositoryService));
-        services.Should().Contain(d => d.ServiceType == typeof(IDigitalTwinParser));
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IDigitalTwinService) &&
+            d.Lifetime == ServiceLifetime.Singleton);
+
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IModelRepositoryService) &&
+            d.Lifetime == ServiceLifetime.Transient);
+
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IDigitalTwinParser) &&
+            d.Lifetime == ServiceLifetime.Transient);
     }
 
     [Fact]

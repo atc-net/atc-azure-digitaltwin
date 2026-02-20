@@ -4,6 +4,9 @@ namespace Atc.Azure.DigitalTwin.Services;
 /// <summary>
 /// Service for managing digital twin models locally.
 /// </summary>
+/// <remarks>
+/// This service is NOT thread-safe and should be registered as transient or scoped in dependency injection.
+/// </remarks>
 public sealed partial class ModelRepositoryService : IModelRepositoryService
 {
     private readonly IDigitalTwinParser dtdlParser;
