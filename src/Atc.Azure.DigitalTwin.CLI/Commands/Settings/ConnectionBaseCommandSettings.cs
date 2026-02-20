@@ -12,6 +12,12 @@ public class ConnectionBaseCommandSettings : BaseCommandSettings
 
     public override ValidationResult Validate()
     {
+        var baseResult = base.Validate();
+        if (!baseResult.Successful)
+        {
+            return baseResult;
+        }
+
         if (string.IsNullOrWhiteSpace(TenantId))
         {
             return ValidationResult.Error($"{nameof(TenantId)} must be present.");
