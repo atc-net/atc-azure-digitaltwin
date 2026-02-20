@@ -1268,6 +1268,43 @@ public sealed class DigitalTwinServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetRelationshipAsync_MultipleRelationshipsOfSameType_ReturnsFirst()
+    {
+        // Arrange
+        var relationship1 = new BasicRelationship
+        {
+            Id = "rel-1",
+            SourceId = "twin-1",
+            TargetId = "twin-2",
+            Name = "contains",
+        };
+
+        var relationship2 = new BasicRelationship
+        {
+            Id = "rel-2",
+            SourceId = "twin-1",
+            TargetId = "twin-3",
+            Name = "contains",
+        };
+
+        var pageable = CreateAsyncPageable(relationship1, relationship2);
+
+        mockClient
+            .GetRelationshipsAsync<BasicRelationship>(
+                Arg.Any<string>(),
+                Arg.Any<string?>(),
+                Arg.Any<CancellationToken>())
+            .Returns(pageable);
+
+        // Act
+        var result = await sut.GetRelationshipAsync("twin-1", "contains", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be("rel-1");
+    }
+
+    [Fact]
     public async Task GetRelationshipAsync_NoMatchingRelationship_ReturnsNull()
     {
         // Arrange

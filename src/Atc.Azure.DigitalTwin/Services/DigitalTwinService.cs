@@ -230,7 +230,7 @@ public sealed partial class DigitalTwinService : IDigitalTwinService
                 return null;
             }
 
-            var relationship = response.SingleOrDefault();
+            var relationship = response.FirstOrDefault();
             if (relationship is null)
             {
                 LogRelationshipNotFound(twinId, relationshipName);
