@@ -2,11 +2,14 @@
 
 # Atc.Azure.DigitalTwin
 
-A .NET library and CLI tool for managing Azure Digital Twins — providing DTDL model validation, twin lifecycle management, relationship handling, and event route configuration.
+A .NET library and CLI tool for managing Azure Digital Twins — providing DTDL model validation, twin lifecycle management, relationship handling, event route configuration, telemetry publishing, and bulk import.
 
-- 🏗️ **Model Management** — create, retrieve, decommission, and delete DTDL models with full validation
+- 🏗️ **Model Management** — create, retrieve, decommission, and delete DTDL models with dependency-aware ordering
 - 🔗 **Twin & Relationship CRUD** — create, query, update, and delete digital twins and their relationships
+- 🧩 **Component Operations** — read and update individual twin components
 - 📡 **Event Routes** — create, delete, and list event routes for Digital Twin endpoints
+- 📊 **Telemetry Publishing** — publish telemetry messages for twins and components
+- 📦 **Bulk Import** — import models, twins, and relationships from Azure Blob Storage
 - 🔍 **Query Engine** — execute ADT queries with pagination support
 - 📋 **DTDL Parser** — validate and parse JSON models into Digital Twin interface definitions
 - 🖥️ **Cross-Platform CLI** — global .NET tool for command-line management of Azure Digital Twins
@@ -32,10 +35,10 @@ dotnet add package Atc.Azure.DigitalTwin
 var digitalTwinService = serviceProvider.GetRequiredService<IDigitalTwinService>();
 
 // Retrieve a twin
-var twin = await digitalTwinService.GetTwin("my-twin-id");
+var twin = await digitalTwinService.GetTwinAsync("my-twin-id");
 
 // Create a relationship
-var (succeeded, errorMessage) = await digitalTwinService.CreateRelationship(
+var (succeeded, errorMessage) = await digitalTwinService.CreateRelationshipAsync(
     "source-twin-id",
     "target-twin-id",
     "relatesTo");
@@ -60,41 +63,55 @@ public void ConfigureServices(IServiceCollection services)
 
 ### 🏗️ IDigitalTwinService
 
-Comprehensive CRUD operations for models, twins, relationships, and event routes within an Azure Digital Twins instance.
+Comprehensive CRUD operations for models, twins, relationships, event routes, telemetry, components, and bulk import within an Azure Digital Twins instance.
 
 ```csharp
 var digitalTwinService = serviceProvider.GetRequiredService<IDigitalTwinService>();
 
 // Query twins
-var twins = await digitalTwinService.GetTwins("SELECT * FROM DIGITALTWINS", cancellationToken);
+var twins = await digitalTwinService.GetTwinsAsync("SELECT * FROM DIGITALTWINS", cancellationToken);
 
 // Update a twin with JSON Patch
 var patchDocument = new JsonPatchDocument();
 patchDocument.AppendReplace("/temperature", 25.0);
-await digitalTwinService.UpdateTwin("my-twin-id", patchDocument, cancellationToken: cancellationToken);
+await digitalTwinService.UpdateTwinAsync("my-twin-id", patchDocument, cancellationToken: cancellationToken);
 
 // Manage event routes
-await digitalTwinService.CreateOrReplaceEventRoute(
+await digitalTwinService.CreateOrReplaceEventRouteAsync(
     "my-route",
     "my-endpoint",
     filter: "type = 'Microsoft.DigitalTwins.Twin.Update'",
     cancellationToken: cancellationToken);
+
+// Publish telemetry
+await digitalTwinService.PublishTelemetryAsync("my-twin-id", "{\"temperature\": 25.0}");
+
+// Get a twin component
+var component = await digitalTwinService.GetComponentAsync<JsonElement>("my-twin-id", "thermostat");
+
+// Bulk import from blob storage
+var job = await digitalTwinService.ImportGraphAsync(
+    "my-job-id",
+    new Uri("https://storage.blob.core.windows.net/container/input.ndjson"),
+    new Uri("https://storage.blob.core.windows.net/container/output.ndjson"));
 ```
 
 ### 📋 IModelRepositoryService
 
-Local DTDL model storage, loading from directories, and validation.
+Local DTDL model storage, loading from directories, validation, and dependency-aware ordering.
 
 ```csharp
 var modelRepositoryService = serviceProvider.GetRequiredService<IModelRepositoryService>();
 var modelsPath = new DirectoryInfo("path/to/models");
 
-var isValid = await modelRepositoryService.ValidateModels(modelsPath, cancellationToken);
+var isValid = await modelRepositoryService.ValidateModelsAsync(modelsPath, cancellationToken);
 
 if (isValid)
 {
-    await modelRepositoryService.LoadModelContent(modelsPath, cancellationToken);
-    var models = modelRepositoryService.GetModels();
+    await modelRepositoryService.LoadModelContentAsync(modelsPath, cancellationToken);
+
+    // Get models in dependency order (base models first)
+    var orderedContent = modelRepositoryService.GetModelsContentInDependencyOrder();
 }
 ```
 
@@ -104,7 +121,7 @@ Parses JSON DTDL models into Digital Twin interface definitions with validation.
 
 ```csharp
 var parser = serviceProvider.GetRequiredService<IDigitalTwinParser>();
-var (succeeded, interfaces) = await parser.Parse(jsonModels);
+var (succeeded, interfaces) = await parser.ParseAsync(jsonModels);
 
 if (succeeded)
 {
@@ -133,7 +150,7 @@ dotnet tool update --global atc-azure-digitaltwin
 
 ### Commands
 
-The CLI is organized into three command groups:
+The CLI is organized into command groups:
 
 #### Model Commands
 
@@ -141,7 +158,7 @@ The CLI is organized into three command groups:
 # Validate models from a directory
 atc-azure-digitaltwin model validate -d <directory-path>
 
-# Create all models
+# Create all models (dependency-ordered)
 atc-azure-digitaltwin model create all --tenantId -a <adt-instance-url> -d <directory-path>
 
 # Create single model
@@ -178,6 +195,10 @@ atc-azure-digitaltwin twin delete all --tenantId -a <adt-instance-url>
 # Manage relationships
 atc-azure-digitaltwin twin relationship create --tenantId -a <adt-instance-url> --source-twinId <src> --target-twinId <tgt> --relationshipName <name>
 atc-azure-digitaltwin twin relationship get all --tenantId -a <adt-instance-url> -t <twin-id>
+
+# Get/update twin components
+atc-azure-digitaltwin twin component get --tenantId -a <adt-instance-url> -t <twin-id> -c <component-name>
+atc-azure-digitaltwin twin component update --tenantId -a <adt-instance-url> -t <twin-id> -c <component-name> --jsonPatch <json-patch>
 ```
 
 #### Event Route Commands
@@ -191,6 +212,39 @@ atc-azure-digitaltwin route get all --tenantId -a <adt-instance-url>
 
 # Delete an event route
 atc-azure-digitaltwin route delete --tenantId -a <adt-instance-url> -e <route-id>
+```
+
+#### Query Command
+
+```bash
+# Run an ADT query
+atc-azure-digitaltwin query --tenantId -a <adt-instance-url> -q "SELECT * FROM DIGITALTWINS"
+```
+
+#### Telemetry Command
+
+```bash
+# Publish telemetry for a twin
+atc-azure-digitaltwin telemetry publish --tenantId -a <adt-instance-url> -t <twin-id> -p '{"temperature": 25.0}'
+```
+
+#### Import Commands
+
+```bash
+# Create a bulk import job
+atc-azure-digitaltwin import create --tenantId -a <adt-instance-url> --jobId <job-id> --inputBlobUri <input-uri> --outputBlobUri <output-uri>
+
+# Get import job status
+atc-azure-digitaltwin import get single --tenantId -a <adt-instance-url> --jobId <job-id>
+
+# List all import jobs
+atc-azure-digitaltwin import get all --tenantId -a <adt-instance-url>
+
+# Cancel a running import job
+atc-azure-digitaltwin import cancel --tenantId -a <adt-instance-url> --jobId <job-id>
+
+# Delete an import job
+atc-azure-digitaltwin import delete --tenantId -a <adt-instance-url> --jobId <job-id>
 ```
 
 Use `--help` on any command for detailed options:
