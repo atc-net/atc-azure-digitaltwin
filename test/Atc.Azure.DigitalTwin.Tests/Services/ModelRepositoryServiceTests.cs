@@ -58,6 +58,7 @@ public sealed class ModelRepositoryServiceTests
         var result = await parser.ParseAsync([ValidDtdlModel]);
         var interfaceInfo = result.Values.OfType<DTInterfaceInfo>().First();
         var dtmi = new Dtmi("dtmi:com:example:Thermostat;1");
+
         sut.AddModel(dtmi, interfaceInfo);
 
         // Act
@@ -162,6 +163,7 @@ public sealed class ModelRepositoryServiceTests
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
         var filePath = Path.Combine(tempDir.FullName, "model.json");
+
         await File.WriteAllTextAsync(filePath, ValidDtdlModel, TestContext.Current.CancellationToken);
 
         try
@@ -185,9 +187,6 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange
         var cancellationToken = TestContext.Current.CancellationToken;
-
-        // BUG/Design issue: LoadModelContent does not clear previous content,
-        // so calling it multiple times accumulates model content.
         var tempDir1 = Directory.CreateTempSubdirectory("dtdl-test1-");
         var tempDir2 = Directory.CreateTempSubdirectory("dtdl-test2-");
 
@@ -204,6 +203,7 @@ public sealed class ModelRepositoryServiceTests
             Path.Combine(tempDir1.FullName, "model1.json"),
             ValidDtdlModel,
             TestContext.Current.CancellationToken);
+
         await File.WriteAllTextAsync(
             Path.Combine(tempDir2.FullName, "model2.json"),
             model2,
@@ -230,6 +230,7 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange - Directory with a non-JSON file
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
         await File.WriteAllTextAsync(
             Path.Combine(tempDir.FullName, "readme.txt"),
             "not a json file",
@@ -255,6 +256,7 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
         await File.WriteAllTextAsync(
             Path.Combine(tempDir.FullName, "model.json"),
             ValidDtdlModel,
@@ -285,6 +287,7 @@ public sealed class ModelRepositoryServiceTests
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
+
         await File.WriteAllTextAsync(
             Path.Combine(tempDir.FullName, "invalid.json"),
             """{ "invalid": "not a dtdl model" }""",
@@ -386,6 +389,7 @@ public sealed class ModelRepositoryServiceTests
                 Path.Combine(tempDir.FullName, "modelA.json"),
                 modelA,
                 TestContext.Current.CancellationToken);
+
             await File.WriteAllTextAsync(
                 Path.Combine(tempDir.FullName, "modelB.json"),
                 modelB,
@@ -414,11 +418,20 @@ public sealed class ModelRepositoryServiceTests
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
 
         const string baseModel = """
-            {"@id": "dtmi:com:example:Base;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:Base;1",
+                "@type": "Interface",
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         const string derivedModel = """
-            {"@id": "dtmi:com:example:Derived;1", "@type": "Interface", "extends": "dtmi:com:example:Base;1", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:Derived;1",
+                "@type": "Interface",
+                "extends": "dtmi:com:example:Base;1",
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         try
@@ -428,6 +441,7 @@ public sealed class ModelRepositoryServiceTests
                 Path.Combine(tempDir.FullName, "a_derived.json"),
                 derivedModel,
                 TestContext.Current.CancellationToken);
+
             await File.WriteAllTextAsync(
                 Path.Combine(tempDir.FullName, "b_base.json"),
                 baseModel,
@@ -459,15 +473,29 @@ public sealed class ModelRepositoryServiceTests
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
 
         const string equipment = """
-            {"@id": "dtmi:com:example:Equipment;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:Equipment;1", 
+                "@type": "Interface", 
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         const string machinery = """
-            {"@id": "dtmi:com:example:Machinery;1", "@type": "Interface", "extends": "dtmi:com:example:Equipment;1", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:Machinery;1", 
+                "@type": "Interface", 
+                "extends": "dtmi:com:example:Equipment;1", 
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         const string pressMachine = """
-            {"@id": "dtmi:com:example:PressMachine;1", "@type": "Interface", "extends": "dtmi:com:example:Machinery;1", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:PressMachine;1",
+                "@type": "Interface",
+                "extends": "dtmi:com:example:Machinery;1",
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         try
@@ -477,10 +505,12 @@ public sealed class ModelRepositoryServiceTests
                 Path.Combine(tempDir.FullName, "a_press.json"),
                 pressMachine,
                 TestContext.Current.CancellationToken);
+
             await File.WriteAllTextAsync(
                 Path.Combine(tempDir.FullName, "b_machinery.json"),
                 machinery,
                 TestContext.Current.CancellationToken);
+
             await File.WriteAllTextAsync(
                 Path.Combine(tempDir.FullName, "c_equipment.json"),
                 equipment,
@@ -514,15 +544,28 @@ public sealed class ModelRepositoryServiceTests
         var tempDir = Directory.CreateTempSubdirectory("dtdl-test-");
 
         const string modelA = """
-            {"@id": "dtmi:com:example:A;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:A;1",
+                "@type": "Interface",
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         const string modelB = """
-            {"@id": "dtmi:com:example:B;1", "@type": "Interface", "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:B;1",
+                "@type": "Interface",
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         const string modelC = """
-            {"@id": "dtmi:com:example:C;1", "@type": "Interface", "extends": ["dtmi:com:example:A;1", "dtmi:com:example:B;1"], "@context": "dtmi:dtdl:context;2"}
+            {
+                "@id": "dtmi:com:example:C;1",
+                "@type": "Interface",
+                "extends": ["dtmi:com:example:A;1", "dtmi:com:example:B;1"],
+                "@context": "dtmi:dtdl:context;2"
+            }
             """;
 
         try
@@ -532,10 +575,12 @@ public sealed class ModelRepositoryServiceTests
                 Path.Combine(tempDir.FullName, "a_child.json"),
                 modelC,
                 TestContext.Current.CancellationToken);
+
             await File.WriteAllTextAsync(
                 Path.Combine(tempDir.FullName, "b_parentA.json"),
                 modelA,
                 TestContext.Current.CancellationToken);
+
             await File.WriteAllTextAsync(
                 Path.Combine(tempDir.FullName, "c_parentB.json"),
                 modelB,
@@ -561,4 +606,4 @@ public sealed class ModelRepositoryServiceTests
             tempDir.Delete(recursive: true);
         }
     }
-}
+}

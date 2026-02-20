@@ -52,7 +52,7 @@ public sealed class DigitalTwinParserTests
     public async Task Parse_InvalidModel_ReturnsSucceededFalse()
     {
         // Arrange
-        var invalidModel = """{ "invalid": "not a dtdl model" }""";
+        const string invalidModel = """{ "invalid": "not a dtdl model" }""";
 
         // Act
         var (succeeded, interfaces) = await sut.ParseAsync([invalidModel]);
