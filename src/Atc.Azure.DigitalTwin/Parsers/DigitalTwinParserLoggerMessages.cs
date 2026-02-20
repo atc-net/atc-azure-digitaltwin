@@ -19,4 +19,4 @@ public sealed partial class DigitalTwinParser
         Level = LogLevel.Error,
         Message = "Parse error: {ParseError}")]
     private partial void LogParseError(string parseError);
-}
+}
